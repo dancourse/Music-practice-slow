@@ -1,0 +1,10 @@
+# Netlify configuration for Music Practice Tool
+
+[build]
+  # No build command needed - static HTML/CSS/JS
+  publish = "."
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

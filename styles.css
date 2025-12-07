@@ -1,0 +1,589 @@
+/* ==================== */
+/* CSS Reset & Base */
+/* ==================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --secondary-color: #8b5cf6;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f3f4f6;
+    --border-color: #e5e7eb;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 1rem;
+    color: var(--text-primary);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--bg-primary);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* ==================== */
+/* Header */
+/* ==================== */
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+header h1 {
+    font-size: 1.75rem;
+    color: var(--primary-color);
+}
+
+/* ==================== */
+/* Add Video Section */
+/* ==================== */
+
+.add-video-section {
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.input-group input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.5rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+    border-color: var(--primary-color);
+}
+
+/* ==================== */
+/* Buttons */
+/* ==================== */
+
+.btn {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    min-height: 36px;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+/* ==================== */
+/* Video Library */
+/* ==================== */
+
+.video-library {
+    margin-bottom: 2rem;
+}
+
+.video-library h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.video-list {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.video-item {
+    background: var(--bg-secondary);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+}
+
+.video-item:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.video-item.active {
+    border-color: var(--primary-color);
+    background: #eef2ff;
+}
+
+.video-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.video-item h3 {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    flex: 1;
+    word-break: break-word;
+}
+
+.video-item .video-id {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+}
+
+/* ==================== */
+/* Player Section */
+/* ==================== */
+
+.player-section {
+    margin-top: 2rem;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    background: #000;
+    margin-bottom: 1rem;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.video-info {
+    margin-bottom: 1.5rem;
+}
+
+.video-info h3 {
+    font-size: 1.25rem;
+    color: var(--text-primary);
+}
+
+/* ==================== */
+/* Controls */
+/* ==================== */
+
+.controls {
+    background: var(--bg-secondary);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+}
+
+.control-group {
+    margin-bottom: 1.5rem;
+}
+
+.control-group:last-child {
+    margin-bottom: 0;
+}
+
+.control-group h4 {
+    margin-bottom: 0.75rem;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+/* Main Play/Pause Button */
+.main-control {
+    text-align: center;
+}
+
+.btn-play-pause {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    font-size: 2.5rem;
+    padding: 0;
+}
+
+.btn-play-pause:hover {
+    background: var(--primary-hover);
+}
+
+.btn-play-pause .icon {
+    display: block;
+}
+
+.btn-play-pause.playing .icon::before {
+    content: '⏸';
+}
+
+/* Speed Control */
+.speed-control label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+#speedDisplay {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+}
+
+#speedSlider {
+    width: 100%;
+    height: 48px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+/* Custom range slider styling */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+}
+
+input[type="range"]::-webkit-slider-track {
+    height: 8px;
+    background: #ddd;
+    border-radius: 4px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    margin-top: -8px;
+}
+
+input[type="range"]::-moz-range-track {
+    height: 8px;
+    background: #ddd;
+    border-radius: 4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.speed-presets {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-preset {
+    flex: 1;
+    min-width: 80px;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-preset:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-preset.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Seek Controls */
+.seek-controls {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.btn-seek {
+    flex: 1;
+    max-width: 200px;
+    background: var(--secondary-color);
+    color: white;
+    font-size: 1.125rem;
+    min-height: 60px;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.btn-seek:hover {
+    background: #7c3aed;
+}
+
+.btn-seek .icon {
+    font-size: 1.5rem;
+}
+
+.btn-seek .label {
+    font-size: 0.875rem;
+}
+
+/* Timeline */
+.timeline {
+    margin-top: 1rem;
+}
+
+.time-display {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.timeline-container {
+    position: relative;
+}
+
+.timeline-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: #ddd;
+    border-radius: 4px;
+    pointer-events: none;
+    margin-top: 20px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: var(--primary-color);
+    border-radius: 4px;
+    width: 0;
+    transition: width 0.1s linear;
+}
+
+.loop-overlay {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: rgba(16, 185, 129, 0.3);
+    border-left: 2px solid var(--success-color);
+    border-right: 2px solid var(--success-color);
+}
+
+#timelineSlider {
+    width: 100%;
+}
+
+/* Loop Controls */
+.loop-buttons {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.btn-loop,
+.btn-loop-clear {
+    background: white;
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    flex-direction: column;
+    min-height: 60px;
+    padding: 0.75rem;
+}
+
+.btn-loop:hover,
+.btn-loop-clear:hover {
+    border-color: var(--primary-color);
+    background: #f9fafb;
+}
+
+.btn-loop.active {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.btn-loop:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-loop-clear {
+    border-color: var(--danger-color);
+    color: var(--danger-color);
+}
+
+.btn-loop-clear:hover {
+    background: var(--danger-color);
+    color: white;
+}
+
+.loop-time {
+    font-size: 0.875rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* ==================== */
+/* Responsive Design */
+/* ==================== */
+
+/* Tablets and up */
+@media (min-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
+
+    header h1 {
+        font-size: 2.5rem;
+    }
+
+    .video-list {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    }
+
+    .controls {
+        padding: 2rem;
+    }
+
+    .btn-play-pause {
+        width: 120px;
+        height: 120px;
+        font-size: 3rem;
+    }
+}
+
+/* Desktop and up */
+@media (min-width: 1024px) {
+    .seek-controls {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .loop-buttons {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Landscape mobile specific */
+@media (max-height: 500px) and (orientation: landscape) {
+    body {
+        padding: 0.5rem;
+    }
+
+    .container {
+        padding: 1rem;
+    }
+
+    header {
+        margin-bottom: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .btn-play-pause {
+        width: 80px;
+        height: 80px;
+        font-size: 2rem;
+    }
+
+    .control-group {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn {
+        min-height: 52px;
+    }
+
+    .btn-seek {
+        min-height: 68px;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        width: 28px;
+        height: 28px;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+    }
+}

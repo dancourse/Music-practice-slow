@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Practice Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Music Practice Tool</h1>
+        </header>
+
+        <!-- Add Video Section -->
+        <section class="add-video-section">
+            <div class="input-group">
+                <input
+                    type="text"
+                    id="videoUrlInput"
+                    placeholder="Enter YouTube URL..."
+                    aria-label="YouTube URL"
+                >
+                <button id="addVideoBtn" class="btn btn-primary">Add Video</button>
+            </div>
+        </section>
+
+        <!-- Video Library -->
+        <section class="video-library">
+            <h2>Video Library</h2>
+            <div id="videoList" class="video-list">
+                <!-- Videos will be populated here -->
+            </div>
+        </section>
+
+        <!-- Video Player Section -->
+        <section class="player-section" id="playerSection" style="display: none;">
+            <div class="video-container">
+                <div id="player"></div>
+            </div>
+
+            <div class="video-info">
+                <h3 id="currentVideoTitle">Select a video to start practicing</h3>
+            </div>
+
+            <!-- Playback Controls -->
+            <div class="controls">
+                <!-- Main Play/Pause Button -->
+                <div class="control-group main-control">
+                    <button id="playPauseBtn" class="btn btn-play-pause" aria-label="Play/Pause">
+                        <span class="icon">▶</span>
+                    </button>
+                </div>
+
+                <!-- Speed Control -->
+                <div class="control-group speed-control">
+                    <label for="speedSlider">Speed: <span id="speedDisplay">1.0x</span></label>
+                    <input
+                        type="range"
+                        id="speedSlider"
+                        min="0.25"
+                        max="1"
+                        step="0.05"
+                        value="1"
+                        aria-label="Playback speed"
+                    >
+                    <div class="speed-presets">
+                        <button class="btn btn-preset" data-speed="0.5">0.5x</button>
+                        <button class="btn btn-preset" data-speed="0.75">0.75x</button>
+                        <button class="btn btn-preset" data-speed="1.0">1.0x</button>
+                    </div>
+                </div>
+
+                <!-- Seek Controls -->
+                <div class="control-group seek-controls">
+                    <button id="seekBackBtn" class="btn btn-seek" aria-label="Rewind 5 seconds">
+                        <span class="icon">⏪</span>
+                        <span class="label">-5s</span>
+                    </button>
+                    <button id="seekForwardBtn" class="btn btn-seek" aria-label="Forward 5 seconds">
+                        <span class="icon">⏩</span>
+                        <span class="label">+5s</span>
+                    </button>
+                </div>
+
+                <!-- Timeline -->
+                <div class="control-group timeline">
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                    <div class="timeline-container">
+                        <div class="timeline-bar">
+                            <div id="progressBar" class="progress-bar"></div>
+                            <div id="loopOverlay" class="loop-overlay" style="display: none;"></div>
+                        </div>
+                        <input
+                            type="range"
+                            id="timelineSlider"
+                            min="0"
+                            max="100"
+                            value="0"
+                            aria-label="Video timeline"
+                        >
+                    </div>
+                </div>
+
+                <!-- Loop Controls -->
+                <div class="control-group loop-controls">
+                    <h4>Loop Section</h4>
+                    <div class="loop-buttons">
+                        <button id="setLoopStartBtn" class="btn btn-loop">
+                            Set Start
+                            <span id="loopStartDisplay" class="loop-time">--:--</span>
+                        </button>
+                        <button id="setLoopEndBtn" class="btn btn-loop">
+                            Set End
+                            <span id="loopEndDisplay" class="loop-time">--:--</span>
+                        </button>
+                        <button id="toggleLoopBtn" class="btn btn-loop" disabled>
+                            Enable Loop
+                        </button>
+                        <button id="clearLoopBtn" class="btn btn-loop-clear">
+                            Clear Loop
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- YouTube IFrame API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="app.js"></script>
+</body>
+</html>
