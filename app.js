@@ -15,6 +15,9 @@ class MusicPracticeApp {
         this.loopCheckInterval = null;
         this.timeUpdateInterval = null;
 
+        // YouTube API key (from environment variable via Netlify)
+        this.youtubeApiKey = window.YOUTUBE_API_KEY || '';
+
         // DOM Elements
         this.elements = {
             videoUrlInput: document.getElementById('videoUrlInput'),
@@ -23,6 +26,7 @@ class MusicPracticeApp {
             playerSection: document.getElementById('playerSection'),
             currentVideoTitle: document.getElementById('currentVideoTitle'),
             playPauseBtn: document.getElementById('playPauseBtn'),
+            skipToStartBtn: document.getElementById('skipToStartBtn'),
             speedSlider: document.getElementById('speedSlider'),
             speedDisplay: document.getElementById('speedDisplay'),
             speedPresets: document.querySelectorAll('.btn-preset'),
@@ -38,7 +42,11 @@ class MusicPracticeApp {
             toggleLoopBtn: document.getElementById('toggleLoopBtn'),
             clearLoopBtn: document.getElementById('clearLoopBtn'),
             loopStartDisplay: document.getElementById('loopStartDisplay'),
-            loopEndDisplay: document.getElementById('loopEndDisplay')
+            loopEndDisplay: document.getElementById('loopEndDisplay'),
+            searchSection: document.getElementById('searchSection'),
+            searchInput: document.getElementById('searchInput'),
+            searchBtn: document.getElementById('searchBtn'),
+            searchResults: document.getElementById('searchResults')
         };
 
         this.init();
@@ -52,6 +60,11 @@ class MusicPracticeApp {
         // Bind event listeners
         this.bindEvents();
 
+        // Show search if API key available
+        if (this.youtubeApiKey) {
+            this.elements.searchSection.style.display = 'block';
+        }
+
         // YouTube API will call onYouTubeIframeAPIReady when ready
     }
 
@@ -62,8 +75,17 @@ class MusicPracticeApp {
             if (e.key === 'Enter') this.addVideo();
         });
 
+        // Search
+        if (this.youtubeApiKey) {
+            this.elements.searchBtn.addEventListener('click', () => this.searchVideos());
+            this.elements.searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.searchVideos();
+            });
+        }
+
         // Playback controls
         this.elements.playPauseBtn.addEventListener('click', () => this.togglePlayPause());
+        this.elements.skipToStartBtn.addEventListener('click', () => this.skipToStart());
         this.elements.speedSlider.addEventListener('input', (e) => this.setSpeed(parseFloat(e.target.value)));
         this.elements.speedPresets.forEach(btn => {
             btn.addEventListener('click', (e) => {
@@ -107,17 +129,20 @@ class MusicPracticeApp {
         return null;
     }
 
-    addVideo() {
-        const url = this.elements.videoUrlInput.value.trim();
-        if (!url) {
-            alert('Please enter a YouTube URL');
-            return;
-        }
-
-        const videoId = this.extractVideoId(url);
+    async addVideo(videoId = null, videoTitle = null) {
+        // If no videoId provided, extract from URL input
         if (!videoId) {
-            alert('Invalid YouTube URL. Please check and try again.');
-            return;
+            const url = this.elements.videoUrlInput.value.trim();
+            if (!url) {
+                alert('Please enter a YouTube URL');
+                return;
+            }
+
+            videoId = this.extractVideoId(url);
+            if (!videoId) {
+                alert('Invalid YouTube URL. Please check and try again.');
+                return;
+            }
         }
 
         // Check if video already exists
@@ -126,9 +151,15 @@ class MusicPracticeApp {
             return;
         }
 
+        // Try to fetch video title if not provided
+        if (!videoTitle) {
+            videoTitle = await this.fetchVideoTitle(videoId);
+        }
+
         // Add video
         const video = {
             id: videoId,
+            title: videoTitle || null,
             addedAt: Date.now()
         };
 
@@ -139,10 +170,89 @@ class MusicPracticeApp {
         // Clear input
         this.elements.videoUrlInput.value = '';
 
+        // Confetti!
+        if (window.confetti) {
+            confetti.burst();
+        }
+
         // Auto-select if first video
         if (this.videos.length === 1) {
             this.selectVideo(videoId);
         }
+    }
+
+    async fetchVideoTitle(videoId) {
+        try {
+            // Try YouTube oEmbed API (no auth required)
+            const response = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`);
+            if (response.ok) {
+                const data = await response.json();
+                return data.title;
+            }
+        } catch (e) {
+            console.log('Could not fetch video title:', e);
+        }
+        return null;
+    }
+
+    async searchVideos() {
+        if (!this.youtubeApiKey) return;
+
+        const query = this.elements.searchInput.value.trim();
+        if (!query) {
+            alert('Please enter a search term');
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=5&key=${this.youtubeApiKey}`
+            );
+
+            if (!response.ok) {
+                throw new Error('Search failed');
+            }
+
+            const data = await response.json();
+            this.renderSearchResults(data.items);
+        } catch (e) {
+            console.error('Search error:', e);
+            alert('Search failed. Please check your API key.');
+        }
+    }
+
+    renderSearchResults(items) {
+        if (!items || items.length === 0) {
+            this.elements.searchResults.innerHTML = '<p style="color: #6b7280; padding: 1rem; text-align: center;">No results found</p>';
+            return;
+        }
+
+        this.elements.searchResults.innerHTML = items.map(item => `
+            <div class="search-result-item" data-video-id="${item.id.videoId}" data-video-title="${this.escapeHtml(item.snippet.title)}">
+                <img src="${item.snippet.thumbnails.default.url}" alt="${this.escapeHtml(item.snippet.title)}">
+                <div class="search-result-info">
+                    <h4>${this.escapeHtml(item.snippet.title)}</h4>
+                    <p>${this.escapeHtml(item.snippet.channelTitle)}</p>
+                </div>
+            </div>
+        `).join('');
+
+        // Add click listeners
+        document.querySelectorAll('.search-result-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const videoId = item.dataset.videoId;
+                const videoTitle = item.dataset.videoTitle;
+                this.addVideo(videoId, videoTitle);
+                this.elements.searchResults.innerHTML = '';
+                this.elements.searchInput.value = '';
+            });
+        });
+    }
+
+    escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
 
     removeVideo(videoId) {
@@ -251,6 +361,11 @@ class MusicPracticeApp {
         } else {
             this.player.playVideo();
         }
+    }
+
+    skipToStart() {
+        if (!this.player || !this.playerReady) return;
+        this.player.seekTo(0, true);
     }
 
     setSpeed(speed) {
@@ -436,15 +551,19 @@ class MusicPracticeApp {
         }
 
         this.elements.videoList.innerHTML = this.videos
-            .map(video => `
-                <div class="video-item ${this.currentVideoId === video.id ? 'active' : ''}" data-video-id="${video.id}">
-                    <div class="video-item-header">
-                        <h3>Video</h3>
-                        <button class="btn btn-danger" onclick="app.removeVideo('${video.id}')" aria-label="Remove video">×</button>
+            .map(video => {
+                const title = video.title || 'Video';
+                const date = new Date(video.addedAt).toLocaleDateString();
+                return `
+                    <div class="video-item ${this.currentVideoId === video.id ? 'active' : ''}" data-video-id="${video.id}">
+                        <div class="video-item-header">
+                            <h3>${this.escapeHtml(title)}</h3>
+                            <button class="btn btn-danger" onclick="app.removeVideo('${video.id}')" aria-label="Remove video">×</button>
+                        </div>
+                        <div class="video-id">Added: ${date}</div>
                     </div>
-                    <div class="video-id">${video.id}</div>
-                </div>
-            `)
+                `;
+            })
             .join('');
 
         // Add click listeners to video items
