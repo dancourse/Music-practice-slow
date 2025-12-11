@@ -686,6 +686,39 @@ a {
     touch-action: manipulation;
 }
 
+/* ==================== */
+/* Footer */
+/* ==================== */
+
+.app-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.app-footer p {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.app-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.app-footer a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* ==================== */
+/* Responsive Design */
+/* ==================== */
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     * {
