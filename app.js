@@ -2,6 +2,61 @@
 // YouTube Player App   //
 // ==================== //
 
+// Account Manager Class
+class AccountManager {
+    constructor() {
+        this.accountType = this.getAccountType();
+        this.licenseKey = this.getLicenseKey();
+        this.welcomeShown = this.getWelcomeShown();
+    }
+
+    getAccountType() {
+        return localStorage.getItem('musicPracticeAccountType') || 'free';
+    }
+
+    setAccountType(type) {
+        localStorage.setItem('musicPracticeAccountType', type);
+        this.accountType = type;
+    }
+
+    getLicenseKey() {
+        return localStorage.getItem('musicPracticeLicenseKey') || null;
+    }
+
+    setLicenseKey(key) {
+        localStorage.setItem('musicPracticeLicenseKey', key);
+        this.licenseKey = key;
+    }
+
+    getWelcomeShown() {
+        return localStorage.getItem('musicPracticeWelcomeShown') === 'true';
+    }
+
+    setWelcomeShown() {
+        localStorage.setItem('musicPracticeWelcomeShown', 'true');
+        this.welcomeShown = true;
+    }
+
+    isPaid() {
+        return this.accountType === 'paid';
+    }
+
+    validateLicenseKey(key) {
+        // Format: MUSIC-PRACTICE-XXXX-XXXX-XXXX
+        const pattern = /^MUSIC-PRACTICE-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+        return pattern.test(key.toUpperCase());
+    }
+
+    upgrade(licenseKey) {
+        if (this.validateLicenseKey(licenseKey)) {
+            this.setAccountType('paid');
+            this.setLicenseKey(licenseKey);
+            return true;
+        }
+        return false;
+    }
+}
+
 class MusicPracticeApp {
     constructor() {
         // State
@@ -14,6 +69,9 @@ class MusicPracticeApp {
         this.loopEnabled = false;
         this.loopCheckInterval = null;
         this.timeUpdateInterval = null;
+
+        // Account Manager
+        this.accountManager = new AccountManager();
 
         // YouTube API key (from environment variable via Netlify)
         this.youtubeApiKey = window.YOUTUBE_API_KEY || '';
@@ -65,7 +123,58 @@ class MusicPracticeApp {
             this.elements.searchSection.style.display = 'block';
         }
 
+        // Show welcome modal for first-time users
+        if (!this.accountManager.welcomeShown) {
+            this.showWelcomeModal();
+        }
+
+        // Initialize analytics
+        this.identifyUser();
+        this.trackEvent('page_loaded', {
+            hasApiKey: !!this.youtubeApiKey
+        });
+
+        // Set account created date if not set
+        if (!localStorage.getItem('musicPracticeAccountCreated')) {
+            localStorage.setItem('musicPracticeAccountCreated', new Date().toISOString());
+        }
+
+        // Update account UI
+        this.updateAccountUI();
+
         // YouTube API will call onYouTubeIframeAPIReady when ready
+    }
+
+    // ==================== //
+    // Analytics Tracking   //
+    // ==================== //
+
+    trackEvent(eventName, properties = {}) {
+        if (window.heap && typeof window.heap.track === 'function') {
+            const eventData = {
+                ...properties,
+                accountType: this.accountManager.accountType,
+                videoCount: this.videos.length
+            };
+            console.log('📊 Heap event:', eventName, eventData);
+            window.heap.track(eventName, eventData);
+        } else {
+            console.warn('⚠️ Heap not available. Event not tracked:', eventName);
+        }
+    }
+
+    identifyUser() {
+        if (window.heap && typeof window.heap.addUserProperties === 'function') {
+            const userData = {
+                accountType: this.accountManager.accountType,
+                videoCount: this.videos.length,
+                hasYouTubeApiKey: !!this.youtubeApiKey
+            };
+            console.log('👤 Heap identify:', userData);
+            window.heap.addUserProperties(userData);
+        } else {
+            console.warn('⚠️ Heap not available. User not identified.');
+        }
     }
 
     bindEvents() {
@@ -145,6 +254,20 @@ class MusicPracticeApp {
             }
         }
 
+        // Check free account video limit
+        console.log('Video limit check:', {
+            isPaid: this.accountManager.isPaid(),
+            videoCount: this.videos.length,
+            accountType: this.accountManager.accountType,
+            shouldBlock: !this.accountManager.isPaid() && this.videos.length >= 1
+        });
+
+        if (!this.accountManager.isPaid() && this.videos.length >= 1) {
+            console.log('Blocking video add - showing upgrade modal');
+            this.showUpgradeModal();
+            return;
+        }
+
         // Check if video already exists
         if (this.videos.find(v => v.id === videoId)) {
             alert('This video is already in your library');
@@ -174,6 +297,12 @@ class MusicPracticeApp {
         if (window.confetti) {
             confetti.burst();
         }
+
+        // Track event
+        this.trackEvent('video_added', {
+            method: videoId && videoTitle ? 'search' : 'url',
+            videoId: videoId
+        });
 
         // Auto-select if first video
         if (this.videos.length === 1) {
@@ -214,6 +343,8 @@ class MusicPracticeApp {
             }
 
             const data = await response.json();
+            // Track event
+            this.trackEvent('search_performed', {query: query, resultCount: data.items.length});
             this.renderSearchResults(data.items);
         } catch (e) {
             console.error('Search error:', e);
@@ -261,6 +392,9 @@ class MusicPracticeApp {
             this.saveVideos();
             this.renderVideoList();
 
+            // Track event
+            this.trackEvent('video_removed', {videoId: videoId});
+
             // If current video was removed, clear player
             if (this.currentVideoId === videoId) {
                 this.currentVideoId = null;
@@ -272,6 +406,9 @@ class MusicPracticeApp {
     selectVideo(videoId) {
         this.currentVideoId = videoId;
         this.clearLoop();
+
+        // Track event
+        this.trackEvent('video_selected', {videoId: videoId});
 
         // Show player section
         this.elements.playerSection.style.display = 'block';
@@ -358,8 +495,10 @@ class MusicPracticeApp {
         const state = this.player.getPlayerState();
         if (state === YT.PlayerState.PLAYING) {
             this.player.pauseVideo();
+            this.trackEvent('playback_toggled', {action: 'pause'});
         } else {
             this.player.playVideo();
+            this.trackEvent('playback_toggled', {action: 'play'});
         }
     }
 
@@ -373,6 +512,9 @@ class MusicPracticeApp {
 
         this.player.setPlaybackRate(speed);
         this.elements.speedDisplay.textContent = `${speed.toFixed(2)}x`;
+
+        // Track event
+        this.trackEvent('speed_changed', {speed: speed});
 
         // Update preset buttons
         this.elements.speedPresets.forEach(btn => {
@@ -412,6 +554,9 @@ class MusicPracticeApp {
         this.elements.loopStartDisplay.textContent = this.formatTime(this.loopStart);
         this.updateLoopUI();
         this.checkLoopButtonState();
+
+        // Track event
+        this.trackEvent('loop_start_set', {timestamp: this.loopStart});
     }
 
     setLoopEnd() {
@@ -421,6 +566,9 @@ class MusicPracticeApp {
         this.elements.loopEndDisplay.textContent = this.formatTime(this.loopEnd);
         this.updateLoopUI();
         this.checkLoopButtonState();
+
+        // Track event
+        this.trackEvent('loop_end_set', {timestamp: this.loopEnd});
     }
 
     toggleLoop() {
@@ -432,10 +580,18 @@ class MusicPracticeApp {
             this.elements.toggleLoopBtn.textContent = 'Disable Loop';
             this.elements.toggleLoopBtn.classList.add('active');
             this.startLoopCheck();
+            // Track event
+            this.trackEvent('loop_enabled', {
+                startTime: this.loopStart,
+                endTime: this.loopEnd,
+                duration: this.loopEnd - this.loopStart
+            });
         } else {
             this.elements.toggleLoopBtn.textContent = 'Enable Loop';
             this.elements.toggleLoopBtn.classList.remove('active');
             this.stopLoopCheck();
+            // Track event
+            this.trackEvent('loop_disabled');
         }
 
         this.updateLoopUI();
@@ -599,6 +755,151 @@ class MusicPracticeApp {
             localStorage.setItem('musicPracticeVideos', JSON.stringify(this.videos));
         } catch (e) {
             console.error('Error saving videos to localStorage:', e);
+        }
+    }
+
+    // ==================== //
+    // Modal System         //
+    // ==================== //
+
+    showWelcomeModal() {
+        const modal = this.createModal('welcome');
+        modal.innerHTML = `
+            <div class="modal-content welcome-modal">
+                <button class="modal-close" onclick="app.closeModal('welcome')">&times;</button>
+                <h2>Welcome to Your Music Practice Tool! 🎵</h2>
+                <p>Thanks for trying out this tool designed by musicians, for musicians.</p>
+
+                <div class="benefits">
+                    <div class="benefit">
+                        <span class="benefit-icon">🎯</span>
+                        <div>
+                            <h3>Master Difficult Passages</h3>
+                            <p>Slow down tricky sections to 25% speed without changing pitch. Practice at your own pace!</p>
+                        </div>
+                    </div>
+                    <div class="benefit">
+                        <span class="benefit-icon">🔁</span>
+                        <div>
+                            <h3>Perfect Your Timing with Loops</h3>
+                            <p>Set precise loop points to repeat challenging measures over and over until you've got it.</p>
+                        </div>
+                    </div>
+                    <div class="benefit">
+                        <span class="benefit-icon">📚</span>
+                        <div>
+                            <h3>Build Your Practice Library</h3>
+                            <p>Save all your practice videos in one place for instant access anytime you practice.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-info">
+                    <p><strong>Free Account:</strong> 1 video</p>
+                    <p><strong>Paid Account:</strong> Unlimited videos</p>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="app.closeModal('welcome')">Get Started (Free)</button>
+                    <a href="https://pay.tide.co/catalogues/smart-forge-JmIIPpJVgo" target="_blank"
+                       onclick="app.trackEvent('upgrade_link_clicked', {source: 'welcome'})"
+                       class="btn btn-secondary">Upgrade to Unlimited</a>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.accountManager.setWelcomeShown();
+        this.trackEvent('welcome_shown');
+    }
+
+    showUpgradeModal() {
+        const modal = this.createModal('upgrade');
+        modal.innerHTML = `
+            <div class="modal-content upgrade-modal">
+                <button class="modal-close" onclick="app.closeModal('upgrade')">&times;</button>
+                <h2>Upgrade to Unlimited Videos</h2>
+                <p>You're on a free account. Free accounts can save 1 video at a time.</p>
+                <p><strong>Upgrade to unlimited videos and unlimited practice!</strong></p>
+
+                <div class="modal-actions">
+                    <a href="https://pay.tide.co/catalogues/smart-forge-JmIIPpJVgo" target="_blank"
+                       onclick="app.trackEvent('upgrade_link_clicked', {source: 'limit'})"
+                       class="btn btn-primary">Upgrade Now</a>
+                    <button class="btn btn-secondary" onclick="app.closeModal('upgrade')">Maybe Later</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.trackEvent('video_add_blocked');
+    }
+
+    showLicenseKeyModal() {
+        const modal = this.createModal('license');
+        modal.innerHTML = `
+            <div class="modal-content license-modal">
+                <button class="modal-close" onclick="app.closeModal('license')">&times;</button>
+                <h2>Enter License Key</h2>
+                <p>Enter your license key to unlock unlimited videos.</p>
+
+                <input type="text" id="licenseKeyInput" placeholder="MUSIC-PRACTICE-XXXX-XXXX-XXXX"
+                       class="license-input" maxlength="30">
+                <div id="licenseError" class="error-message" style="display: none;"></div>
+
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="app.activateLicenseKey()">Activate</button>
+                    <button class="btn btn-secondary" onclick="app.closeModal('license')">Cancel</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+
+    activateLicenseKey() {
+        const input = document.getElementById('licenseKeyInput');
+        const key = input.value.trim().toUpperCase();
+        const error = document.getElementById('licenseError');
+
+        if (this.accountManager.upgrade(key)) {
+            this.trackEvent('license_key_entered', {success: true});
+            this.trackEvent('account_upgraded');
+            this.closeModal('license');
+            alert('Success! Your account has been upgraded to unlimited videos.');
+            this.updateAccountUI();
+            this.identifyUser();
+        } else {
+            this.trackEvent('license_key_entered', {success: false});
+            error.textContent = 'Invalid license key format. Please check and try again.';
+            error.style.display = 'block';
+        }
+    }
+
+    createModal(id) {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.id = `modal-${id}`;
+        return modal;
+    }
+
+    closeModal(id) {
+        const modal = document.getElementById(`modal-${id}`);
+        if (modal) {
+            if (id === 'welcome') {
+                this.trackEvent('welcome_dismissed');
+            }
+            modal.remove();
+        }
+    }
+
+    updateAccountUI() {
+        const accountBadge = document.getElementById('accountBadge');
+        if (accountBadge) {
+            accountBadge.textContent = this.accountManager.isPaid() ? 'Unlimited' : 'Free (1 video)';
+            accountBadge.className = this.accountManager.isPaid() ? 'account-badge paid' : 'account-badge free';
+        }
+
+        const licenseLink = document.getElementById('licenseKeyLink');
+        if (licenseLink) {
+            licenseLink.style.display = this.accountManager.isPaid() ? 'none' : 'inline-block';
         }
     }
 }
