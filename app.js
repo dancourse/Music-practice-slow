@@ -801,7 +801,7 @@ class MusicPracticeApp {
 
                 <div class="modal-actions">
                     <button class="btn btn-primary" onclick="app.closeModal('welcome')">Get Started (Free)</button>
-                    <a href="https://pay.tide.co/catalogues/smart-forge-JmIIPpJVgo" target="_blank"
+                    <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
                        onclick="app.trackEvent('upgrade_link_clicked', {source: 'welcome'})"
                        class="btn btn-secondary">Upgrade to Unlimited</a>
                 </div>
@@ -822,7 +822,7 @@ class MusicPracticeApp {
                 <p><strong>Upgrade to unlimited videos and unlimited practice!</strong></p>
 
                 <div class="modal-actions">
-                    <a href="https://pay.tide.co/catalogues/smart-forge-JmIIPpJVgo" target="_blank"
+                    <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
                        onclick="app.trackEvent('upgrade_link_clicked', {source: 'limit'})"
                        class="btn btn-primary">Upgrade Now</a>
                     <button class="btn btn-secondary" onclick="app.closeModal('upgrade')">Maybe Later</button>
