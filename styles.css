@@ -717,6 +717,24 @@ a {
 }
 
 /* ==================== */
+/* Footer               */
+/* ==================== */
+
+.app-footer {
+    text-align: center;
+    padding: 2rem 0 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.app-footer .version {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    opacity: 0.6;
+    margin: 0;
+}
+
+/* ==================== */
 /* Header Enhancements  */
 /* ==================== */
 
