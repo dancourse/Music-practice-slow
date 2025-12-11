@@ -897,6 +897,11 @@ class MusicPracticeApp {
             accountBadge.className = this.accountManager.isPaid() ? 'account-badge paid' : 'account-badge free';
         }
 
+        const buyLink = document.getElementById('buyLicenseLink');
+        if (buyLink) {
+            buyLink.style.display = this.accountManager.isPaid() ? 'none' : 'inline-block';
+        }
+
         const licenseLink = document.getElementById('licenseKeyLink');
         if (licenseLink) {
             licenseLink.style.display = this.accountManager.isPaid() ? 'none' : 'inline-block';

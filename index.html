@@ -26,6 +26,12 @@
                 <h1>🎵 Music Practice Tool</h1>
                 <div class="header-actions">
                     <span id="accountBadge" class="account-badge free">Free (1 video)</span>
+                    <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
+                       id="buyLicenseLink"
+                       onclick="app.trackEvent('upgrade_link_clicked', {source: 'header'})"
+                       class="buy-license-link">
+                        Buy a Licence
+                    </a>
                     <a href="#" id="licenseKeyLink" onclick="app.showLicenseKeyModal(); return false;" class="license-link">
                         Enter License Key
                     </a>
@@ -169,7 +175,7 @@
 
         <!-- Footer with Version -->
         <footer class="app-footer">
-            <p class="version">v0.1.1</p>
+            <p class="version">v0.1.2</p>
         </footer>
     </div>
 
