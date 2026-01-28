@@ -8,6 +8,10 @@ class AccountManager {
         this.accountType = this.getAccountType();
         this.licenseKey = this.getLicenseKey();
         this.welcomeShown = this.getWelcomeShown();
+        this.userId = this.getUserId();
+
+        // Check and update referral status on load
+        this.checkReferralExpiry();
     }
 
     getAccountType() {
@@ -54,6 +58,125 @@ class AccountManager {
             return true;
         }
         return false;
+    }
+
+    // ==================== //
+    // Referral System      //
+    // ==================== //
+
+    getUserId() {
+        let userId = localStorage.getItem('musicPracticeUserId');
+        if (!userId) {
+            userId = 'user-' + this.generateRandomCode(12);
+            localStorage.setItem('musicPracticeUserId', userId);
+        }
+        return userId;
+    }
+
+    getReferralCode() {
+        return localStorage.getItem('musicPracticeReferralCode') || null;
+    }
+
+    setReferralCode(code) {
+        localStorage.setItem('musicPracticeReferralCode', code);
+    }
+
+    getReferredBy() {
+        return localStorage.getItem('musicPracticeReferredBy') || null;
+    }
+
+    setReferredBy(code) {
+        localStorage.setItem('musicPracticeReferredBy', code);
+    }
+
+    getReferralExpiry() {
+        return localStorage.getItem('musicPracticeReferralExpiry') || null;
+    }
+
+    setReferralExpiry(date) {
+        localStorage.setItem('musicPracticeReferralExpiry', date);
+    }
+
+    generateRandomCode(length) {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    async generateReferralCode() {
+        // Check if we already have a code
+        let code = this.getReferralCode();
+        if (code) return code;
+
+        // Generate a new code
+        code = 'REF-' + this.generateRandomCode(8);
+
+        // Try to register it with the backend
+        try {
+            const response = await fetch('/.netlify/functions/generate-referral-code', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: this.userId,
+                    code: code
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                code = data.code || code;
+            }
+        } catch (e) {
+            console.log('Could not register referral code with backend:', e);
+        }
+
+        this.setReferralCode(code);
+        return code;
+    }
+
+    isReferralActive() {
+        if (this.accountType !== 'referral') return false;
+
+        const expiry = this.getReferralExpiry();
+        if (!expiry) return false;
+
+        return new Date(expiry) > new Date();
+    }
+
+    checkReferralExpiry() {
+        if (this.accountType === 'referral' && !this.isReferralActive()) {
+            // Referral has expired, revert to free
+            this.setAccountType('free');
+            this.accountType = 'free';
+        }
+    }
+
+    upgradeToReferral() {
+        const expiry = new Date();
+        expiry.setMonth(expiry.getMonth() + 3); // 3 months from now
+
+        this.setAccountType('referral');
+        this.setReferralExpiry(expiry.toISOString());
+        this.accountType = 'referral';
+    }
+
+    getVideoLimit() {
+        if (this.accountType === 'paid') return Infinity;
+        if (this.accountType === 'referral' && this.isReferralActive()) return 5;
+        return 1;
+    }
+
+    getRemainingReferralDays() {
+        if (!this.isReferralActive()) return 0;
+
+        const expiry = new Date(this.getReferralExpiry());
+        const now = new Date();
+        const diffTime = expiry - now;
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return Math.max(0, diffDays);
     }
 }
 
@@ -111,6 +234,9 @@ class MusicPracticeApp {
     }
 
     init() {
+        // Handle referral URL parameter
+        this.handleReferralFromUrl();
+
         // Load videos from localStorage
         this.loadVideos();
         this.renderVideoList();
@@ -131,7 +257,8 @@ class MusicPracticeApp {
         // Initialize analytics
         this.identifyUser();
         this.trackEvent('page_loaded', {
-            hasApiKey: !!this.youtubeApiKey
+            hasApiKey: !!this.youtubeApiKey,
+            referredBy: this.accountManager.getReferredBy() || null
         });
 
         // Set account created date if not set
@@ -143,6 +270,22 @@ class MusicPracticeApp {
         this.updateAccountUI();
 
         // YouTube API will call onYouTubeIframeAPIReady when ready
+    }
+
+    handleReferralFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+
+        if (refCode && !this.accountManager.getReferredBy()) {
+            // Store the referral code
+            this.accountManager.setReferredBy(refCode);
+            this.trackEvent('referral_link_visited', { referralCode: refCode });
+
+            // Clean the URL
+            const url = new URL(window.location);
+            url.searchParams.delete('ref');
+            window.history.replaceState({}, '', url);
+        }
     }
 
     // ==================== //
@@ -254,15 +397,16 @@ class MusicPracticeApp {
             }
         }
 
-        // Check free account video limit
+        // Check video limit based on account type
+        const videoLimit = this.accountManager.getVideoLimit();
         console.log('Video limit check:', {
-            isPaid: this.accountManager.isPaid(),
-            videoCount: this.videos.length,
             accountType: this.accountManager.accountType,
-            shouldBlock: !this.accountManager.isPaid() && this.videos.length >= 1
+            videoCount: this.videos.length,
+            videoLimit: videoLimit,
+            shouldBlock: this.videos.length >= videoLimit
         });
 
-        if (!this.accountManager.isPaid() && this.videos.length >= 1) {
+        if (this.videos.length >= videoLimit) {
             console.log('Blocking video add - showing upgrade modal');
             this.showUpgradeModal();
             return;
@@ -303,6 +447,11 @@ class MusicPracticeApp {
             method: videoId && videoTitle ? 'search' : 'url',
             videoId: videoId
         });
+
+        // Check if this is a referred user's first video - trigger referral reward
+        if (this.videos.length === 1 && this.accountManager.getReferredBy()) {
+            this.recordReferralSignup();
+        }
 
         // Auto-select if first video
         if (this.videos.length === 1) {
@@ -796,7 +945,8 @@ class MusicPracticeApp {
 
                 <div class="account-info">
                     <p><strong>Free Account:</strong> 1 video</p>
-                    <p><strong>Paid Account:</strong> Unlimited videos</p>
+                    <p><strong>Referral Bonus:</strong> Share with friends to get 5 videos for 3 months!</p>
+                    <p><strong>Paid Account:</strong> Unlimited videos forever</p>
                 </div>
 
                 <div class="modal-actions">
@@ -813,24 +963,41 @@ class MusicPracticeApp {
     }
 
     showUpgradeModal() {
+        const videoLimit = this.accountManager.getVideoLimit();
+        const isReferral = this.accountManager.accountType === 'referral';
+
         const modal = this.createModal('upgrade');
         modal.innerHTML = `
             <div class="modal-content upgrade-modal">
                 <button class="modal-close" onclick="app.closeModal('upgrade')">&times;</button>
-                <h2>Upgrade to Unlimited Videos</h2>
-                <p>You're on a free account. Free accounts can save 1 video at a time.</p>
-                <p><strong>Upgrade to unlimited videos and unlimited practice!</strong></p>
+                <h2>You've Reached Your Video Limit</h2>
+                <p>You currently have ${videoLimit} video${videoLimit > 1 ? 's' : ''} saved, which is the maximum for your ${isReferral ? 'referral' : 'free'} account.</p>
+
+                <div class="upgrade-options">
+                    <div class="upgrade-option">
+                        <h3>Upgrade to Unlimited</h3>
+                        <p>Get unlimited videos forever with a one-time purchase.</p>
+                        <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
+                           onclick="app.trackEvent('upgrade_link_clicked', {source: 'limit'})"
+                           class="btn btn-primary">Upgrade Now</a>
+                    </div>
+
+                    ${!isReferral ? `
+                    <div class="upgrade-option">
+                        <h3>Or Share & Earn Free</h3>
+                        <p>Share with a friend and get 5 videos for 3 months when they sign up!</p>
+                        <button class="btn btn-share-earn" onclick="app.closeModal('upgrade'); app.showReferralModal();">Share & Earn</button>
+                    </div>
+                    ` : ''}
+                </div>
 
                 <div class="modal-actions">
-                    <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
-                       onclick="app.trackEvent('upgrade_link_clicked', {source: 'limit'})"
-                       class="btn btn-primary">Upgrade Now</a>
                     <button class="btn btn-secondary" onclick="app.closeModal('upgrade')">Maybe Later</button>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
-        this.trackEvent('video_add_blocked');
+        this.trackEvent('video_add_blocked', { currentLimit: videoLimit });
     }
 
     showLicenseKeyModal() {
@@ -893,8 +1060,18 @@ class MusicPracticeApp {
     updateAccountUI() {
         const accountBadge = document.getElementById('accountBadge');
         if (accountBadge) {
-            accountBadge.textContent = this.accountManager.isPaid() ? 'Unlimited' : 'Free (1 video)';
-            accountBadge.className = this.accountManager.isPaid() ? 'account-badge paid' : 'account-badge free';
+            const accountType = this.accountManager.accountType;
+            if (accountType === 'paid') {
+                accountBadge.textContent = 'Unlimited';
+                accountBadge.className = 'account-badge paid';
+            } else if (accountType === 'referral' && this.accountManager.isReferralActive()) {
+                const days = this.accountManager.getRemainingReferralDays();
+                accountBadge.textContent = `Referral (5 videos, ${days}d left)`;
+                accountBadge.className = 'account-badge referral';
+            } else {
+                accountBadge.textContent = 'Free (1 video)';
+                accountBadge.className = 'account-badge free';
+            }
         }
 
         const buyLink = document.getElementById('buyLicenseLink');
@@ -905,6 +1082,144 @@ class MusicPracticeApp {
         const licenseLink = document.getElementById('licenseKeyLink');
         if (licenseLink) {
             licenseLink.style.display = this.accountManager.isPaid() ? 'none' : 'inline-block';
+        }
+
+        const shareBtn = document.getElementById('shareReferralBtn');
+        if (shareBtn) {
+            // Show Share & Earn for free users, hide for paid (they can still share if they want via other means)
+            shareBtn.style.display = this.accountManager.isPaid() ? 'none' : 'inline-flex';
+        }
+    }
+
+    // ==================== //
+    // Referral System UI   //
+    // ==================== //
+
+    async showReferralModal() {
+        const code = await this.accountManager.generateReferralCode();
+        const referralLink = `${window.location.origin}${window.location.pathname}?ref=${code}`;
+
+        const modal = this.createModal('referral');
+        modal.innerHTML = `
+            <div class="modal-content referral-modal">
+                <button class="modal-close" onclick="app.closeModal('referral')">&times;</button>
+                <h2>Share & Earn Free Videos</h2>
+                <p>Share your link with friends. When they sign up and add their first video, you'll get <strong>5 videos for 3 months</strong>!</p>
+
+                <div class="referral-link-box">
+                    <input type="text" id="referralLinkInput" value="${referralLink}" readonly>
+                    <button class="btn btn-primary" onclick="app.copyReferralLink()">Copy</button>
+                </div>
+
+                <div class="share-buttons">
+                    <button class="btn btn-share btn-whatsapp" onclick="app.shareVia('whatsapp')">
+                        <span>WhatsApp</span>
+                    </button>
+                    <button class="btn btn-share btn-twitter" onclick="app.shareVia('twitter')">
+                        <span>Twitter</span>
+                    </button>
+                    <button class="btn btn-share btn-email" onclick="app.shareVia('email')">
+                        <span>Email</span>
+                    </button>
+                </div>
+
+                <div class="referral-info">
+                    <p><strong>Your referral code:</strong> ${code}</p>
+                    ${this.accountManager.isReferralActive()
+                        ? `<p class="referral-status active">You have ${this.accountManager.getRemainingReferralDays()} days of referral benefits remaining!</p>`
+                        : '<p class="referral-status">Share to unlock 5 videos for 3 months</p>'
+                    }
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        this.trackEvent('referral_modal_opened');
+    }
+
+    copyReferralLink() {
+        const input = document.getElementById('referralLinkInput');
+        input.select();
+        input.setSelectionRange(0, 99999); // Mobile support
+
+        try {
+            navigator.clipboard.writeText(input.value);
+            this.trackEvent('referral_link_copied');
+
+            // Visual feedback
+            const btn = input.nextElementSibling;
+            const originalText = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        } catch (e) {
+            console.error('Could not copy to clipboard:', e);
+        }
+    }
+
+    shareVia(platform) {
+        const code = this.accountManager.getReferralCode();
+        const referralLink = `${window.location.origin}${window.location.pathname}?ref=${code}`;
+        const text = "I've been using this awesome music practice tool to slow down songs and loop tricky sections. Try it out!";
+
+        let shareUrl;
+        switch (platform) {
+            case 'whatsapp':
+                shareUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + referralLink)}`;
+                break;
+            case 'twitter':
+                shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(referralLink)}`;
+                break;
+            case 'email':
+                shareUrl = `mailto:?subject=${encodeURIComponent('Check out this music practice tool!')}&body=${encodeURIComponent(text + '\n\n' + referralLink)}`;
+                break;
+            default:
+                return;
+        }
+
+        this.trackEvent('referral_shared', { platform });
+        window.open(shareUrl, '_blank');
+    }
+
+    async recordReferralSignup() {
+        const referredBy = this.accountManager.getReferredBy();
+        if (!referredBy) return;
+
+        try {
+            const response = await fetch('/.netlify/functions/record-referral', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    referrerCode: referredBy,
+                    newUserId: this.accountManager.userId
+                })
+            });
+
+            if (response.ok) {
+                this.trackEvent('referral_signup_recorded', { referrerCode: referredBy });
+            }
+        } catch (e) {
+            console.log('Could not record referral signup:', e);
+        }
+    }
+
+    async checkAndApplyReferralReward() {
+        // This can be called to check if the user has earned a referral reward
+        try {
+            const response = await fetch(`/.netlify/functions/check-referral-status?userId=${this.accountManager.userId}`);
+            if (response.ok) {
+                const data = await response.json();
+                if (data.hasReward && this.accountManager.accountType === 'free') {
+                    this.accountManager.upgradeToReferral();
+                    this.updateAccountUI();
+                    this.trackEvent('referral_reward_applied');
+                    alert('Congratulations! A friend signed up using your link. You now have 5 videos for 3 months!');
+                }
+            }
+        } catch (e) {
+            console.log('Could not check referral status:', e);
         }
     }
 }
