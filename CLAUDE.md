@@ -24,6 +24,30 @@ The `MusicPracticeApp` class manages all application state:
 - `player` - YouTube IFrame API player instance
 - `loopStart/loopEnd/loopEnabled` - Loop section state
 - `playerReady` - YouTube API initialization flag
+- `accountManager` - Instance of `AccountManager` for freemium logic
+
+### Account System
+
+The `AccountManager` class (`app.js:5-58`) handles the freemium model:
+- **Free accounts**: Limited to 1 video in library
+- **Paid accounts**: Unlimited videos (validated via license key pattern `MUSIC-PRACTICE-XXXX-XXXX-XXXX`)
+- Welcome modal shown to first-time users
+- Upgrade modal shown when free users hit video limit
+
+**localStorage keys used:**
+- `musicPracticeVideos` - Video library array
+- `musicPracticeAccountType` - `'free'` or `'paid'`
+- `musicPracticeLicenseKey` - Stored license key if upgraded
+- `musicPracticeWelcomeShown` - Whether welcome modal was dismissed
+- `musicPracticeAccountCreated` - ISO date string of first visit
+
+### Analytics (Heap)
+
+The app integrates Heap Analytics for event tracking:
+- Loaded via script in `index.html` (ID: `3079155083`)
+- `trackEvent(name, properties)` sends events to Heap
+- `identifyUser()` sets user properties
+- Events tracked: `video_added`, `video_removed`, `search_performed`, `loop_enabled`, etc.
 
 ### YouTube API Integration
 
@@ -95,9 +119,17 @@ The app is configured for Netlify in `netlify.toml`:
 
 ### Event Flow
 
-1. User adds video → `addVideo()` → `fetchVideoTitle()` → `saveVideos()` → `renderVideoList()` → confetti burst
+1. User adds video → `addVideo()` → checks video limit → `fetchVideoTitle()` → `saveVideos()` → `renderVideoList()` → confetti burst
 2. User selects video → `selectVideo()` → `createPlayer()` or `player.loadVideoById()` → `onPlayerReady()` → `startTimeUpdate()`
 3. Loop enabled → `toggleLoop()` → `startLoopCheck()` → 100ms interval checks time and seeks
+4. Free user hits limit → `showUpgradeModal()` → blocks video add
+
+### Modal System
+
+Dynamic modals created via `createModal(id)` and removed via `closeModal(id)`:
+- `welcome` - First-time user benefits overview
+- `upgrade` - Shown when free user hits 1-video limit
+- `license` - License key entry form with validation
 
 ### YouTube Player Lifecycle
 
@@ -130,3 +162,11 @@ When adding features:
 - `YOUTUBE_API_KEY` (optional) - Enables YouTube search feature when injected as `window.YOUTUBE_API_KEY`
 
 The app gracefully degrades without the API key - all features work except in-app search.
+
+## Debugging
+
+See `DEBUG_CONSOLE_COMMANDS.md` for browser console commands to:
+- Check Heap Analytics connection
+- Inspect account manager state
+- Reset account to free tier
+- Clear video library
