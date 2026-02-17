@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Practice Tool</title>
+    <title>PracticeLoop - Music Practice Tool</title>
     <link rel="stylesheet" href="styles.css">
 
     <!-- Favicon -->
@@ -23,9 +23,9 @@
     <div class="container">
         <header>
             <div class="header-content">
-                <h1>🎵 Music Practice Tool</h1>
+                <h1>🎵 PracticeLoop</h1>
                 <div class="header-actions">
-                    <span id="accountBadge" class="account-badge free">Free (1 video)</span>
+                    <span id="accountBadge" class="account-badge free">Free (3 videos)</span>
                     <button id="shareReferralBtn" class="btn-share-referral" onclick="app.showReferralModal()">
                         Share & Earn
                     </button>
@@ -172,13 +172,26 @@
                             Clear Loop
                         </button>
                     </div>
+                    <p class="keyboard-hints">Keyboard: Space = play/pause, [ = loop start, ] = loop end, L = toggle loop</p>
+                </div>
+
+                <!-- Save Loop Section -->
+                <div class="control-group save-loop-section" id="saveLoopSection" style="display:none;">
+                    <h4>Save This Loop</h4>
+                    <div class="save-loop-row">
+                        <input type="text" id="loopNameInput" placeholder="Name this loop (e.g. 'Bridge - tricky bit')" class="loop-name-input">
+                        <button id="saveLoopBtn" class="btn btn-save-loop" onclick="app.doSaveLoop()">Save Loop</button>
+                    </div>
+                    <div id="savedLoopsContainer" class="saved-loops-container">
+                        <p class="no-loops-hint">No saved loops yet.</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Footer with Version -->
         <footer class="app-footer">
-            <p class="version">v0.1.2</p>
+            <p class="version">PracticeLoop v0.2.0</p>
         </footer>
     </div>
 

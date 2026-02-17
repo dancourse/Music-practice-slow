@@ -166,7 +166,7 @@ class AccountManager {
     getVideoLimit() {
         if (this.accountType === 'paid') return Infinity;
         if (this.accountType === 'referral' && this.isReferralActive()) return 5;
-        return 1;
+        return 3;
     }
 
     getRemainingReferralDays() {
@@ -359,6 +359,16 @@ class MusicPracticeApp {
         this.elements.setLoopEndBtn.addEventListener('click', () => this.setLoopEnd());
         this.elements.toggleLoopBtn.addEventListener('click', () => this.toggleLoop());
         this.elements.clearLoopBtn.addEventListener('click', () => this.clearLoop());
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Don't fire if typing in an input
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+            if (e.code === 'Space') { e.preventDefault(); this.togglePlayPause(); }
+            if (e.key === '[') this.setLoopStart();
+            if (e.key === ']') this.setLoopEnd();
+            if (e.key === 'l' || e.key === 'L') { if (this.loopStart !== null && this.loopEnd !== null) this.toggleLoop(); }
+        });
     }
 
     // ==================== //
@@ -561,6 +571,11 @@ class MusicPracticeApp {
 
         // Show player section
         this.elements.playerSection.style.display = 'block';
+
+        // Show saved loops section
+        const saveSection = document.getElementById('saveLoopSection');
+        if (saveSection) saveSection.style.display = 'block';
+        this.renderSavedLoops(videoId);
 
         // Update active state in list
         this.renderVideoList();
@@ -916,7 +931,7 @@ class MusicPracticeApp {
         modal.innerHTML = `
             <div class="modal-content welcome-modal">
                 <button class="modal-close" onclick="app.closeModal('welcome')">&times;</button>
-                <h2>Welcome to Your Music Practice Tool! 🎵</h2>
+                <h2>Welcome to PracticeLoop! 🎵</h2>
                 <p>Thanks for trying out this tool designed by musicians, for musicians.</p>
 
                 <div class="benefits">
@@ -944,7 +959,7 @@ class MusicPracticeApp {
                 </div>
 
                 <div class="account-info">
-                    <p><strong>Free Account:</strong> 1 video</p>
+                    <p><strong>Free Account:</strong> 3 videos + 3 saved loops</p>
                     <p><strong>Referral Bonus:</strong> Share with friends to get 5 videos for 3 months!</p>
                     <p><strong>Paid Account:</strong> Unlimited videos forever</p>
                 </div>
@@ -1069,7 +1084,7 @@ class MusicPracticeApp {
                 accountBadge.textContent = `Referral (5 videos, ${days}d left)`;
                 accountBadge.className = 'account-badge referral';
             } else {
-                accountBadge.textContent = 'Free (1 video)';
+                accountBadge.textContent = 'Free (3 videos)';
                 accountBadge.className = 'account-badge free';
             }
         }
@@ -1221,6 +1236,123 @@ class MusicPracticeApp {
         } catch (e) {
             console.log('Could not check referral status:', e);
         }
+    }
+
+    // ==================== //
+    // Saved Loops           //
+    // ==================== //
+
+    getSavedLoops(videoId) {
+        try {
+            const stored = localStorage.getItem(`musicPracticeLoops_${videoId}`);
+            return stored ? JSON.parse(stored) : [];
+        } catch(e) { return []; }
+    }
+
+    getAllSavedLoopsCount() {
+        let total = 0;
+        this.videos.forEach(v => {
+            total += this.getSavedLoops(v.id).length;
+        });
+        return total;
+    }
+
+    saveLoop(videoId, name, start, end) {
+        const isPaid = this.accountManager.isPaid();
+        if (!isPaid && this.getAllSavedLoopsCount() >= 3) {
+            this.showSaveLoopUpgradeModal();
+            return false;
+        }
+        const loops = this.getSavedLoops(videoId);
+        loops.push({ name: name || `Loop ${loops.length + 1}`, start, end, savedAt: Date.now() });
+        localStorage.setItem(`musicPracticeLoops_${videoId}`, JSON.stringify(loops));
+        this.renderSavedLoops(videoId);
+        this.trackEvent('loop_saved', { videoId, name, duration: end - start });
+        return true;
+    }
+
+    deleteSavedLoop(videoId, index) {
+        const loops = this.getSavedLoops(videoId);
+        loops.splice(index, 1);
+        localStorage.setItem(`musicPracticeLoops_${videoId}`, JSON.stringify(loops));
+        this.renderSavedLoops(videoId);
+    }
+
+    loadSavedLoop(loop) {
+        this.loopStart = loop.start;
+        this.loopEnd = loop.end;
+        this.elements.loopStartDisplay.textContent = this.formatTime(loop.start);
+        this.elements.loopEndDisplay.textContent = this.formatTime(loop.end);
+        this.updateLoopUI();
+        this.checkLoopButtonState();
+        if (this.player && this.playerReady) {
+            this.player.seekTo(loop.start, true);
+        }
+        this.trackEvent('saved_loop_loaded', { name: loop.name });
+    }
+
+    renderSavedLoops(videoId) {
+        const container = document.getElementById('savedLoopsContainer');
+        if (!container) return;
+        const loops = this.getSavedLoops(videoId);
+        const isPaid = this.accountManager.isPaid();
+        const totalCount = this.getAllSavedLoopsCount();
+
+        if (loops.length === 0) {
+            container.innerHTML = '<p class="no-loops-hint">No saved loops yet. Set a loop and click "Save Loop" to keep it.</p>';
+            return;
+        }
+
+        container.innerHTML = loops.map((loop, i) => `
+            <div class="saved-loop-item">
+                <div class="saved-loop-info">
+                    <span class="saved-loop-name">${this.escapeHtml(loop.name)}</span>
+                    <span class="saved-loop-times">${this.formatTime(loop.start)} - ${this.formatTime(loop.end)}</span>
+                </div>
+                <div class="saved-loop-actions">
+                    <button class="btn btn-loop-load" onclick="app.loadSavedLoop(${JSON.stringify(loop).replace(/"/g, '&quot;')})">Load</button>
+                    <button class="btn btn-loop-delete" onclick="app.deleteSavedLoop('${videoId}', ${i})">x</button>
+                </div>
+            </div>
+        `).join('');
+
+        // Update save button state
+        const saveBtn = document.getElementById('saveLoopBtn');
+        if (saveBtn && !isPaid) {
+            saveBtn.disabled = totalCount >= 3;
+            if (totalCount >= 3) {
+                saveBtn.title = 'Upgrade to save more loops';
+            }
+        }
+    }
+
+    doSaveLoop() {
+        if (this.loopStart === null || this.loopEnd === null || this.loopStart >= this.loopEnd) {
+            alert('Please set a valid loop start and end point first.');
+            return;
+        }
+        const nameInput = document.getElementById('loopNameInput');
+        const name = nameInput ? nameInput.value.trim() : '';
+        const success = this.saveLoop(this.currentVideoId, name, this.loopStart, this.loopEnd);
+        if (success && nameInput) nameInput.value = '';
+    }
+
+    showSaveLoopUpgradeModal() {
+        const modal = this.createModal('saveloop-upgrade');
+        modal.innerHTML = `
+            <div class="modal-content upgrade-modal">
+                <button class="modal-close" onclick="app.closeModal('saveloop-upgrade')">&times;</button>
+                <h2>Save More Loops</h2>
+                <p>Free accounts can save up to 3 loops. Upgrade to save unlimited loops across all your practice videos.</p>
+                <div class="modal-actions">
+                    <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
+                       onclick="app.trackEvent('upgrade_link_clicked', {source: 'loop_limit'})"
+                       class="btn btn-primary">Upgrade Now</a>
+                    <button class="btn btn-secondary" onclick="app.closeModal('saveloop-upgrade')">Maybe Later</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
     }
 }
 
