@@ -237,6 +237,9 @@ class MusicPracticeApp {
     }
 
     init() {
+        // Wake Lock state
+        this._wakeLock = null;
+
         // Handle referral URL parameter
         this.handleReferralFromUrl();
 
@@ -280,6 +283,19 @@ class MusicPracticeApp {
 
         // Update account UI
         this.updateAccountUI();
+
+        // Inject mobile speed presets (large tap targets near player)
+        this.injectMobileSpeedPresets();
+
+        // Request Wake Lock to keep screen on during practice
+        this.requestWakeLock();
+
+        // Re-acquire Wake Lock when page becomes visible again
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                this.requestWakeLock();
+            }
+        });
 
         // YouTube API will call onYouTubeIframeAPIReady when ready
     }
@@ -543,6 +559,92 @@ class MusicPracticeApp {
             window.heap.addUserProperties(userData);
         } else {
             console.warn('⚠️ Heap not available. User not identified.');
+        }
+    }
+
+    // ==================== //
+    // Mobile Speed Presets //
+    // ==================== //
+
+    injectMobileSpeedPresets() {
+        const speedControl = document.querySelector('.speed-control');
+        if (!speedControl) return;
+
+        const presets = [
+            { label: '50%', speed: 0.5 },
+            { label: '65%', speed: 0.65 },
+            { label: '75%', speed: 0.75 },
+            { label: '100%', speed: 1.0 }
+        ];
+
+        const container = document.createElement('div');
+        container.className = 'speed-presets-mobile';
+
+        presets.forEach(p => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-preset-mobile' + (p.speed === 1.0 ? ' active' : '');
+            btn.textContent = p.label;
+            btn.dataset.speed = p.speed;
+            btn.addEventListener('click', () => {
+                this.setSpeed(p.speed);
+                this.elements.speedSlider.value = p.speed;
+                // Update active state on mobile presets
+                container.querySelectorAll('.btn-preset-mobile').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+            container.appendChild(btn);
+        });
+
+        // Insert before the slider label
+        speedControl.insertBefore(container, speedControl.firstChild);
+
+        // Add wake lock indicator below controls
+        const controls = document.querySelector('.controls');
+        if (controls) {
+            const indicator = document.createElement('div');
+            indicator.className = 'wake-lock-indicator';
+            indicator.id = 'wakeLockIndicator';
+            indicator.textContent = 'Screen will stay on while practicing';
+            controls.appendChild(indicator);
+        }
+    }
+
+    // ==================== //
+    // Wake Lock API        //
+    // ==================== //
+
+    async requestWakeLock() {
+        if (!('wakeLock' in navigator)) {
+            console.log('Wake Lock API not supported');
+            return;
+        }
+
+        try {
+            this._wakeLock = await navigator.wakeLock.request('screen');
+            console.log('Wake Lock acquired - screen will stay on');
+
+            const indicator = document.getElementById('wakeLockIndicator');
+            if (indicator) indicator.classList.add('active');
+
+            this._wakeLock.addEventListener('release', () => {
+                console.log('Wake Lock released');
+                const ind = document.getElementById('wakeLockIndicator');
+                if (ind) ind.classList.remove('active');
+            });
+        } catch (err) {
+            // Wake Lock request failed (e.g., low battery, not supported)
+            console.log('Wake Lock request failed:', err.message);
+        }
+    }
+
+    async releaseWakeLock() {
+        if (this._wakeLock) {
+            try {
+                await this._wakeLock.release();
+                this._wakeLock = null;
+            } catch (err) {
+                console.log('Wake Lock release failed:', err.message);
+            }
         }
     }
 
@@ -951,6 +1053,16 @@ class MusicPracticeApp {
 
         // Update preset buttons
         this.elements.speedPresets.forEach(btn => {
+            const btnSpeed = parseFloat(btn.dataset.speed);
+            if (Math.abs(btnSpeed - speed) < 0.01) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        // Update mobile preset buttons
+        document.querySelectorAll('.btn-preset-mobile').forEach(btn => {
             const btnSpeed = parseFloat(btn.dataset.speed);
             if (Math.abs(btnSpeed - speed) < 0.01) {
                 btn.classList.add('active');
