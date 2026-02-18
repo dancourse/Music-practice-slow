@@ -17,11 +17,15 @@
     <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/">
     <meta property="og:site_name" content="PracticeLoop">
     <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.svg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="PracticeLoop - Slow Down & Loop YouTube Videos">
     <meta name="twitter:description" content="Free tool for musicians. Slow down YouTube, set AB loops, master any passage. No download required.">
+    <meta name="twitter:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.svg">
 
     <!-- PWA -->
     <meta name="theme-color" content="#667eea">
@@ -100,13 +104,31 @@
             <div id="searchResults" class="search-results"></div>
         </section>
 
+        <!-- Welcome Banner (first-time users) -->
+        <div id="welcomeBanner" class="welcome-banner" style="display: none;">
+            <div class="welcome-banner-content">
+                <div class="welcome-banner-text">
+                    <h2>Welcome to PracticeLoop</h2>
+                    <p>Paste a YouTube URL above to start practicing</p>
+                    <p class="welcome-subtitle">Slow down, loop sections, save your progress</p>
+                    <div class="welcome-shortcuts">
+                        <span class="shortcut-tag"><kbd>Space</kbd> Play/Pause</span>
+                        <span class="shortcut-tag"><kbd>[</kbd> <kbd>]</kbd> Set Loop</span>
+                        <span class="shortcut-tag"><kbd>L</kbd> Toggle Loop</span>
+                        <span class="shortcut-tag"><kbd>&larr;</kbd> <kbd>&rarr;</kbd> Seek</span>
+                    </div>
+                </div>
+                <button id="welcomeDismissBtn" class="btn-welcome-dismiss">Got it</button>
+            </div>
+        </div>
+
         <!-- Add Video Section -->
         <section class="add-video-section">
             <div class="input-group">
                 <input
                     type="text"
                     id="videoUrlInput"
-                    placeholder="Enter YouTube URL..."
+                    placeholder="Paste YouTube URL or search..."
                     aria-label="YouTube URL"
                 >
                 <button id="addVideoBtn" class="btn btn-primary">Add Video</button>
@@ -129,6 +151,20 @@
 
             <div class="video-info">
                 <h3 id="currentVideoTitle">Select a video to start practicing</h3>
+                <div class="shortcuts-help" id="shortcutsHelp">
+                    <button class="btn-shortcuts-help" id="shortcutsHelpBtn" aria-label="Keyboard shortcuts">?</button>
+                    <div class="shortcuts-tooltip" id="shortcutsTooltip">
+                        <div class="shortcuts-tooltip-title">Keyboard Shortcuts</div>
+                        <div class="shortcuts-tooltip-list">
+                            <div class="shortcut-row"><kbd>Space</kbd><span>Play / Pause</span></div>
+                            <div class="shortcut-row"><kbd>[</kbd><span>Set loop start</span></div>
+                            <div class="shortcut-row"><kbd>]</kbd><span>Set loop end</span></div>
+                            <div class="shortcut-row"><kbd>L</kbd><span>Toggle loop</span></div>
+                            <div class="shortcut-row"><kbd>&larr;</kbd><span>Seek back 5s</span></div>
+                            <div class="shortcut-row"><kbd>&rarr;</kbd><span>Seek forward 5s</span></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Playback Controls -->
@@ -235,9 +271,61 @@
             </div>
         </section>
 
+        <!-- Share This Section (shown when a video is loaded) -->
+        <section class="share-section" id="shareSection" style="display: none;">
+            <div class="share-section-inner">
+                <h4>Share This Practice Section</h4>
+                <p>Send this link to a friend -- it loads the video, loop points, and speed automatically.</p>
+                <div class="share-url-row">
+                    <input type="text" id="shareUrlDisplay" readonly class="share-url-input" placeholder="Set a loop to generate share link">
+                    <button id="copyShareUrlBtn" class="btn btn-primary btn-copy-share" onclick="app.copyShareUrl()">Copy Link</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Try It - Demo Links -->
+        <section class="demo-section" id="demoSection">
+            <h2>Try It Out</h2>
+            <p class="demo-subtitle">Click a link to instantly load a practice section with loop and speed pre-configured.</p>
+            <div class="demo-links">
+                <a href="?v=QkF3oxziUI4&start=336&end=358&speed=0.5" class="demo-card">
+                    <div class="demo-icon">&#127928;</div>
+                    <div class="demo-info">
+                        <h3>Stairway to Heaven Solo</h3>
+                        <p>Led Zeppelin -- iconic solo at 0.5x speed</p>
+                        <span class="demo-tag">Guitar</span>
+                    </div>
+                </a>
+                <a href="?v=Zi_XLOBDo_Y&start=0&end=16&speed=0.65" class="demo-card">
+                    <div class="demo-icon">&#127925;</div>
+                    <div class="demo-info">
+                        <h3>Billie Jean Bass Line</h3>
+                        <p>Michael Jackson -- groove at 0.65x speed</p>
+                        <span class="demo-tag">Bass</span>
+                    </div>
+                </a>
+                <a href="?v=WNcsUNKlAKw&start=0&end=30&speed=0.6" class="demo-card">
+                    <div class="demo-icon">&#127929;</div>
+                    <div class="demo-info">
+                        <h3>Clair de Lune Opening</h3>
+                        <p>Debussy -- delicate opening at 0.6x speed</p>
+                        <span class="demo-tag">Piano</span>
+                    </div>
+                </a>
+                <a href="?v=fJ9rUzIMcZQ&start=170&end=195&speed=0.5" class="demo-card">
+                    <div class="demo-icon">&#129345;</div>
+                    <div class="demo-info">
+                        <h3>Bohemian Rhapsody Breakdown</h3>
+                        <p>Queen -- operatic section at 0.5x speed</p>
+                        <span class="demo-tag">Multi</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
         <!-- Footer with Version -->
         <footer class="app-footer">
-            <p class="version">PracticeLoop v0.2.0</p>
+            <p class="version">PracticeLoop v0.3.0</p>
             <nav class="instrument-links">
                 <a href="/guitar">Guitar</a>
                 <a href="/bass">Bass</a>

@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accentGrad)"/>
+
+  <!-- Bass guitar illustration (right side) -->
+  <g transform="translate(800, 20) scale(0.9)" opacity="0.2">
+    <!-- Long bass neck -->
+    <rect x="220" y="0" width="35" height="300" rx="5" fill="#667eea"/>
+    <!-- Frets (wider spacing for bass) -->
+    <rect x="220" y="60" width="35" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="115" width="35" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="165" width="35" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="210" width="35" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="250" width="35" height="2" fill="#a0aec0" opacity="0.6"/>
+    <!-- Fret dots -->
+    <circle cx="237" cy="88" r="4" fill="#a0aec0" opacity="0.4"/>
+    <circle cx="237" cy="140" r="4" fill="#a0aec0" opacity="0.4"/>
+    <circle cx="237" cy="188" r="4" fill="#a0aec0" opacity="0.4"/>
+    <!-- Bass strings (4 thick strings) -->
+    <line x1="228" y1="0" x2="228" y2="300" stroke="#a0aec0" stroke-width="1.2" opacity="0.4"/>
+    <line x1="235" y1="0" x2="235" y2="300" stroke="#a0aec0" stroke-width="1.5" opacity="0.4"/>
+    <line x1="242" y1="0" x2="242" y2="300" stroke="#a0aec0" stroke-width="1.8" opacity="0.4"/>
+    <line x1="249" y1="0" x2="249" y2="300" stroke="#a0aec0" stroke-width="2" opacity="0.4"/>
+    <!-- Headstock (bass style - asymmetric) -->
+    <path d="M215,-50 L215,-5 Q215,0 220,0 L255,0 Q260,0 260,-5 L260,-30 L270,-50 Z" fill="#667eea"/>
+    <!-- Tuning machines -->
+    <circle cx="225" cy="-35" r="6" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="225" cy="-15" r="6" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="255" cy="-35" r="6" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="255" cy="-15" r="6" fill="#a0aec0" opacity="0.5"/>
+    <!-- Bass body (offset shape) -->
+    <path d="M140,330 Q100,330 90,370 Q80,410 100,450 Q120,490 170,510 Q220,530 270,520 Q340,510 370,460 Q390,420 380,370 Q370,330 330,310 Q290,295 240,300 Z" fill="#667eea"/>
+    <!-- Pickups -->
+    <rect x="180" y="380" width="80" height="15" rx="5" fill="#1a1a2e" opacity="0.6"/>
+    <rect x="180" y="420" width="80" height="15" rx="5" fill="#1a1a2e" opacity="0.6"/>
+    <!-- Pickup poles -->
+    <circle cx="195" cy="387" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="210" cy="387" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="225" cy="387" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="240" cy="387" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="195" cy="427" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="210" cy="427" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="225" cy="427" r="2" fill="#a0aec0" opacity="0.3"/>
+    <circle cx="240" cy="427" r="2" fill="#a0aec0" opacity="0.3"/>
+    <!-- Knobs -->
+    <circle cx="310" cy="430" r="12" fill="#1a1a2e" stroke="#a0aec0" stroke-width="1.5" opacity="0.4"/>
+    <circle cx="340" cy="460" r="12" fill="#1a1a2e" stroke="#a0aec0" stroke-width="1.5" opacity="0.4"/>
+    <!-- Bridge -->
+    <rect x="195" y="470" width="50" height="10" rx="3" fill="#a0aec0" opacity="0.3"/>
+    <!-- Strings on body -->
+    <line x1="228" y1="300" x2="205" y2="474" stroke="#a0aec0" stroke-width="1.2" opacity="0.3"/>
+    <line x1="235" y1="300" x2="213" y2="474" stroke="#a0aec0" stroke-width="1.5" opacity="0.3"/>
+    <line x1="242" y1="300" x2="227" y2="474" stroke="#a0aec0" stroke-width="1.8" opacity="0.3"/>
+    <line x1="249" y1="300" x2="237" y2="474" stroke="#a0aec0" stroke-width="2" opacity="0.3"/>
+  </g>
+
+  <!-- Low frequency wave visualization -->
+  <g transform="translate(145, 460)" opacity="0.25">
+    <path d="M0,25 Q50,-15 100,25 Q150,65 200,25 Q250,-15 300,25 Q350,65 400,25 Q450,-15 500,25" fill="none" stroke="#667eea" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0,25 Q50,-15 100,25 Q150,65 200,25 Q250,-15 300,25 Q350,65 400,25 Q450,-15 500,25" fill="none" stroke="#764ba2" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="6,4"/>
+  </g>
+
+  <!-- Accent glow -->
+  <circle cx="1020" cy="300" r="200" fill="#667eea" opacity="0.03"/>
+
+  <!-- Play button -->
+  <g transform="translate(60, 120)">
+    <circle cx="32" cy="32" r="32" fill="#667eea" opacity="0.15" stroke="#667eea" stroke-width="2" stroke-opacity="0.5"/>
+    <polygon points="26,18 26,46 48,32" fill="#667eea" opacity="0.8"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="145" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#ffffff" font-weight="800" letter-spacing="-1">Practice</text>
+  <text x="482" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#667eea" font-weight="800" letter-spacing="-1">Loop</text>
+
+  <!-- Tagline -->
+  <text x="145" y="210" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" fill="#a0aec0" font-weight="400">Bass Practice Made Easy</text>
+
+  <!-- Feature list -->
+  <g transform="translate(145, 260)">
+    <circle cx="10" cy="10" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="10" r="3" fill="#667eea"/>
+    <text x="30" y="16" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Slow down bass lines to nail the groove</text>
+
+    <circle cx="10" cy="55" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="55" r="3" fill="#667eea"/>
+    <text x="30" y="61" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Loop tricky fills and runs on repeat</text>
+
+    <circle cx="10" cy="100" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="100" r="3" fill="#667eea"/>
+    <text x="30" y="106" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Works with any YouTube bass tutorial</text>
+
+    <circle cx="10" cy="145" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="145" r="3" fill="#667eea"/>
+    <text x="30" y="151" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Free - no signup required</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="560" width="1200" height="70" fill="#0f0f23"/>
+  <rect x="0" y="560" width="1200" height="2" fill="url(#accentGrad)" opacity="0.5"/>
+
+  <!-- URL -->
+  <text x="60" y="602" font-family="monospace, 'Courier New'" font-size="18" fill="#667eea" opacity="0.8">practiceloop.app/bass</text>
+
+  <!-- Bass badge -->
+  <g transform="translate(900, 578)">
+    <rect x="0" y="0" width="200" height="34" rx="17" fill="#667eea" opacity="0.15"/>
+    <text x="100" y="23" font-family="system-ui, sans-serif" font-size="15" fill="#667eea" text-anchor="middle" font-weight="600">Bass Practice Tool</text>
+  </g>
+</svg>

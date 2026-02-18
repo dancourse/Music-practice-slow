@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accentGrad)"/>
+
+  <!-- Guitar illustration (right side) -->
+  <g transform="translate(780, 40) scale(0.95)" opacity="0.2">
+    <!-- Guitar neck -->
+    <rect x="220" y="0" width="40" height="250" rx="5" fill="#667eea"/>
+    <!-- Frets -->
+    <rect x="220" y="50" width="40" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="100" width="40" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="145" width="40" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="185" width="40" height="2" fill="#a0aec0" opacity="0.6"/>
+    <rect x="220" y="220" width="40" height="2" fill="#a0aec0" opacity="0.6"/>
+    <!-- Fret dots -->
+    <circle cx="240" cy="75" r="4" fill="#a0aec0" opacity="0.4"/>
+    <circle cx="240" cy="122" r="4" fill="#a0aec0" opacity="0.4"/>
+    <circle cx="240" cy="165" r="4" fill="#a0aec0" opacity="0.4"/>
+    <!-- Guitar strings on neck -->
+    <line x1="228" y1="0" x2="228" y2="250" stroke="#a0aec0" stroke-width="0.8" opacity="0.4"/>
+    <line x1="234" y1="0" x2="234" y2="250" stroke="#a0aec0" stroke-width="0.8" opacity="0.4"/>
+    <line x1="240" y1="0" x2="240" y2="250" stroke="#a0aec0" stroke-width="1" opacity="0.4"/>
+    <line x1="246" y1="0" x2="246" y2="250" stroke="#a0aec0" stroke-width="1" opacity="0.4"/>
+    <line x1="252" y1="0" x2="252" y2="250" stroke="#a0aec0" stroke-width="1.2" opacity="0.4"/>
+    <!-- Headstock -->
+    <rect x="215" y="-40" width="50" height="45" rx="8" fill="#667eea"/>
+    <!-- Tuning pegs -->
+    <circle cx="225" cy="-25" r="5" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="225" cy="-10" r="5" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="255" cy="-25" r="5" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="255" cy="-10" r="5" fill="#a0aec0" opacity="0.5"/>
+    <!-- Guitar body -->
+    <ellipse cx="240" cy="340" rx="120" ry="90" fill="#667eea"/>
+    <ellipse cx="240" cy="440" rx="140" ry="110" fill="#667eea"/>
+    <!-- Sound hole -->
+    <circle cx="240" cy="340" r="40" fill="#1a1a2e" stroke="#764ba2" stroke-width="3"/>
+    <circle cx="240" cy="340" r="45" fill="none" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+    <!-- Bridge -->
+    <rect x="210" y="430" width="60" height="8" rx="4" fill="#a0aec0" opacity="0.4"/>
+    <!-- Strings on body -->
+    <line x1="228" y1="250" x2="218" y2="434" stroke="#a0aec0" stroke-width="0.8" opacity="0.3"/>
+    <line x1="234" y1="250" x2="228" y2="434" stroke="#a0aec0" stroke-width="0.8" opacity="0.3"/>
+    <line x1="240" y1="250" x2="240" y2="434" stroke="#a0aec0" stroke-width="1" opacity="0.3"/>
+    <line x1="246" y1="250" x2="252" y2="434" stroke="#a0aec0" stroke-width="1" opacity="0.3"/>
+    <line x1="252" y1="250" x2="262" y2="434" stroke="#a0aec0" stroke-width="1.2" opacity="0.3"/>
+  </g>
+
+  <!-- Accent glow behind guitar -->
+  <circle cx="1020" cy="315" r="200" fill="#667eea" opacity="0.03"/>
+  <circle cx="1020" cy="315" r="140" fill="#667eea" opacity="0.03"/>
+
+  <!-- Play button -->
+  <g transform="translate(60, 120)">
+    <circle cx="32" cy="32" r="32" fill="#667eea" opacity="0.15" stroke="#667eea" stroke-width="2" stroke-opacity="0.5"/>
+    <polygon points="26,18 26,46 48,32" fill="#667eea" opacity="0.8"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="145" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#ffffff" font-weight="800" letter-spacing="-1">Practice</text>
+  <text x="482" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#667eea" font-weight="800" letter-spacing="-1">Loop</text>
+
+  <!-- Tagline -->
+  <text x="145" y="210" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" fill="#a0aec0" font-weight="400">Guitar Practice Made Easy</text>
+
+  <!-- Feature list -->
+  <g transform="translate(145, 260)">
+    <!-- Feature 1 -->
+    <circle cx="10" cy="10" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="10" r="3" fill="#667eea"/>
+    <text x="30" y="16" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Slow down solos to any speed</text>
+
+    <!-- Feature 2 -->
+    <circle cx="10" cy="55" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="55" r="3" fill="#667eea"/>
+    <text x="30" y="61" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Loop difficult passages on repeat</text>
+
+    <!-- Feature 3 -->
+    <circle cx="10" cy="100" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="100" r="3" fill="#667eea"/>
+    <text x="30" y="106" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Works with any YouTube guitar lesson</text>
+
+    <!-- Feature 4 -->
+    <circle cx="10" cy="145" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="145" r="3" fill="#667eea"/>
+    <text x="30" y="151" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Free - no signup required</text>
+  </g>
+
+  <!-- Speed control pill -->
+  <g transform="translate(145, 460)">
+    <rect x="0" y="0" width="180" height="50" rx="25" fill="#667eea" opacity="0.12" stroke="#667eea" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="24" y="32" font-family="system-ui, sans-serif" font-size="18" fill="#a0aec0" font-weight="500">Speed</text>
+    <text x="105" y="33" font-family="system-ui, sans-serif" font-size="22" fill="#667eea" font-weight="700">0.25x</text>
+  </g>
+
+  <!-- Loop pill -->
+  <g transform="translate(345, 460)">
+    <rect x="0" y="0" width="160" height="50" rx="25" fill="#667eea" opacity="0.12" stroke="#667eea" stroke-width="1" stroke-opacity="0.3"/>
+    <!-- Loop icon -->
+    <path d="M24,20 a8,8 0 0,1 8,-8 h16 a8,8 0 0,1 8,8 v10" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+    <path d="M56,30 a8,8 0 0,1 -8,8 h-16 a8,8 0 0,1 -8,-8 v-10" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="22,24 28,20 28,28" fill="#667eea"/>
+    <polygon points="58,26 52,30 52,22" fill="#667eea"/>
+    <text x="80" y="33" font-family="system-ui, sans-serif" font-size="18" fill="#667eea" font-weight="600">Loop</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="560" width="1200" height="70" fill="#0f0f23"/>
+  <rect x="0" y="560" width="1200" height="2" fill="url(#accentGrad)" opacity="0.5"/>
+
+  <!-- URL in bottom -->
+  <text x="60" y="602" font-family="monospace, 'Courier New'" font-size="18" fill="#667eea" opacity="0.8">practiceloop.app/guitar</text>
+
+  <!-- Guitar badge -->
+  <g transform="translate(900, 578)">
+    <rect x="0" y="0" width="200" height="34" rx="17" fill="#667eea" opacity="0.15"/>
+    <text x="100" y="23" font-family="system-ui, sans-serif" font-size="15" fill="#667eea" text-anchor="middle" font-weight="600">Guitar Practice Tool</text>
+  </g>
+</svg>

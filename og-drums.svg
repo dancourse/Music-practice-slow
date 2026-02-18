@@ -1,0 +1,166 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <radialGradient id="drumHead" cx="50%" cy="45%" r="50%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.15"/>
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accentGrad)"/>
+
+  <!-- Drum kit illustration (right side) -->
+  <g transform="translate(700, 80)" opacity="0.2">
+    <!-- Hi-hat stand -->
+    <line x1="50" y1="180" x2="50" y2="420" stroke="#a0aec0" stroke-width="3"/>
+    <!-- Hi-hat cymbals -->
+    <ellipse cx="50" cy="170" rx="55" ry="12" fill="none" stroke="#667eea" stroke-width="2.5"/>
+    <ellipse cx="50" cy="180" rx="55" ry="12" fill="none" stroke="#667eea" stroke-width="2.5"/>
+
+    <!-- Crash cymbal (left) -->
+    <line x1="120" y1="100" x2="120" y2="350" stroke="#a0aec0" stroke-width="2.5"/>
+    <ellipse cx="120" cy="95" rx="70" ry="14" fill="none" stroke="#667eea" stroke-width="2"/>
+    <circle cx="120" cy="95" r="6" fill="#667eea" opacity="0.4"/>
+
+    <!-- Ride cymbal (right) -->
+    <line x1="400" y1="120" x2="400" y2="380" stroke="#a0aec0" stroke-width="2.5"/>
+    <ellipse cx="400" cy="115" rx="75" ry="15" fill="none" stroke="#764ba2" stroke-width="2"/>
+    <circle cx="400" cy="115" r="6" fill="#764ba2" opacity="0.4"/>
+
+    <!-- Snare drum -->
+    <ellipse cx="170" cy="310" rx="65" ry="18" fill="url(#drumHead)" stroke="#667eea" stroke-width="2"/>
+    <rect x="105" y="310" width="130" height="40" rx="2" fill="none" stroke="#667eea" stroke-width="1.5" opacity="0.6"/>
+    <ellipse cx="170" cy="350" rx="65" ry="18" fill="none" stroke="#667eea" stroke-width="1.5" opacity="0.4"/>
+    <!-- Snare wires -->
+    <line x1="115" y1="350" x2="225" y2="350" stroke="#a0aec0" stroke-width="0.8" opacity="0.3" stroke-dasharray="3,3"/>
+
+    <!-- Bass drum -->
+    <ellipse cx="260" cy="380" rx="95" ry="85" fill="none" stroke="#667eea" stroke-width="2.5"/>
+    <ellipse cx="260" cy="380" rx="75" ry="67" fill="url(#drumHead)" stroke="#667eea" stroke-width="1" opacity="0.5"/>
+    <!-- Bass drum center logo area -->
+    <circle cx="260" cy="380" r="30" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Tom 1 (high) -->
+    <ellipse cx="220" cy="210" rx="50" ry="14" fill="url(#drumHead)" stroke="#667eea" stroke-width="2"/>
+    <rect x="170" y="210" width="100" height="50" rx="2" fill="none" stroke="#667eea" stroke-width="1.5" opacity="0.5"/>
+    <ellipse cx="220" cy="260" rx="50" ry="14" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+
+    <!-- Tom 2 (mid) -->
+    <ellipse cx="310" cy="220" rx="50" ry="14" fill="url(#drumHead)" stroke="#764ba2" stroke-width="2"/>
+    <rect x="260" y="220" width="100" height="50" rx="2" fill="none" stroke="#764ba2" stroke-width="1.5" opacity="0.5"/>
+    <ellipse cx="310" cy="270" rx="50" ry="14" fill="none" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+
+    <!-- Floor tom -->
+    <ellipse cx="390" cy="320" rx="60" ry="16" fill="url(#drumHead)" stroke="#764ba2" stroke-width="2"/>
+    <rect x="330" y="320" width="120" height="70" rx="2" fill="none" stroke="#764ba2" stroke-width="1.5" opacity="0.5"/>
+    <ellipse cx="390" cy="390" rx="60" ry="16" fill="none" stroke="#764ba2" stroke-width="1" opacity="0.3"/>
+    <!-- Floor tom legs -->
+    <line x1="345" y1="390" x2="340" y2="440" stroke="#a0aec0" stroke-width="2" opacity="0.3"/>
+    <line x1="435" y1="390" x2="440" y2="440" stroke="#a0aec0" stroke-width="2" opacity="0.3"/>
+
+    <!-- Drumstick 1 -->
+    <line x1="130" y1="240" x2="200" y2="305" stroke="#a0aec0" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+    <circle cx="200" cy="305" r="4" fill="#a0aec0" opacity="0.5"/>
+
+    <!-- Drumstick 2 -->
+    <line x1="320" y1="170" x2="260" y2="215" stroke="#a0aec0" stroke-width="3" opacity="0.5" stroke-linecap="round"/>
+    <circle cx="260" cy="215" r="4" fill="#a0aec0" opacity="0.5"/>
+
+    <!-- Impact/hit effect on snare -->
+    <circle cx="170" cy="310" r="25" fill="none" stroke="#667eea" stroke-width="1" opacity="0.3"/>
+    <circle cx="170" cy="310" r="40" fill="none" stroke="#667eea" stroke-width="0.5" opacity="0.15"/>
+  </g>
+
+  <!-- Rhythm grid pattern (subtle) -->
+  <g transform="translate(145, 460)" opacity="0.2">
+    <!-- Beat markers -->
+    <rect x="0" y="10" width="4" height="30" rx="2" fill="#667eea"/>
+    <text x="0" y="58" font-family="monospace" font-size="11" fill="#667eea" text-anchor="middle">1</text>
+    <rect x="30" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="55" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="80" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+
+    <rect x="110" y="10" width="4" height="30" rx="2" fill="#667eea"/>
+    <text x="112" y="58" font-family="monospace" font-size="11" fill="#667eea" text-anchor="middle">2</text>
+    <rect x="140" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="165" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="190" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+
+    <rect x="220" y="10" width="4" height="30" rx="2" fill="#764ba2"/>
+    <text x="222" y="58" font-family="monospace" font-size="11" fill="#764ba2" text-anchor="middle">3</text>
+    <rect x="250" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="275" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="300" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+
+    <rect x="330" y="10" width="4" height="30" rx="2" fill="#764ba2"/>
+    <text x="332" y="58" font-family="monospace" font-size="11" fill="#764ba2" text-anchor="middle">4</text>
+    <rect x="360" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="385" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+    <rect x="410" y="20" width="3" height="20" rx="1.5" fill="#a0aec0" opacity="0.4"/>
+
+    <!-- Repeat sign -->
+    <rect x="440" y="10" width="4" height="30" rx="2" fill="#667eea"/>
+    <rect x="448" y="10" width="4" height="30" rx="2" fill="#667eea"/>
+    <circle cx="460" cy="20" r="3" fill="#667eea"/>
+    <circle cx="460" cy="32" r="3" fill="#667eea"/>
+  </g>
+
+  <!-- Accent glow -->
+  <circle cx="950" cy="300" r="250" fill="#667eea" opacity="0.02"/>
+
+  <!-- Play button -->
+  <g transform="translate(60, 120)">
+    <circle cx="32" cy="32" r="32" fill="#667eea" opacity="0.15" stroke="#667eea" stroke-width="2" stroke-opacity="0.5"/>
+    <polygon points="26,18 26,46 48,32" fill="#667eea" opacity="0.8"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="145" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#ffffff" font-weight="800" letter-spacing="-1">Practice</text>
+  <text x="482" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#667eea" font-weight="800" letter-spacing="-1">Loop</text>
+
+  <!-- Tagline -->
+  <text x="145" y="210" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" fill="#a0aec0" font-weight="400">Drums Practice Made Easy</text>
+
+  <!-- Feature list -->
+  <g transform="translate(145, 260)">
+    <circle cx="10" cy="10" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="10" r="3" fill="#667eea"/>
+    <text x="30" y="16" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Slow down beats to learn patterns</text>
+
+    <circle cx="10" cy="55" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="55" r="3" fill="#667eea"/>
+    <text x="30" y="61" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Loop fills and transitions on repeat</text>
+
+    <circle cx="10" cy="100" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="100" r="3" fill="#667eea"/>
+    <text x="30" y="106" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Works with any YouTube drum lesson</text>
+
+    <circle cx="10" cy="145" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="145" r="3" fill="#667eea"/>
+    <text x="30" y="151" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Free - no signup required</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="560" width="1200" height="70" fill="#0f0f23"/>
+  <rect x="0" y="560" width="1200" height="2" fill="url(#accentGrad)" opacity="0.5"/>
+
+  <!-- URL -->
+  <text x="60" y="602" font-family="monospace, 'Courier New'" font-size="18" fill="#667eea" opacity="0.8">practiceloop.app/drums</text>
+
+  <!-- Drums badge -->
+  <g transform="translate(900, 578)">
+    <rect x="0" y="0" width="200" height="34" rx="17" fill="#667eea" opacity="0.15"/>
+    <text x="100" y="23" font-family="system-ui, sans-serif" font-size="15" fill="#667eea" text-anchor="middle" font-weight="600">Drums Practice Tool</text>
+  </g>
+</svg>

@@ -193,6 +193,9 @@ class MusicPracticeApp {
         this.loopCheckInterval = null;
         this.timeUpdateInterval = null;
 
+        // Pending shareable URL settings (applied after player is ready)
+        this._pendingShareParams = null;
+
         // Account Manager
         this.accountManager = new AccountManager();
 
@@ -249,16 +252,25 @@ class MusicPracticeApp {
             this.elements.searchSection.style.display = 'block';
         }
 
-        // Show welcome modal for first-time users
+        // Check for shareable URL params
+        const hasShareParams = this.handleShareableUrl();
+
+        // Show welcome banner for first-time users (no videos saved and not previously dismissed)
+        if (!hasShareParams) {
+            this.showWelcomeBannerIfNeeded();
+        }
+
+        // Mark old welcome modal as shown so it never appears
         if (!this.accountManager.welcomeShown) {
-            this.showWelcomeModal();
+            this.accountManager.setWelcomeShown();
         }
 
         // Initialize analytics
         this.identifyUser();
         this.trackEvent('page_loaded', {
             hasApiKey: !!this.youtubeApiKey,
-            referredBy: this.accountManager.getReferredBy() || null
+            referredBy: this.accountManager.getReferredBy() || null,
+            sharedLink: hasShareParams
         });
 
         // Set account created date if not set
@@ -286,6 +298,220 @@ class MusicPracticeApp {
             url.searchParams.delete('ref');
             window.history.replaceState({}, '', url);
         }
+    }
+
+    // ==================== //
+    // Shareable URLs       //
+    // ==================== //
+
+    handleShareableUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoId = urlParams.get('v');
+
+        if (!videoId) return false;
+
+        // Parse optional params
+        const start = parseFloat(urlParams.get('start'));
+        const end = parseFloat(urlParams.get('end'));
+        const speed = parseFloat(urlParams.get('speed'));
+
+        // Store pending settings to apply once player is ready
+        this._pendingShareParams = {
+            videoId: videoId,
+            start: isNaN(start) ? null : start,
+            end: isNaN(end) ? null : end,
+            speed: isNaN(speed) ? null : Math.max(0.25, Math.min(2, speed))
+        };
+
+        // Track the shared link visit
+        this.trackEvent('shared_link_visited', {
+            videoId: videoId,
+            hasLoop: !isNaN(start) && !isNaN(end),
+            speed: isNaN(speed) ? null : speed
+        });
+
+        // Clean the share params from URL (keep ref if present)
+        const url = new URL(window.location);
+        url.searchParams.delete('v');
+        url.searchParams.delete('start');
+        url.searchParams.delete('end');
+        url.searchParams.delete('speed');
+        window.history.replaceState({}, '', url.toString());
+
+        // Add video to library if not already there (don't count against limit for shared links)
+        if (!this.videos.find(v => v.id === videoId)) {
+            const video = {
+                id: videoId,
+                title: null, // Will be fetched
+                addedAt: Date.now()
+            };
+            this.videos.push(video);
+            this.saveVideos();
+            this.renderVideoList();
+
+            // Fetch title in background
+            this.fetchVideoTitle(videoId).then(title => {
+                if (title) {
+                    const v = this.videos.find(v => v.id === videoId);
+                    if (v) {
+                        v.title = title;
+                        this.saveVideos();
+                        this.renderVideoList();
+                    }
+                }
+            });
+        }
+
+        // Show player section and load the video
+        this.currentVideoId = videoId;
+        this.elements.playerSection.style.display = 'block';
+        this.renderVideoList();
+
+        // Show share section
+        const shareSection = document.getElementById('shareSection');
+        if (shareSection) shareSection.style.display = 'block';
+
+        // Show saved loops section
+        const saveSection = document.getElementById('saveLoopSection');
+        if (saveSection) saveSection.style.display = 'block';
+        this.renderSavedLoops(videoId);
+
+        // Create the player (settings applied in onPlayerReady)
+        this.createPlayer(videoId);
+
+        return true;
+    }
+
+    applyPendingShareParams() {
+        if (!this._pendingShareParams || !this.player || !this.playerReady) return;
+
+        const params = this._pendingShareParams;
+        this._pendingShareParams = null;
+
+        // Set speed
+        if (params.speed !== null) {
+            this.setSpeed(params.speed);
+            this.elements.speedSlider.value = params.speed;
+        }
+
+        // Set loop points
+        if (params.start !== null && params.end !== null && params.start < params.end) {
+            this.loopStart = params.start;
+            this.loopEnd = params.end;
+            this.elements.loopStartDisplay.textContent = this.formatTime(params.start);
+            this.elements.loopEndDisplay.textContent = this.formatTime(params.end);
+            this.updateLoopUI();
+            this.checkLoopButtonState();
+
+            // Enable the loop
+            this.loopEnabled = true;
+            this.elements.toggleLoopBtn.textContent = 'Disable Loop';
+            this.elements.toggleLoopBtn.classList.add('active');
+            this.startLoopCheck();
+
+            // Seek to loop start
+            this.player.seekTo(params.start, true);
+        } else if (params.start !== null) {
+            // Just start point, no loop - seek there
+            this.player.seekTo(params.start, true);
+        }
+
+        // Update the share URL display
+        this.updateShareUrl();
+
+        // Auto-play
+        this.player.playVideo();
+    }
+
+    generateShareUrl() {
+        if (!this.currentVideoId || !this.player || !this.playerReady) return null;
+
+        const url = new URL(window.location.origin + window.location.pathname);
+        url.searchParams.set('v', this.currentVideoId);
+
+        if (this.loopStart !== null) {
+            url.searchParams.set('start', Math.round(this.loopStart * 10) / 10);
+        }
+        if (this.loopEnd !== null) {
+            url.searchParams.set('end', Math.round(this.loopEnd * 10) / 10);
+        }
+
+        const currentSpeed = this.player.getPlaybackRate();
+        if (currentSpeed !== 1) {
+            url.searchParams.set('speed', currentSpeed);
+        }
+
+        return url.toString();
+    }
+
+    copyShareUrl() {
+        const url = this.generateShareUrl();
+        if (!url) {
+            alert('Load a video first to generate a share link.');
+            return;
+        }
+
+        try {
+            navigator.clipboard.writeText(url);
+            this.trackEvent('share_url_copied', { videoId: this.currentVideoId });
+
+            // Visual feedback
+            const btn = document.getElementById('copyShareUrlBtn');
+            if (btn) {
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }
+        } catch (e) {
+            // Fallback for older browsers
+            const input = document.createElement('input');
+            input.value = url;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+        }
+    }
+
+    updateShareUrl() {
+        const display = document.getElementById('shareUrlDisplay');
+        if (!display) return;
+
+        if (!this.currentVideoId) {
+            display.value = '';
+            display.placeholder = 'Load a video first';
+            return;
+        }
+
+        // Build a basic share URL even if player isn't ready yet
+        const url = new URL(window.location.origin + window.location.pathname);
+        url.searchParams.set('v', this.currentVideoId);
+
+        if (this.loopStart !== null) {
+            url.searchParams.set('start', Math.round(this.loopStart * 10) / 10);
+        }
+        if (this.loopEnd !== null) {
+            url.searchParams.set('end', Math.round(this.loopEnd * 10) / 10);
+        }
+
+        // Get speed from player if available, otherwise from slider
+        if (this.player && this.playerReady) {
+            const currentSpeed = this.player.getPlaybackRate();
+            if (currentSpeed !== 1) {
+                url.searchParams.set('speed', currentSpeed);
+            }
+        } else {
+            const sliderSpeed = parseFloat(this.elements.speedSlider.value);
+            if (sliderSpeed !== 1) {
+                url.searchParams.set('speed', sliderSpeed);
+            }
+        }
+
+        display.value = url.toString();
     }
 
     // ==================== //
@@ -359,6 +585,33 @@ class MusicPracticeApp {
         this.elements.setLoopEndBtn.addEventListener('click', () => this.setLoopEnd());
         this.elements.toggleLoopBtn.addEventListener('click', () => this.toggleLoop());
         this.elements.clearLoopBtn.addEventListener('click', () => this.clearLoop());
+
+        // Welcome banner dismiss
+        const welcomeDismissBtn = document.getElementById('welcomeDismissBtn');
+        if (welcomeDismissBtn) {
+            welcomeDismissBtn.addEventListener('click', () => this.dismissWelcomeBanner());
+        }
+
+        // Shortcuts help toggle
+        const shortcutsHelpBtn = document.getElementById('shortcutsHelpBtn');
+        if (shortcutsHelpBtn) {
+            shortcutsHelpBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tooltip = document.getElementById('shortcutsTooltip');
+                if (tooltip) {
+                    tooltip.classList.toggle('visible');
+                }
+            });
+
+            // Close tooltip when clicking elsewhere
+            document.addEventListener('click', (e) => {
+                const tooltip = document.getElementById('shortcutsTooltip');
+                const helpContainer = document.getElementById('shortcutsHelp');
+                if (tooltip && helpContainer && !helpContainer.contains(e.target)) {
+                    tooltip.classList.remove('visible');
+                }
+            });
+        }
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
@@ -445,6 +698,9 @@ class MusicPracticeApp {
         this.videos.push(video);
         this.saveVideos();
         this.renderVideoList();
+
+        // Hide welcome banner if visible
+        this.dismissWelcomeBanner();
 
         // Clear input
         this.elements.videoUrlInput.value = '';
@@ -574,6 +830,11 @@ class MusicPracticeApp {
         // Show player section
         this.elements.playerSection.style.display = 'block';
 
+        // Show share section and update URL
+        const shareSection = document.getElementById('shareSection');
+        if (shareSection) shareSection.style.display = 'block';
+        this.updateShareUrl();
+
         // Show saved loops section
         const saveSection = document.getElementById('saveLoopSection');
         if (saveSection) saveSection.style.display = 'block';
@@ -631,6 +892,12 @@ class MusicPracticeApp {
             if (videoData && videoData.title) {
                 this.elements.currentVideoTitle.textContent = videoData.title;
             }
+        }
+
+        // Apply any pending shareable URL settings
+        if (this._pendingShareParams) {
+            // Small delay to ensure player is fully initialized and duration is available
+            setTimeout(() => this.applyPendingShareParams(), 500);
         }
     }
 
@@ -691,6 +958,9 @@ class MusicPracticeApp {
                 btn.classList.remove('active');
             }
         });
+
+        // Update share URL with new speed
+        this.updateShareUrl();
     }
 
     seek(seconds) {
@@ -720,6 +990,7 @@ class MusicPracticeApp {
         this.elements.loopStartDisplay.textContent = this.formatTime(this.loopStart);
         this.updateLoopUI();
         this.checkLoopButtonState();
+        this.updateShareUrl();
 
         // Track event
         this.trackEvent('loop_start_set', {timestamp: this.loopStart});
@@ -732,6 +1003,7 @@ class MusicPracticeApp {
         this.elements.loopEndDisplay.textContent = this.formatTime(this.loopEnd);
         this.updateLoopUI();
         this.checkLoopButtonState();
+        this.updateShareUrl();
 
         // Track event
         this.trackEvent('loop_end_set', {timestamp: this.loopEnd});
@@ -776,6 +1048,7 @@ class MusicPracticeApp {
         this.stopLoopCheck();
         this.updateLoopUI();
         this.checkLoopButtonState();
+        this.updateShareUrl();
     }
 
     checkLoopButtonState() {
@@ -927,6 +1200,30 @@ class MusicPracticeApp {
     // ==================== //
     // Modal System         //
     // ==================== //
+
+    // ==================== //
+    // Welcome Banner       //
+    // ==================== //
+
+    showWelcomeBannerIfNeeded() {
+        const dismissed = localStorage.getItem('musicPracticeOnboardingDismissed') === 'true';
+        if (dismissed || this.videos.length > 0) return;
+
+        const banner = document.getElementById('welcomeBanner');
+        if (banner) {
+            banner.style.display = 'block';
+            this.trackEvent('welcome_banner_shown');
+        }
+    }
+
+    dismissWelcomeBanner() {
+        const banner = document.getElementById('welcomeBanner');
+        if (banner) {
+            banner.style.display = 'none';
+        }
+        localStorage.setItem('musicPracticeOnboardingDismissed', 'true');
+        this.trackEvent('welcome_banner_dismissed');
+    }
 
     showWelcomeModal() {
         const modal = this.createModal('welcome');
@@ -1287,6 +1584,7 @@ class MusicPracticeApp {
         this.elements.loopEndDisplay.textContent = this.formatTime(loop.end);
         this.updateLoopUI();
         this.checkLoopButtonState();
+        this.updateShareUrl();
         if (this.player && this.playerReady) {
             this.player.seekTo(loop.start, true);
         }

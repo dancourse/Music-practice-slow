@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+    <linearGradient id="keyGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#667eea;stop-opacity:0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accentGrad)"/>
+
+  <!-- Piano keyboard illustration (bottom right area) -->
+  <g transform="translate(580, 250)" opacity="0.25">
+    <!-- White keys -->
+    <rect x="0" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="52" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="104" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="156" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="208" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="260" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="312" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="364" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="416" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="468" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="520" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+    <rect x="572" y="0" width="48" height="200" rx="3" fill="#e2e8f0" stroke="#a0aec0" stroke-width="0.5"/>
+
+    <!-- Black keys -->
+    <rect x="33" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="85" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="189" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="241" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="293" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="397" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="449" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+    <rect x="553" y="0" width="32" height="125" rx="3" fill="#2d3748"/>
+
+    <!-- Highlighted keys (being played) -->
+    <rect x="104" y="0" width="48" height="200" rx="3" fill="#667eea" opacity="0.4"/>
+    <rect x="208" y="0" width="48" height="200" rx="3" fill="#667eea" opacity="0.3"/>
+    <rect x="364" y="0" width="48" height="200" rx="3" fill="#764ba2" opacity="0.3"/>
+    <rect x="189" y="0" width="32" height="125" rx="3" fill="#667eea" opacity="0.5"/>
+
+    <!-- Key glow effect on pressed keys -->
+    <rect x="104" y="170" width="48" height="30" rx="3" fill="url(#keyGlow)"/>
+    <rect x="208" y="170" width="48" height="30" rx="3" fill="url(#keyGlow)"/>
+    <rect x="364" y="170" width="48" height="30" rx="3" fill="url(#keyGlow)"/>
+  </g>
+
+  <!-- Music note particles -->
+  <g opacity="0.12">
+    <!-- Treble-like flourishes -->
+    <text x="730" y="220" font-family="serif" font-size="60" fill="#667eea" transform="rotate(-15, 730, 220)">&#9835;</text>
+    <text x="850" y="180" font-family="serif" font-size="40" fill="#764ba2" transform="rotate(10, 850, 180)">&#9834;</text>
+    <text x="1050" y="250" font-family="serif" font-size="50" fill="#667eea" transform="rotate(-8, 1050, 250)">&#9833;</text>
+    <text x="680" y="140" font-family="serif" font-size="35" fill="#764ba2" transform="rotate(20, 680, 140)">&#9835;</text>
+  </g>
+
+  <!-- Accent glow -->
+  <circle cx="850" cy="350" r="250" fill="#667eea" opacity="0.02"/>
+
+  <!-- Play button -->
+  <g transform="translate(60, 120)">
+    <circle cx="32" cy="32" r="32" fill="#667eea" opacity="0.15" stroke="#667eea" stroke-width="2" stroke-opacity="0.5"/>
+    <polygon points="26,18 26,46 48,32" fill="#667eea" opacity="0.8"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="145" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#ffffff" font-weight="800" letter-spacing="-1">Practice</text>
+  <text x="482" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#667eea" font-weight="800" letter-spacing="-1">Loop</text>
+
+  <!-- Tagline -->
+  <text x="145" y="210" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" fill="#a0aec0" font-weight="400">Piano Practice Made Easy</text>
+
+  <!-- Feature list -->
+  <g transform="translate(145, 260)">
+    <circle cx="10" cy="10" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="10" r="3" fill="#667eea"/>
+    <text x="30" y="16" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Slow down passages to master fingering</text>
+
+    <circle cx="10" cy="55" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="55" r="3" fill="#667eea"/>
+    <text x="30" y="61" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Loop difficult sections endlessly</text>
+
+    <circle cx="10" cy="100" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="100" r="3" fill="#667eea"/>
+    <text x="30" y="106" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Works with any YouTube piano tutorial</text>
+
+    <circle cx="10" cy="145" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="145" r="3" fill="#667eea"/>
+    <text x="30" y="151" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Free - no signup required</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="560" width="1200" height="70" fill="#0f0f23"/>
+  <rect x="0" y="560" width="1200" height="2" fill="url(#accentGrad)" opacity="0.5"/>
+
+  <!-- URL -->
+  <text x="60" y="602" font-family="monospace, 'Courier New'" font-size="18" fill="#667eea" opacity="0.8">practiceloop.app/piano</text>
+
+  <!-- Piano badge -->
+  <g transform="translate(900, 578)">
+    <rect x="0" y="0" width="200" height="34" rx="17" fill="#667eea" opacity="0.15"/>
+    <text x="100" y="23" font-family="system-ui, sans-serif" font-size="15" fill="#667eea" text-anchor="middle" font-weight="600">Piano Practice Tool</text>
+  </g>
+</svg>
