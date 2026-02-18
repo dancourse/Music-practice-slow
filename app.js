@@ -193,6 +193,14 @@ class MusicPracticeApp {
         this.loopCheckInterval = null;
         this.timeUpdateInterval = null;
 
+        // Practice Timer State
+        this._practiceTimerSeconds = 0;
+        this._practiceTimerInterval = null;
+        this._practiceTimerRunning = false;
+        this._loopRepCount = 0;
+        this._lastLoopSeekTime = 0;
+        this._practiceStatsInterval = null;
+
         // Pending shareable URL settings (applied after player is ready)
         this._pendingShareParams = null;
 
@@ -296,6 +304,9 @@ class MusicPracticeApp {
                 this.requestWakeLock();
             }
         });
+
+        // Initialize practice timer & stats
+        this.initPracticeTimer();
 
         // YouTube API will call onYouTubeIframeAPIReady when ready
     }
@@ -942,6 +953,11 @@ class MusicPracticeApp {
         if (saveSection) saveSection.style.display = 'block';
         this.renderSavedLoops(videoId);
 
+        // Show session stats section
+        if (this._sessionStatsSection) {
+            this._sessionStatsSection.style.display = 'block';
+        }
+
         // Update active state in list
         this.renderVideoList();
 
@@ -1007,8 +1023,12 @@ class MusicPracticeApp {
         // Update play/pause button
         if (event.data === YT.PlayerState.PLAYING) {
             this.elements.playPauseBtn.classList.add('playing');
+            this.startPracticeTimer();
         } else {
             this.elements.playPauseBtn.classList.remove('playing');
+            if (event.data === YT.PlayerState.PAUSED || event.data === YT.PlayerState.ENDED) {
+                this.pausePracticeTimer();
+            }
         }
 
         // Update video info when video loads
@@ -1073,6 +1093,11 @@ class MusicPracticeApp {
 
         // Update share URL with new speed
         this.updateShareUrl();
+
+        // Update session stats speed display
+        if (this._statCurrentSpeed) {
+            this._statCurrentSpeed.textContent = speed.toFixed(2) + 'x';
+        }
     }
 
     seek(seconds) {
@@ -1157,6 +1182,10 @@ class MusicPracticeApp {
         this.elements.toggleLoopBtn.textContent = 'Enable Loop';
         this.elements.toggleLoopBtn.classList.remove('active');
 
+        // Reset loop rep count
+        this._loopRepCount = 0;
+        this.updateSessionStatsUI();
+
         this.stopLoopCheck();
         this.updateLoopUI();
         this.checkLoopButtonState();
@@ -1192,6 +1221,13 @@ class MusicPracticeApp {
             const currentTime = this.player.getCurrentTime();
             if (currentTime >= this.loopEnd) {
                 this.player.seekTo(this.loopStart, true);
+                // Count loop repetitions (debounce with 500ms window)
+                const now = Date.now();
+                if (now - this._lastLoopSeekTime > 500) {
+                    this._loopRepCount++;
+                    this.updateSessionStatsUI();
+                }
+                this._lastLoopSeekTime = now;
             }
         }, 100); // Check every 100ms
     }
@@ -1646,6 +1682,250 @@ class MusicPracticeApp {
             }
         } catch (e) {
             console.log('Could not check referral status:', e);
+        }
+    }
+
+    // ==================== //
+    // Practice Timer        //
+    // ==================== //
+
+    initPracticeTimer() {
+        // Load today's existing practice time from localStorage
+        const log = this.getPracticeLog();
+        const todayKey = this.getTodayKey();
+        const existingMinutes = log[todayKey] || 0;
+
+        // DOM references for timer/stats
+        this._timerChip = document.getElementById('practiceTimer');
+        this._statSessionTime = document.getElementById('statSessionTime');
+        this._statTodayTotal = document.getElementById('statTodayTotal');
+        this._statLoopReps = document.getElementById('statLoopReps');
+        this._statCurrentSpeed = document.getElementById('statCurrentSpeed');
+        this._streakIndicator = document.getElementById('streakIndicator');
+        this._streakText = document.getElementById('streakText');
+        this._sessionStatsSection = document.getElementById('sessionStatsSection');
+
+        // Update today total display with existing time
+        if (this._statTodayTotal) {
+            this._statTodayTotal.textContent = this.formatTimerMinSec(existingMinutes * 60);
+        }
+
+        // Calculate and display streak
+        this.updateStreakDisplay();
+
+        // Bind collapsible toggle
+        const toggle = document.getElementById('sessionStatsToggle');
+        const body = document.getElementById('sessionStatsBody');
+        if (toggle && body) {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('open');
+                body.classList.toggle('open');
+            });
+        }
+
+        // Save practice time periodically (every 30s) and on page unload
+        this._practiceStatsInterval = setInterval(() => this.savePracticeTime(), 30000);
+        window.addEventListener('beforeunload', () => this.savePracticeTime());
+    }
+
+    startPracticeTimer() {
+        if (this._practiceTimerRunning) return;
+        this._practiceTimerRunning = true;
+
+        // Show session stats section when user starts playing
+        if (this._sessionStatsSection) {
+            this._sessionStatsSection.style.display = 'block';
+        }
+
+        // Add active class to timer chip
+        if (this._timerChip) {
+            this._timerChip.classList.add('active');
+        }
+
+        this._practiceTimerInterval = setInterval(() => {
+            this._practiceTimerSeconds++;
+            this.updateTimerDisplay();
+
+            // Update session stats every 5 seconds
+            if (this._practiceTimerSeconds % 5 === 0) {
+                this.updateSessionStatsUI();
+            }
+        }, 1000);
+    }
+
+    pausePracticeTimer() {
+        if (!this._practiceTimerRunning) return;
+        this._practiceTimerRunning = false;
+
+        if (this._practiceTimerInterval) {
+            clearInterval(this._practiceTimerInterval);
+            this._practiceTimerInterval = null;
+        }
+
+        // Remove active class from timer chip
+        if (this._timerChip) {
+            this._timerChip.classList.remove('active');
+        }
+
+        // Save immediately on pause
+        this.savePracticeTime();
+    }
+
+    updateTimerDisplay() {
+        const display = this.formatTimerMinSec(this._practiceTimerSeconds);
+
+        // Update the chip near speed controls
+        if (this._timerChip) {
+            this._timerChip.textContent = display;
+        }
+
+        // Update session time stat card
+        if (this._statSessionTime) {
+            this._statSessionTime.textContent = display;
+        }
+    }
+
+    updateSessionStatsUI() {
+        // Today total = existing stored minutes + current session seconds
+        const log = this.getPracticeLog();
+        const todayKey = this.getTodayKey();
+        const existingSeconds = (log[todayKey] || 0) * 60;
+        const todayTotal = existingSeconds + this._practiceTimerSeconds;
+
+        if (this._statTodayTotal) {
+            this._statTodayTotal.textContent = this.formatTimerMinSec(todayTotal);
+        }
+
+        if (this._statLoopReps) {
+            this._statLoopReps.textContent = this._loopRepCount;
+        }
+
+        if (this._statCurrentSpeed && this.player && this.playerReady) {
+            try {
+                this._statCurrentSpeed.textContent = this.player.getPlaybackRate().toFixed(2) + 'x';
+            } catch (e) { /* ignore */ }
+        }
+    }
+
+    formatTimerMinSec(totalSeconds) {
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = Math.floor(totalSeconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // ==================== //
+    // Practice Persistence  //
+    // ==================== //
+
+    getTodayKey() {
+        const now = new Date();
+        const y = now.getFullYear();
+        const m = String(now.getMonth() + 1).padStart(2, '0');
+        const d = String(now.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    getPracticeLog() {
+        try {
+            const stored = localStorage.getItem('practiceLog');
+            return stored ? JSON.parse(stored) : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    savePracticeTime() {
+        if (this._practiceTimerSeconds < 1) return;
+
+        const log = this.getPracticeLog();
+        const todayKey = this.getTodayKey();
+        const existingMinutes = log[todayKey] || 0;
+        // Add current session seconds converted to minutes (fractional)
+        const sessionMinutes = this._practiceTimerSeconds / 60;
+
+        // We store the total for today. Since we keep adding, reset session counter
+        // after saving to avoid double-counting.
+        log[todayKey] = existingMinutes + sessionMinutes;
+
+        // Prune entries older than 30 days
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 30);
+        for (const key of Object.keys(log)) {
+            if (new Date(key) < cutoff) {
+                delete log[key];
+            }
+        }
+
+        try {
+            localStorage.setItem('practiceLog', JSON.stringify(log));
+        } catch (e) {
+            console.error('Error saving practice log:', e);
+        }
+
+        // Reset session counter since we just persisted it
+        this._practiceTimerSeconds = 0;
+
+        // Update streak display after save
+        this.updateStreakDisplay();
+    }
+
+    calculateStreak() {
+        const log = this.getPracticeLog();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        let streak = 0;
+        let checkDate = new Date(today);
+
+        // If user has practiced today (either stored or current session > 0), count today
+        const todayKey = this.getTodayKey();
+        const hasTodayPractice = (log[todayKey] && log[todayKey] > 0) || this._practiceTimerSeconds > 0;
+
+        if (!hasTodayPractice) {
+            // Check if they practiced yesterday (streak still valid, just haven't started today)
+            checkDate.setDate(checkDate.getDate() - 1);
+            const yesterdayKey = this.formatDateKey(checkDate);
+            if (!log[yesterdayKey] || log[yesterdayKey] <= 0) {
+                return 0;
+            }
+            streak = 1;
+            checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+            streak = 1;
+            checkDate.setDate(checkDate.getDate() - 1);
+        }
+
+        // Count consecutive days backwards
+        while (true) {
+            const key = this.formatDateKey(checkDate);
+            if (log[key] && log[key] > 0) {
+                streak++;
+                checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+                break;
+            }
+        }
+
+        return streak;
+    }
+
+    formatDateKey(date) {
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    updateStreakDisplay() {
+        const streak = this.calculateStreak();
+
+        if (this._streakIndicator && this._streakText) {
+            if (streak >= 3) {
+                this._streakIndicator.style.display = 'flex';
+                this._streakText.textContent = `${streak} day streak!`;
+            } else {
+                this._streakIndicator.style.display = 'none';
+            }
         }
     }
 

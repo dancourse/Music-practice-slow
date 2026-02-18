@@ -58,7 +58,6 @@
       "isAccessibleForFree": true,
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
       "featureList": ["Slow down YouTube videos from 0.25x to 2x", "Set AB loop points on any section", "Save named loops for later", "Keyboard shortcuts", "No download required"],
-      "sameAs": [],
       "author": { "@type": "Organization", "name": "PracticeLoop" }
     }
     </script>
@@ -71,7 +70,7 @@
 </head>
 <body>
     <div class="container">
-        <header>
+        <header role="banner">
             <div class="header-content">
                 <h1>🎵 PracticeLoop</h1>
                 <div class="header-actions">
@@ -92,7 +91,7 @@
             </div>
         </header>
 
-        <!-- YouTube Search Section (shown only if API key available) -->
+        <main>
         <section class="search-section" id="searchSection" style="display: none;">
             <div class="input-group">
                 <input
@@ -192,7 +191,9 @@
 
                 <!-- Speed Control -->
                 <div class="control-group speed-control">
-                    <label for="speedSlider">Speed: <span id="speedDisplay">1.0x</span></label>
+                    <label for="speedSlider">Speed: <span id="speedDisplay">1.0x</span>
+                        <span id="practiceTimer" class="practice-timer-chip">0:00</span>
+                    </label>
                     <input
                         type="range"
                         id="speedSlider"
@@ -285,6 +286,38 @@
             </div>
         </section>
 
+        <!-- Session Stats (collapsible) -->
+        <section class="session-stats-section" id="sessionStatsSection" style="display: none;">
+            <button class="session-stats-toggle" id="sessionStatsToggle">
+                <span class="session-stats-toggle-text">Session Stats</span>
+                <span class="session-stats-toggle-arrow" id="sessionStatsArrow">&#9660;</span>
+            </button>
+            <div class="session-stats-body" id="sessionStatsBody">
+                <div class="session-stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-label">Session Time</span>
+                        <span class="stat-value" id="statSessionTime">0:00</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Today Total</span>
+                        <span class="stat-value" id="statTodayTotal">0:00</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Loop Reps</span>
+                        <span class="stat-value" id="statLoopReps">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Speed</span>
+                        <span class="stat-value" id="statCurrentSpeed">1.0x</span>
+                    </div>
+                </div>
+                <div class="streak-indicator" id="streakIndicator" style="display: none;">
+                    <span class="streak-flame">&#9733;</span>
+                    <span class="streak-text" id="streakText">3 day streak!</span>
+                </div>
+            </div>
+        </section>
+
         <!-- Try It - Demo Links -->
         <section class="demo-section" id="demoSection">
             <h2>Try It Out</h2>
@@ -324,6 +357,8 @@
                 </a>
             </div>
         </section>
+
+        </main>
 
         <!-- Footer with Version -->
         <footer class="app-footer">
