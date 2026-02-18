@@ -1,0 +1,163 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#16213e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea"/>
+      <stop offset="100%" style="stop-color:#764ba2"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGrad)"/>
+
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="1200" height="4" fill="url(#accentGrad)"/>
+
+  <!-- Violin illustration (right side) -->
+  <g transform="translate(820, 30) scale(0.9)" opacity="0.2">
+    <!-- Violin neck/fingerboard -->
+    <rect x="135" y="0" width="30" height="200" rx="4" fill="#667eea"/>
+    <!-- Strings on neck -->
+    <line x1="142" y1="0" x2="142" y2="200" stroke="#a0aec0" stroke-width="0.8" opacity="0.5"/>
+    <line x1="148" y1="0" x2="148" y2="200" stroke="#a0aec0" stroke-width="0.8" opacity="0.5"/>
+    <line x1="154" y1="0" x2="154" y2="200" stroke="#a0aec0" stroke-width="0.8" opacity="0.5"/>
+    <line x1="160" y1="0" x2="160" y2="200" stroke="#a0aec0" stroke-width="0.8" opacity="0.5"/>
+    <!-- Scroll -->
+    <path d="M150,-5 Q150,-30 130,-35 Q110,-40 110,-20 Q110,-5 125,0" fill="none" stroke="#667eea" stroke-width="6" stroke-linecap="round"/>
+    <!-- Peg box -->
+    <rect x="130" y="-10" width="40" height="20" rx="3" fill="#667eea"/>
+    <!-- Tuning pegs -->
+    <circle cx="133" cy="-3" r="4" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="133" cy="5" r="4" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="167" cy="-3" r="4" fill="#a0aec0" opacity="0.5"/>
+    <circle cx="167" cy="5" r="4" fill="#a0aec0" opacity="0.5"/>
+    <!-- Upper bout -->
+    <ellipse cx="150" cy="260" rx="80" ry="60" fill="#667eea"/>
+    <!-- C bout (waist) -->
+    <ellipse cx="150" cy="320" rx="50" ry="35" fill="#1a1a2e"/>
+    <!-- Lower bout -->
+    <ellipse cx="150" cy="390" rx="95" ry="75" fill="#667eea"/>
+    <!-- F-holes -->
+    <path d="M115,290 Q110,320 120,350" fill="none" stroke="#1a1a2e" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="118" cy="345" r="4" fill="#1a1a2e"/>
+    <path d="M185,290 Q190,320 180,350" fill="none" stroke="#1a1a2e" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="182" cy="345" r="4" fill="#1a1a2e"/>
+    <!-- Bridge -->
+    <rect x="130" y="350" width="40" height="6" rx="2" fill="#a0aec0" opacity="0.4"/>
+    <!-- Tailpiece -->
+    <path d="M140,420 L150,470 L160,420" fill="#a0aec0" opacity="0.3"/>
+    <!-- Chin rest -->
+    <ellipse cx="120" cy="430" rx="25" ry="18" fill="#764ba2" opacity="0.4"/>
+    <!-- Strings on body -->
+    <line x1="142" y1="200" x2="140" y2="420" stroke="#a0aec0" stroke-width="0.8" opacity="0.3"/>
+    <line x1="148" y1="200" x2="147" y2="420" stroke="#a0aec0" stroke-width="0.8" opacity="0.3"/>
+    <line x1="154" y1="200" x2="153" y2="420" stroke="#a0aec0" stroke-width="0.8" opacity="0.3"/>
+    <line x1="160" y1="200" x2="160" y2="420" stroke="#a0aec0" stroke-width="0.8" opacity="0.3"/>
+    <!-- Bow (diagonal across) -->
+    <line x1="0" y1="150" x2="300" y2="450" stroke="#764ba2" stroke-width="3" opacity="0.3"/>
+    <line x1="2" y1="152" x2="4" y2="148" stroke="#a0aec0" stroke-width="0.5" opacity="0.3"/>
+  </g>
+
+  <!-- Music notes scattered -->
+  <g opacity="0.08" fill="#667eea">
+    <!-- Treble clef (simplified) -->
+    <g transform="translate(700, 80) scale(1.5)">
+      <path d="M10,0 Q5,10 10,20 Q15,30 10,40 Q5,50 10,55 Q20,50 20,40 Q20,30 10,25 Q5,30 5,40 Q5,50 15,55" fill="none" stroke="#667eea" stroke-width="3"/>
+      <line x1="10" y1="0" x2="10" y2="-15" stroke="#667eea" stroke-width="3"/>
+      <circle cx="10" cy="55" r="5" fill="none" stroke="#667eea" stroke-width="2"/>
+    </g>
+    <!-- Eighth notes -->
+    <g transform="translate(750, 450)">
+      <ellipse cx="0" cy="0" rx="8" ry="6" transform="rotate(-20)" fill="#667eea"/>
+      <line x1="7" y1="-3" x2="7" y2="-35" stroke="#667eea" stroke-width="2.5"/>
+      <path d="M7,-35 Q15,-28 7,-20" fill="none" stroke="#667eea" stroke-width="2.5"/>
+    </g>
+    <g transform="translate(680, 500)">
+      <ellipse cx="0" cy="0" rx="8" ry="6" transform="rotate(-20)" fill="#667eea"/>
+      <line x1="7" y1="-3" x2="7" y2="-35" stroke="#667eea" stroke-width="2.5"/>
+      <path d="M7,-35 Q15,-28 7,-20" fill="none" stroke="#667eea" stroke-width="2.5"/>
+    </g>
+    <!-- Quarter note -->
+    <g transform="translate(780, 200)">
+      <ellipse cx="0" cy="0" rx="8" ry="6" transform="rotate(-20)" fill="#667eea"/>
+      <line x1="7" y1="-3" x2="7" y2="-35" stroke="#667eea" stroke-width="2.5"/>
+    </g>
+  </g>
+
+  <!-- Accent glow behind violin -->
+  <circle cx="1000" cy="315" r="200" fill="#667eea" opacity="0.03"/>
+  <circle cx="1000" cy="315" r="140" fill="#764ba2" opacity="0.03"/>
+
+  <!-- Play button -->
+  <g transform="translate(60, 120)">
+    <circle cx="32" cy="32" r="32" fill="#667eea" opacity="0.15" stroke="#667eea" stroke-width="2" stroke-opacity="0.5"/>
+    <polygon points="26,18 26,46 48,32" fill="#667eea" opacity="0.8"/>
+  </g>
+
+  <!-- Main Title -->
+  <text x="145" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#ffffff" font-weight="800" letter-spacing="-1">Practice</text>
+  <text x="482" y="145" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="68" fill="#667eea" font-weight="800" letter-spacing="-1">Loop</text>
+
+  <!-- Tagline -->
+  <text x="145" y="210" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" fill="#a0aec0" font-weight="400">Violin Practice Made Easy</text>
+
+  <!-- Subtitle -->
+  <text x="145" y="252" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="22" fill="#a0aec0" font-weight="300" opacity="0.7">Slow Down &amp; Loop YouTube for Violin</text>
+
+  <!-- Feature list -->
+  <g transform="translate(145, 290)">
+    <!-- Feature 1 -->
+    <circle cx="10" cy="10" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="10" r="3" fill="#667eea"/>
+    <text x="30" y="16" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Slow down passages to any speed</text>
+
+    <!-- Feature 2 -->
+    <circle cx="10" cy="55" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="55" r="3" fill="#667eea"/>
+    <text x="30" y="61" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Loop tricky shifts and bowing on repeat</text>
+
+    <!-- Feature 3 -->
+    <circle cx="10" cy="100" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="100" r="3" fill="#667eea"/>
+    <text x="30" y="106" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Works with any YouTube violin lesson</text>
+
+    <!-- Feature 4 -->
+    <circle cx="10" cy="145" r="6" fill="#667eea" opacity="0.4"/>
+    <circle cx="10" cy="145" r="3" fill="#667eea"/>
+    <text x="30" y="151" font-family="system-ui, sans-serif" font-size="20" fill="#c4c4d4">Free - no signup required</text>
+  </g>
+
+  <!-- Speed control pill -->
+  <g transform="translate(145, 470)">
+    <rect x="0" y="0" width="180" height="50" rx="25" fill="#667eea" opacity="0.12" stroke="#667eea" stroke-width="1" stroke-opacity="0.3"/>
+    <text x="24" y="32" font-family="system-ui, sans-serif" font-size="18" fill="#a0aec0" font-weight="500">Speed</text>
+    <text x="105" y="33" font-family="system-ui, sans-serif" font-size="22" fill="#667eea" font-weight="700">0.25x</text>
+  </g>
+
+  <!-- Loop pill -->
+  <g transform="translate(345, 470)">
+    <rect x="0" y="0" width="160" height="50" rx="25" fill="#667eea" opacity="0.12" stroke="#667eea" stroke-width="1" stroke-opacity="0.3"/>
+    <!-- Loop icon -->
+    <path d="M24,20 a8,8 0 0,1 8,-8 h16 a8,8 0 0,1 8,8 v10" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+    <path d="M56,30 a8,8 0 0,1 -8,8 h-16 a8,8 0 0,1 -8,-8 v-10" fill="none" stroke="#667eea" stroke-width="2" stroke-linecap="round"/>
+    <polygon points="22,24 28,20 28,28" fill="#667eea"/>
+    <polygon points="58,26 52,30 52,22" fill="#667eea"/>
+    <text x="80" y="33" font-family="system-ui, sans-serif" font-size="18" fill="#667eea" font-weight="600">Loop</text>
+  </g>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="560" width="1200" height="70" fill="#0f0f23"/>
+  <rect x="0" y="560" width="1200" height="2" fill="url(#accentGrad)" opacity="0.5"/>
+
+  <!-- URL in bottom -->
+  <text x="60" y="602" font-family="monospace, 'Courier New'" font-size="18" fill="#667eea" opacity="0.8">practiceloop.app/violin</text>
+
+  <!-- Violin badge -->
+  <g transform="translate(900, 578)">
+    <rect x="0" y="0" width="200" height="34" rx="17" fill="#667eea" opacity="0.15"/>
+    <text x="100" y="23" font-family="system-ui, sans-serif" font-size="15" fill="#667eea" text-anchor="middle" font-weight="600">Violin Practice Tool</text>
+  </g>
+</svg>
