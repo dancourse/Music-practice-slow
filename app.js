@@ -368,6 +368,8 @@ class MusicPracticeApp {
             if (e.key === '[') this.setLoopStart();
             if (e.key === ']') this.setLoopEnd();
             if (e.key === 'l' || e.key === 'L') { if (this.loopStart !== null && this.loopEnd !== null) this.toggleLoop(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); this.seek(-5); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); this.seek(5); }
         });
     }
 

@@ -3,8 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PracticeLoop - Music Practice Tool</title>
+    <title>PracticeLoop - Slow Down & Loop YouTube Videos for Practice</title>
+    <meta name="description" content="Free tool for musicians to slow down and loop sections of YouTube videos. Set AB loops, control speed from 0.25x to 2x, and master any song passage by passage.">
+    <meta name="keywords" content="youtube looper, loop youtube video, slow down youtube, AB loop, youtube repeat section, music practice tool, slow down music for practice, youtube speed changer, loop section youtube, youtube video looper">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://teal-semifreddo-cad4ad.netlify.app/">
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="PracticeLoop - Slow Down & Loop YouTube Videos for Practice">
+    <meta property="og:description" content="Free music practice tool. Slow down YouTube videos, set AB loops on any section, and master difficult passages at your own pace.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/">
+    <meta property="og:site_name" content="PracticeLoop">
+    <meta property="og:locale" content="en_GB">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="PracticeLoop - Slow Down & Loop YouTube Videos">
+    <meta name="twitter:description" content="Free tool for musicians. Slow down YouTube, set AB loops, master any passage. No download required.">
+
+    <!-- PWA -->
+    <meta name="theme-color" content="#667eea">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PracticeLoop">
+    <meta name="application-name" content="PracticeLoop">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://www.youtube.com">
+    <link rel="preconnect" href="https://i.ytimg.com">
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -12,6 +40,22 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PracticeLoop",
+      "url": "https://teal-semifreddo-cad4ad.netlify.app/",
+      "description": "A free browser-based tool for musicians to slow down and loop sections of YouTube videos for practice. Set AB loop points, adjust playback speed from 0.25x to 2x, and master difficult passages at your own pace.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web Browser",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+      "featureList": ["Slow down YouTube videos from 0.25x to 2x", "Set AB loop points on any section", "Save named loops for later", "Keyboard shortcuts", "No download required"]
+    }
+    </script>
 
     <!-- Heap Analytics -->
     <script type="text/javascript">
@@ -115,7 +159,7 @@
                         type="range"
                         id="speedSlider"
                         min="0.25"
-                        max="1"
+                        max="2"
                         step="0.05"
                         value="1"
                         aria-label="Playback speed"
@@ -124,6 +168,8 @@
                         <button class="btn btn-preset" data-speed="0.5">0.5x</button>
                         <button class="btn btn-preset" data-speed="0.75">0.75x</button>
                         <button class="btn btn-preset" data-speed="1.0">1.0x</button>
+                        <button class="btn btn-preset" data-speed="1.25">1.25x</button>
+                        <button class="btn btn-preset" data-speed="1.5">1.5x</button>
                     </div>
                 </div>
 
@@ -172,7 +218,7 @@
                             Clear Loop
                         </button>
                     </div>
-                    <p class="keyboard-hints">Keyboard: Space = play/pause, [ = loop start, ] = loop end, L = toggle loop</p>
+                    <p class="keyboard-hints">Keyboard: Space = play/pause, [ = loop start, ] = loop end, L = toggle loop, arrows = seek</p>
                 </div>
 
                 <!-- Save Loop Section -->
