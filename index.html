@@ -57,7 +57,9 @@
       "operatingSystem": "Web Browser",
       "isAccessibleForFree": true,
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
-      "featureList": ["Slow down YouTube videos from 0.25x to 2x", "Set AB loop points on any section", "Save named loops for later", "Keyboard shortcuts", "No download required"]
+      "featureList": ["Slow down YouTube videos from 0.25x to 2x", "Set AB loop points on any section", "Save named loops for later", "Keyboard shortcuts", "No download required"],
+      "sameAs": [],
+      "author": { "@type": "Organization", "name": "PracticeLoop" }
     }
     </script>
 
@@ -331,6 +333,7 @@
                 <a href="/bass">Bass</a>
                 <a href="/piano">Piano</a>
                 <a href="/drums">Drums</a>
+                <a href="/violin">Violin</a>
             </nav>
         </footer>
     </div>
@@ -342,5 +345,12 @@
     <script src="https://www.youtube.com/iframe_api"></script>
     <script src="confetti.js"></script>
     <script src="app.js"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
+    </script>
 </body>
 </html>

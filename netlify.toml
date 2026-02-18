@@ -43,3 +43,23 @@
   from = "/hotel-california-solo"
   to = "/hotel-california-solo.html"
   status = 200
+
+[[redirects]]
+  from = "/violin"
+  to = "/violin.html"
+  status = 200
+
+[[redirects]]
+  from = "/wonderwall-intro"
+  to = "/wonderwall-intro.html"
+  status = 200
+
+[[redirects]]
+  from = "/come-as-you-are"
+  to = "/come-as-you-are.html"
+  status = 200
+
+[[redirects]]
+  from = "/fur-elise"
+  to = "/fur-elise.html"
+  status = 200
