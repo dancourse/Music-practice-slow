@@ -734,6 +734,27 @@ a {
     margin: 0;
 }
 
+.app-footer .instrument-links {
+    margin-top: 0.75rem;
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.app-footer .instrument-links a {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.app-footer .instrument-links a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
 /* ==================== */
 /* Header Enhancements  */
 /* ==================== */

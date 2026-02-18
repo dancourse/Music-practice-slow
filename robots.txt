@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://teal-semifreddo-cad4ad.netlify.app/sitemap.xml

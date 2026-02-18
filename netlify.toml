@@ -18,3 +18,13 @@
   from = "/bass"
   to = "/bass.html"
   status = 200
+
+[[redirects]]
+  from = "/piano"
+  to = "/piano.html"
+  status = 200
+
+[[redirects]]
+  from = "/drums"
+  to = "/drums.html"
+  status = 200
