@@ -204,6 +204,27 @@ class MusicPracticeApp {
         // Pending shareable URL settings (applied after player is ready)
         this._pendingShareParams = null;
 
+        // Metronome State
+        this._metronomeAudioCtx = null;
+        this._metronomeRunning = false;
+        this._metronomeBpm = 120;
+        this._metronomeTimeSig = [4, 4]; // [beats, noteValue]
+        this._metronomeVolume = 0.5;
+        this._metronomeBeatCount = 0;
+        this._metronomeNextNoteTime = 0;
+        this._metronomeSchedulerTimer = null;
+        this._metronomeLookahead = 25.0; // ms
+        this._metronomeScheduleAheadTime = 0.1; // seconds
+        this._metronomeTapTimes = [];
+
+        // YouTube API lazy-loading state
+        this._ytApiLoaded = false;
+        this._ytApiLoading = false;
+        this._ytApiReadyResolve = null;
+        this._ytApiReadyPromise = new Promise((resolve) => {
+            this._ytApiReadyResolve = resolve;
+        });
+
         // Account Manager
         this.accountManager = new AccountManager();
 
@@ -308,7 +329,10 @@ class MusicPracticeApp {
         // Initialize practice timer & stats
         this.initPracticeTimer();
 
-        // YouTube API will call onYouTubeIframeAPIReady when ready
+        // Initialize metronome
+        this.initMetronome();
+
+        // YouTube API is lazy-loaded when a video is first needed (createPlayer)
     }
 
     handleReferralFromUrl() {
@@ -402,6 +426,10 @@ class MusicPracticeApp {
         const saveSection = document.getElementById('saveLoopSection');
         if (saveSection) saveSection.style.display = 'block';
         this.renderSavedLoops(videoId);
+
+        // Show metronome section
+        const metronomeSection = document.getElementById('metronomeSection');
+        if (metronomeSection) metronomeSection.style.display = 'block';
 
         // Create the player (settings applied in onPlayerReady)
         this.createPlayer(videoId);
@@ -656,6 +684,64 @@ class MusicPracticeApp {
             } catch (err) {
                 console.log('Wake Lock release failed:', err.message);
             }
+        }
+    }
+
+    // ==================== //
+    // YouTube API Lazy Load //
+    // ==================== //
+
+    loadYouTubeAPI() {
+        // Already loaded
+        if (this._ytApiLoaded) {
+            return this._ytApiReadyPromise;
+        }
+
+        // Already loading, just return the promise
+        if (this._ytApiLoading) {
+            return this._ytApiReadyPromise;
+        }
+
+        this._ytApiLoading = true;
+        console.log('Loading YouTube IFrame API...');
+
+        // Dynamically inject the script tag
+        const script = document.createElement('script');
+        script.src = 'https://www.youtube.com/iframe_api';
+        script.onerror = () => {
+            console.error('Failed to load YouTube IFrame API');
+            this._ytApiLoading = false;
+            this.hidePlayerLoading();
+        };
+        document.head.appendChild(script);
+
+        return this._ytApiReadyPromise;
+    }
+
+    onYouTubeAPIReady() {
+        this._ytApiLoaded = true;
+        this._ytApiLoading = false;
+        console.log('YouTube API ready');
+
+        if (this._ytApiReadyResolve) {
+            this._ytApiReadyResolve();
+        }
+    }
+
+    showPlayerLoading() {
+        const playerDiv = document.getElementById('player');
+        if (playerDiv && !playerDiv.querySelector('.yt-loading-placeholder')) {
+            const placeholder = document.createElement('div');
+            placeholder.className = 'yt-loading-placeholder';
+            placeholder.innerHTML = '<div class="yt-loading-spinner"></div><p>Loading player...</p>';
+            playerDiv.appendChild(placeholder);
+        }
+    }
+
+    hidePlayerLoading() {
+        const placeholder = document.querySelector('.yt-loading-placeholder');
+        if (placeholder) {
+            placeholder.remove();
         }
     }
 
@@ -958,6 +1044,10 @@ class MusicPracticeApp {
             this._sessionStatsSection.style.display = 'block';
         }
 
+        // Show metronome section
+        const metronomeSection = document.getElementById('metronomeSection');
+        if (metronomeSection) metronomeSection.style.display = 'block';
+
         // Update active state in list
         this.renderVideoList();
 
@@ -975,9 +1065,22 @@ class MusicPracticeApp {
     // YouTube Player       //
     // ==================== //
 
-    createPlayer(videoId) {
-        if (!window.YT) {
-            console.error('YouTube API not loaded yet');
+    async createPlayer(videoId) {
+        // Show loading placeholder while API loads
+        this.showPlayerLoading();
+
+        // Ensure YouTube API is loaded
+        if (!window.YT || !window.YT.Player) {
+            await this.loadYouTubeAPI();
+        }
+
+        this.hidePlayerLoading();
+
+        // The YT.Player constructor replaces the target element, so ensure
+        // the div exists and is not already a player instance
+        const playerDiv = document.getElementById('player');
+        if (!playerDiv) {
+            console.error('Player div not found');
             return;
         }
 
@@ -2046,6 +2149,243 @@ class MusicPracticeApp {
         `;
         document.body.appendChild(modal);
     }
+
+    // ==================== //
+    // Metronome            //
+    // ==================== //
+
+    initMetronome() {
+        // DOM references
+        this._metronomeBpmInput = document.getElementById('metronomeBpmInput');
+        this._metronomeTimeSigSelect = document.getElementById('metronomeTimeSig');
+        this._metronomeTapBtn = document.getElementById('metronomeTapBtn');
+        this._metronomeStartStopBtn = document.getElementById('metronomeStartStopBtn');
+        this._metronomeBeatDot = document.getElementById('metronomeBeatDot');
+        this._metronomeVolumeSlider = document.getElementById('metronomeVolume');
+        this._metronomeToggle = document.getElementById('metronomeToggle');
+        this._metronomeBodyEl = document.getElementById('metronomeBody');
+
+        if (!this._metronomeToggle) return;
+
+        // Collapsible toggle (starts collapsed)
+        this._metronomeToggle.addEventListener('click', () => {
+            this._metronomeToggle.classList.toggle('open');
+            this._metronomeBodyEl.classList.toggle('open');
+        });
+
+        // BPM input
+        if (this._metronomeBpmInput) {
+            this._metronomeBpmInput.addEventListener('change', () => {
+                let val = parseInt(this._metronomeBpmInput.value, 10);
+                if (isNaN(val) || val < 20) val = 20;
+                if (val > 300) val = 300;
+                this._metronomeBpmInput.value = val;
+                this._metronomeBpm = val;
+            });
+        }
+
+        // Time signature
+        if (this._metronomeTimeSigSelect) {
+            this._metronomeTimeSigSelect.addEventListener('change', () => {
+                const val = this._metronomeTimeSigSelect.value;
+                const parts = val.split('/');
+                this._metronomeTimeSig = [parseInt(parts[0], 10), parseInt(parts[1], 10)];
+                this._metronomeBeatCount = 0;
+            });
+        }
+
+        // Volume slider
+        if (this._metronomeVolumeSlider) {
+            this._metronomeVolumeSlider.addEventListener('input', () => {
+                this._metronomeVolume = parseInt(this._metronomeVolumeSlider.value, 10) / 100;
+            });
+        }
+
+        // Start/Stop button
+        if (this._metronomeStartStopBtn) {
+            this._metronomeStartStopBtn.addEventListener('click', () => {
+                if (this._metronomeRunning) {
+                    this.metronomeStop();
+                } else {
+                    this.metronomeStart();
+                }
+            });
+        }
+
+        // Tap tempo button
+        if (this._metronomeTapBtn) {
+            this._metronomeTapBtn.addEventListener('click', () => {
+                this.metronomeTap();
+            });
+        }
+    }
+
+    metronomeEnsureAudioContext() {
+        if (!this._metronomeAudioCtx) {
+            this._metronomeAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this._metronomeAudioCtx.state === 'suspended') {
+            this._metronomeAudioCtx.resume();
+        }
+        return this._metronomeAudioCtx;
+    }
+
+    metronomeStart() {
+        const ctx = this.metronomeEnsureAudioContext();
+        this._metronomeRunning = true;
+        this._metronomeBeatCount = 0;
+        this._metronomeNextNoteTime = ctx.currentTime;
+
+        // Start the scheduler loop
+        this.metronomeScheduler();
+
+        // Update UI
+        if (this._metronomeStartStopBtn) {
+            this._metronomeStartStopBtn.textContent = 'Stop';
+            this._metronomeStartStopBtn.classList.add('running');
+        }
+
+        this.trackEvent('metronome_started', { bpm: this._metronomeBpm, timeSig: this._metronomeTimeSig.join('/') });
+    }
+
+    metronomeStop() {
+        this._metronomeRunning = false;
+
+        if (this._metronomeSchedulerTimer) {
+            clearTimeout(this._metronomeSchedulerTimer);
+            this._metronomeSchedulerTimer = null;
+        }
+
+        // Clear visual beat
+        if (this._metronomeBeatDot) {
+            this._metronomeBeatDot.classList.remove('flash', 'flash-downbeat');
+        }
+
+        // Update UI
+        if (this._metronomeStartStopBtn) {
+            this._metronomeStartStopBtn.textContent = 'Start';
+            this._metronomeStartStopBtn.classList.remove('running');
+        }
+
+        this.trackEvent('metronome_stopped');
+    }
+
+    metronomeScheduler() {
+        if (!this._metronomeRunning) return;
+
+        const ctx = this._metronomeAudioCtx;
+
+        // Schedule notes that fall within the lookahead window
+        while (this._metronomeNextNoteTime < ctx.currentTime + this._metronomeScheduleAheadTime) {
+            this.metronomeScheduleNote(this._metronomeNextNoteTime, this._metronomeBeatCount);
+            this.metronomeAdvanceBeat();
+        }
+
+        this._metronomeSchedulerTimer = setTimeout(() => this.metronomeScheduler(), this._metronomeLookahead);
+    }
+
+    metronomeScheduleNote(time, beatNumber) {
+        const ctx = this._metronomeAudioCtx;
+        const beatsPerMeasure = this._metronomeTimeSig[0];
+        const isDownbeat = (beatNumber % beatsPerMeasure) === 0;
+
+        // Create click sound using OscillatorNode
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+
+        // Different pitch for downbeat vs other beats
+        if (isDownbeat) {
+            osc.frequency.value = 1000; // Higher pitch for downbeat
+        } else {
+            osc.frequency.value = 800; // Lower pitch for other beats
+        }
+
+        osc.type = 'sine';
+
+        // Volume envelope - short click
+        const volume = this._metronomeVolume;
+        gainNode.gain.setValueAtTime(volume, time);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+
+        osc.start(time);
+        osc.stop(time + 0.05);
+
+        // Schedule visual flash
+        const delay = Math.max(0, (time - ctx.currentTime) * 1000);
+        setTimeout(() => {
+            this.metronomeFlashBeat(isDownbeat);
+        }, delay);
+    }
+
+    metronomeAdvanceBeat() {
+        const secondsPerBeat = 60.0 / this._metronomeBpm;
+        this._metronomeNextNoteTime += secondsPerBeat;
+        this._metronomeBeatCount++;
+    }
+
+    metronomeFlashBeat(isDownbeat) {
+        if (!this._metronomeBeatDot) return;
+
+        // Remove any existing flash classes
+        this._metronomeBeatDot.classList.remove('flash', 'flash-downbeat');
+
+        // Force reflow to restart animation
+        void this._metronomeBeatDot.offsetWidth;
+
+        // Add the appropriate flash class
+        if (isDownbeat) {
+            this._metronomeBeatDot.classList.add('flash-downbeat');
+        } else {
+            this._metronomeBeatDot.classList.add('flash');
+        }
+
+        // Remove flash after a short duration
+        setTimeout(() => {
+            if (this._metronomeBeatDot) {
+                this._metronomeBeatDot.classList.remove('flash', 'flash-downbeat');
+            }
+        }, 100);
+    }
+
+    metronomeTap() {
+        const now = Date.now();
+
+        // Reset if gap > 2 seconds
+        if (this._metronomeTapTimes.length > 0) {
+            const lastTap = this._metronomeTapTimes[this._metronomeTapTimes.length - 1];
+            if (now - lastTap > 2000) {
+                this._metronomeTapTimes = [];
+            }
+        }
+
+        this._metronomeTapTimes.push(now);
+
+        // Keep only last 8 taps
+        if (this._metronomeTapTimes.length > 8) {
+            this._metronomeTapTimes.shift();
+        }
+
+        // Need at least 2 taps to calculate BPM
+        if (this._metronomeTapTimes.length >= 2) {
+            const intervals = [];
+            for (let i = 1; i < this._metronomeTapTimes.length; i++) {
+                intervals.push(this._metronomeTapTimes[i] - this._metronomeTapTimes[i - 1]);
+            }
+            const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+            let bpm = Math.round(60000 / avgInterval);
+
+            // Clamp to valid range
+            bpm = Math.max(20, Math.min(300, bpm));
+
+            this._metronomeBpm = bpm;
+            if (this._metronomeBpmInput) {
+                this._metronomeBpmInput.value = bpm;
+            }
+        }
+    }
 }
 
 // ==================== //
@@ -2054,10 +2394,11 @@ class MusicPracticeApp {
 
 let app;
 
-// YouTube API callback
+// YouTube API callback - called by the YouTube IFrame API script when loaded
 function onYouTubeIframeAPIReady() {
-    console.log('YouTube API ready');
-    // App is already initialized, just note that API is ready
+    if (app) {
+        app.onYouTubeAPIReady();
+    }
 }
 
 // Initialize app when DOM is ready

@@ -34,8 +34,7 @@
     <meta name="apple-mobile-web-app-title" content="PracticeLoop">
     <meta name="application-name" content="PracticeLoop">
 
-    <!-- Preconnect -->
-    <link rel="preconnect" href="https://www.youtube.com">
+    <!-- Preconnect (ytimg for thumbnails; youtube.com deferred until API needed) -->
     <link rel="preconnect" href="https://i.ytimg.com">
 
     <!-- Favicon -->
@@ -286,6 +285,43 @@
             </div>
         </section>
 
+        <!-- Metronome (collapsible, starts collapsed) -->
+        <section class="metronome-section" id="metronomeSection" style="display: none;">
+            <button class="metronome-toggle" id="metronomeToggle">
+                <span class="metronome-toggle-text">Metronome</span>
+                <span class="metronome-toggle-arrow" id="metronomeArrow">&#9660;</span>
+            </button>
+            <div class="metronome-body" id="metronomeBody">
+                <div class="metronome-controls">
+                    <div class="metronome-bpm-row">
+                        <div class="metronome-bpm-group">
+                            <label for="metronomeBpmInput" class="metronome-label">BPM</label>
+                            <input type="number" id="metronomeBpmInput" class="metronome-bpm-input" min="20" max="300" value="120">
+                        </div>
+                        <div class="metronome-time-sig-group">
+                            <label for="metronomeTimeSig" class="metronome-label">Time Sig</label>
+                            <select id="metronomeTimeSig" class="metronome-time-sig-select">
+                                <option value="4/4">4/4</option>
+                                <option value="3/4">3/4</option>
+                                <option value="6/8">6/8</option>
+                            </select>
+                        </div>
+                        <button id="metronomeTapBtn" class="btn metronome-tap-btn">Tap Tempo</button>
+                    </div>
+                    <div class="metronome-action-row">
+                        <button id="metronomeStartStopBtn" class="btn metronome-start-btn">Start</button>
+                        <div class="metronome-beat-indicator" id="metronomeBeatIndicator">
+                            <span class="metronome-beat-dot" id="metronomeBeatDot"></span>
+                        </div>
+                        <div class="metronome-volume-group">
+                            <label for="metronomeVolume" class="metronome-label">Vol</label>
+                            <input type="range" id="metronomeVolume" class="metronome-volume-slider" min="0" max="100" value="50">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Session Stats (collapsible) -->
         <section class="session-stats-section" id="sessionStatsSection" style="display: none;">
             <button class="session-stats-toggle" id="sessionStatsToggle">
@@ -376,8 +412,7 @@
     <!-- Confetti Canvas -->
     <canvas id="confettiCanvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999;"></canvas>
 
-    <!-- YouTube IFrame API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <!-- YouTube IFrame API: loaded lazily by app.js when needed -->
     <script src="confetti.js"></script>
     <script src="app.js"></script>
 
