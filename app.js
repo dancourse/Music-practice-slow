@@ -204,6 +204,13 @@ class MusicPracticeApp {
         // Pending shareable URL settings (applied after player is ready)
         this._pendingShareParams = null;
 
+        // Progressive Speed Training State
+        this._progressiveEnabled = false;
+        this._progressiveRepsPerStep = 3;      // loops before speed increase
+        this._progressiveSpeedStep = 0.05;     // speed increment per step
+        this._progressiveTargetSpeed = 1.0;    // goal speed
+        this._progressiveRepsAtCurrentSpeed = 0; // reps counted at current speed
+
         // Metronome State
         this._metronomeAudioCtx = null;
         this._metronomeRunning = false;
@@ -334,6 +341,9 @@ class MusicPracticeApp {
 
         // Initialize metronome
         this.initMetronome();
+
+        // Initialize progressive speed training
+        this.initProgressiveTraining();
 
         // YouTube API is lazy-loaded when a video is first needed (createPlayer)
     }
@@ -1338,6 +1348,14 @@ class MusicPracticeApp {
                 if (now - this._lastLoopSeekTime > 500) {
                     this._loopRepCount++;
                     this.updateSessionStatsUI();
+                    // Progressive speed training: auto-increment after N reps
+                    if (this._progressiveEnabled) {
+                        this._progressiveRepsAtCurrentSpeed++;
+                        this.updateProgressiveUI();
+                        if (this._progressiveRepsAtCurrentSpeed >= this._progressiveRepsPerStep) {
+                            this.progressiveSpeedUp();
+                        }
+                    }
                 }
                 this._lastLoopSeekTime = now;
             }
@@ -2395,6 +2413,120 @@ class MusicPracticeApp {
                 this._metronomeBpmInput.value = bpm;
             }
         }
+    }
+    // ==================== //
+    // Progressive Speed    //
+    // ==================== //
+
+    initProgressiveTraining() {
+        const toggle = document.getElementById('progressiveToggle');
+        const repsInput = document.getElementById('progressiveReps');
+        const stepInput = document.getElementById('progressiveStep');
+        const targetInput = document.getElementById('progressiveTarget');
+
+        if (toggle) {
+            toggle.addEventListener('change', () => {
+                this._progressiveEnabled = toggle.checked;
+                this._progressiveRepsAtCurrentSpeed = 0;
+                const controls = document.getElementById('progressiveControls');
+                if (controls) controls.style.display = toggle.checked ? 'flex' : 'none';
+                this.updateProgressiveUI();
+                this.trackEvent('progressive_toggled', { enabled: toggle.checked });
+            });
+        }
+        if (repsInput) {
+            repsInput.addEventListener('change', () => {
+                this._progressiveRepsPerStep = Math.max(1, Math.min(20, parseInt(repsInput.value) || 3));
+                repsInput.value = this._progressiveRepsPerStep;
+            });
+        }
+        if (stepInput) {
+            stepInput.addEventListener('change', () => {
+                this._progressiveSpeedStep = Math.max(0.01, Math.min(0.25, parseFloat(stepInput.value) || 0.05));
+                stepInput.value = this._progressiveSpeedStep;
+            });
+        }
+        if (targetInput) {
+            targetInput.addEventListener('change', () => {
+                this._progressiveTargetSpeed = Math.max(0.25, Math.min(2, parseFloat(targetInput.value) || 1.0));
+                targetInput.value = this._progressiveTargetSpeed;
+            });
+        }
+    }
+
+    progressiveSpeedUp() {
+        if (!this.player || !this.playerReady) return;
+
+        const currentSpeed = this.player.getPlaybackRate();
+        const newSpeed = Math.min(this._progressiveTargetSpeed, currentSpeed + this._progressiveSpeedStep);
+
+        // Round to 2 decimal places to avoid floating point drift
+        const rounded = Math.round(newSpeed * 100) / 100;
+
+        if (rounded > currentSpeed) {
+            this.setSpeed(rounded);
+            this.elements.speedSlider.value = rounded;
+            this._progressiveRepsAtCurrentSpeed = 0;
+            this.showProgressiveNotification(rounded);
+            this.trackEvent('progressive_speed_up', { newSpeed: rounded, targetSpeed: this._progressiveTargetSpeed });
+        }
+
+        // Check if we've reached the target
+        if (rounded >= this._progressiveTargetSpeed) {
+            this._progressiveEnabled = false;
+            const toggle = document.getElementById('progressiveToggle');
+            if (toggle) toggle.checked = false;
+            const controls = document.getElementById('progressiveControls');
+            if (controls) controls.style.display = 'none';
+            this.showProgressiveComplete();
+            this.trackEvent('progressive_target_reached', { targetSpeed: this._progressiveTargetSpeed });
+        }
+
+        this.updateProgressiveUI();
+    }
+
+    showProgressiveNotification(speed) {
+        const notification = document.createElement('div');
+        notification.className = 'progressive-notification';
+        notification.textContent = `Speed up! Now at ${speed.toFixed(2)}x`;
+        document.body.appendChild(notification);
+        // Trigger animation
+        requestAnimationFrame(() => notification.classList.add('show'));
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 1500);
+    }
+
+    showProgressiveComplete() {
+        const notification = document.createElement('div');
+        notification.className = 'progressive-notification progressive-complete';
+        notification.textContent = `Target speed reached! You did it!`;
+        document.body.appendChild(notification);
+        requestAnimationFrame(() => notification.classList.add('show'));
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    updateProgressiveUI() {
+        const progress = document.getElementById('progressiveProgress');
+        const statusText = document.getElementById('progressiveStatus');
+        if (!progress || !statusText) return;
+
+        if (!this._progressiveEnabled) {
+            progress.style.width = '0%';
+            statusText.textContent = '';
+            return;
+        }
+
+        const pct = Math.min(100, (this._progressiveRepsAtCurrentSpeed / this._progressiveRepsPerStep) * 100);
+        progress.style.width = pct + '%';
+
+        const currentSpeed = this.player && this.playerReady ? this.player.getPlaybackRate() : 0;
+        const repsLeft = this._progressiveRepsPerStep - this._progressiveRepsAtCurrentSpeed;
+        statusText.textContent = `${repsLeft} rep${repsLeft !== 1 ? 's' : ''} at ${currentSpeed.toFixed(2)}x until speed up`;
     }
 }
 
