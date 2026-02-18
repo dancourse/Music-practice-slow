@@ -106,3 +106,8 @@
   from = "/moonlight-sonata"
   to = "/moonlight-sonata.html"
   status = 200
+
+[[redirects]]
+  from = "/wipeout-drums"
+  to = "/wipeout-drums.html"
+  status = 200
