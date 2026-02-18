@@ -130,7 +130,7 @@ class AccountManager {
                 code = data.code || code;
             }
         } catch (e) {
-            console.log('Could not register referral code with backend:', e);
+
         }
 
         this.setReferralCode(code);
@@ -583,10 +583,10 @@ class MusicPracticeApp {
                 accountType: this.accountManager.accountType,
                 videoCount: this.videos.length
             };
-            console.log('📊 Heap event:', eventName, eventData);
+
             window.heap.track(eventName, eventData);
         } else {
-            console.warn('⚠️ Heap not available. Event not tracked:', eventName);
+
         }
     }
 
@@ -597,10 +597,10 @@ class MusicPracticeApp {
                 videoCount: this.videos.length,
                 hasYouTubeApiKey: !!this.youtubeApiKey
             };
-            console.log('👤 Heap identify:', userData);
+
             window.heap.addUserProperties(userData);
         } else {
-            console.warn('⚠️ Heap not available. User not identified.');
+
         }
     }
 
@@ -657,25 +657,25 @@ class MusicPracticeApp {
 
     async requestWakeLock() {
         if (!('wakeLock' in navigator)) {
-            console.log('Wake Lock API not supported');
+
             return;
         }
 
         try {
             this._wakeLock = await navigator.wakeLock.request('screen');
-            console.log('Wake Lock acquired - screen will stay on');
+
 
             const indicator = document.getElementById('wakeLockIndicator');
             if (indicator) indicator.classList.add('active');
 
             this._wakeLock.addEventListener('release', () => {
-                console.log('Wake Lock released');
+
                 const ind = document.getElementById('wakeLockIndicator');
                 if (ind) ind.classList.remove('active');
             });
         } catch (err) {
             // Wake Lock request failed (e.g., low battery, not supported)
-            console.log('Wake Lock request failed:', err.message);
+
         }
     }
 
@@ -685,7 +685,7 @@ class MusicPracticeApp {
                 await this._wakeLock.release();
                 this._wakeLock = null;
             } catch (err) {
-                console.log('Wake Lock release failed:', err.message);
+
             }
         }
     }
@@ -706,13 +706,13 @@ class MusicPracticeApp {
         }
 
         this._ytApiLoading = true;
-        console.log('Loading YouTube IFrame API...');
+
 
         // Dynamically inject the script tag
         const script = document.createElement('script');
         script.src = 'https://www.youtube.com/iframe_api';
         script.onerror = () => {
-            console.error('Failed to load YouTube IFrame API');
+
             this._ytApiLoading = false;
             this.hidePlayerLoading();
         };
@@ -724,7 +724,7 @@ class MusicPracticeApp {
     onYouTubeAPIReady() {
         this._ytApiLoaded = true;
         this._ytApiLoading = false;
-        console.log('YouTube API ready');
+
 
         if (this._ytApiReadyResolve) {
             this._ytApiReadyResolve();
@@ -866,15 +866,15 @@ class MusicPracticeApp {
 
         // Check video limit based on account type
         const videoLimit = this.accountManager.getVideoLimit();
-        console.log('Video limit check:', {
-            accountType: this.accountManager.accountType,
-            videoCount: this.videos.length,
-            videoLimit: videoLimit,
-            shouldBlock: this.videos.length >= videoLimit
-        });
+
+
+
+
+
+
 
         if (this.videos.length >= videoLimit) {
-            console.log('Blocking video add - showing upgrade modal');
+
             this.showUpgradeModal();
             return;
         }
@@ -907,9 +907,15 @@ class MusicPracticeApp {
         // Clear input
         this.elements.videoUrlInput.value = '';
 
-        // Confetti!
+        // Confetti! (lazy-loaded)
         if (window.confetti) {
             confetti.burst();
+        } else if (!this._confettiLoading) {
+            this._confettiLoading = true;
+            const s = document.createElement('script');
+            s.src = 'confetti.js';
+            s.onload = () => { if (window.confetti) confetti.burst(); };
+            document.head.appendChild(s);
         }
 
         // Track event
@@ -938,7 +944,7 @@ class MusicPracticeApp {
                 return data.title;
             }
         } catch (e) {
-            console.log('Could not fetch video title:', e);
+
         }
         return null;
     }
@@ -966,7 +972,7 @@ class MusicPracticeApp {
             this.trackEvent('search_performed', {query: query, resultCount: data.items.length});
             this.renderSearchResults(data.items);
         } catch (e) {
-            console.error('Search error:', e);
+
             alert('Search failed. Please check your API key.');
         }
     }
@@ -1105,7 +1111,7 @@ class MusicPracticeApp {
 
     onPlayerReady(event) {
         this.playerReady = true;
-        console.log('Player ready');
+
 
         // Start time update interval
         this.startTimeUpdate();
@@ -1724,7 +1730,7 @@ class MusicPracticeApp {
                 btn.classList.remove('copied');
             }, 2000);
         } catch (e) {
-            console.error('Could not copy to clipboard:', e);
+
         }
     }
 
@@ -1770,7 +1776,7 @@ class MusicPracticeApp {
                 this.trackEvent('referral_signup_recorded', { referrerCode: referredBy });
             }
         } catch (e) {
-            console.log('Could not record referral signup:', e);
+
         }
     }
 
@@ -1788,7 +1794,7 @@ class MusicPracticeApp {
                 }
             }
         } catch (e) {
-            console.log('Could not check referral status:', e);
+
         }
     }
 
