@@ -28,3 +28,18 @@
   from = "/drums"
   to = "/drums.html"
   status = 200
+
+[[redirects]]
+  from = "/stairway-solo"
+  to = "/stairway-solo.html"
+  status = 200
+
+[[redirects]]
+  from = "/billie-jean-bass"
+  to = "/billie-jean-bass.html"
+  status = 200
+
+[[redirects]]
+  from = "/hotel-california-solo"
+  to = "/hotel-california-solo.html"
+  status = 200
