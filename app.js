@@ -1563,23 +1563,28 @@ class MusicPracticeApp {
         modal.innerHTML = `
             <div class="modal-content upgrade-modal">
                 <button class="modal-close" onclick="app.closeModal('upgrade')">&times;</button>
-                <h2>You've Reached Your Video Limit</h2>
-                <p>You currently have ${videoLimit} video${videoLimit > 1 ? 's' : ''} saved, which is the maximum for your ${isReferral ? 'referral' : 'free'} account.</p>
+                <h2>You're practising! Keep going.</h2>
+                <p>You've saved ${videoLimit} video${videoLimit > 1 ? 's' : ''} -- that's the limit on the free plan. Unlock unlimited to keep your practice library growing.</p>
+
+                <div class="upgrade-features-list">
+                    <div class="upgrade-feature-item"><span class="check-icon">&#10003;</span> Unlimited videos</div>
+                    <div class="upgrade-feature-item"><span class="check-icon">&#10003;</span> Unlimited saved loops</div>
+                    <div class="upgrade-feature-item"><span class="check-icon">&#10003;</span> Progressive speed training</div>
+                    <div class="upgrade-feature-item"><span class="check-icon">&#10003;</span> One-time payment, yours forever</div>
+                </div>
 
                 <div class="upgrade-options">
-                    <div class="upgrade-option">
-                        <h3>Upgrade to Unlimited</h3>
-                        <p>Get unlimited videos forever with a one-time purchase.</p>
+                    <div class="upgrade-option upgrade-option-primary">
                         <a href="https://pay.tide.co/products/music-pract-dojo6MnC" target="_blank"
                            onclick="app.trackEvent('upgrade_link_clicked', {source: 'limit'})"
-                           class="btn btn-primary">Upgrade Now</a>
+                           class="btn btn-primary btn-upgrade-main">Upgrade Now</a>
+                        <span class="upgrade-price-hint">One-time purchase</span>
                     </div>
 
                     ${!isReferral ? `
-                    <div class="upgrade-option">
-                        <h3>Or Share & Earn Free</h3>
-                        <p>Share with a friend and get 5 videos for 3 months when they sign up!</p>
-                        <button class="btn btn-share-earn" onclick="app.closeModal('upgrade'); app.showReferralModal();">Share & Earn</button>
+                    <div class="upgrade-option upgrade-option-alt">
+                        <p class="upgrade-or">or</p>
+                        <button class="btn btn-share-earn" onclick="app.closeModal('upgrade'); app.showReferralModal();">Share with a friend for free bonus videos</button>
                     </div>
                     ` : ''}
                 </div>

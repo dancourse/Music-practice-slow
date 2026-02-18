@@ -1139,17 +1139,61 @@ a {
 }
 
 /* Upgrade Modal Options */
+.upgrade-features-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 0.5rem;
+}
+
+.upgrade-feature-item {
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.check-icon {
+    color: var(--success-color);
+    font-weight: bold;
+}
+
 .upgrade-options {
     display: grid;
-    gap: 1.5rem;
-    margin: 1.5rem 0;
+    gap: 1rem;
+    margin: 1rem 0;
 }
 
 .upgrade-option {
-    background: var(--bg-secondary);
-    padding: 1.5rem;
-    border-radius: 0.75rem;
     text-align: center;
+}
+
+.upgrade-option-primary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-upgrade-main {
+    font-size: 1.1rem;
+    padding: 0.875rem 2rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+.upgrade-price-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.upgrade-or {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
 }
 
 .upgrade-option h3 {
@@ -1165,7 +1209,6 @@ a {
 
 .upgrade-option .btn,
 .upgrade-option a.btn {
-    width: 100%;
     text-decoration: none;
 }
 
