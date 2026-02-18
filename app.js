@@ -287,8 +287,11 @@ class MusicPracticeApp {
         // Check for shareable URL params
         const hasShareParams = this.handleShareableUrl();
 
-        // Show welcome banner for first-time users (no videos saved and not previously dismissed)
-        if (!hasShareParams) {
+        // Hide welcome banner for returning users; show for first-time (banner starts visible in HTML to avoid CLS)
+        if (hasShareParams) {
+            const banner = document.getElementById('welcomeBanner');
+            if (banner) banner.style.display = 'none';
+        } else {
             this.showWelcomeBannerIfNeeded();
         }
 
@@ -1458,11 +1461,12 @@ class MusicPracticeApp {
 
     showWelcomeBannerIfNeeded() {
         const dismissed = localStorage.getItem('musicPracticeOnboardingDismissed') === 'true';
-        if (dismissed || this.videos.length > 0) return;
-
         const banner = document.getElementById('welcomeBanner');
-        if (banner) {
-            banner.style.display = 'block';
+        if (!banner) return;
+
+        if (dismissed || this.videos.length > 0) {
+            banner.style.display = 'none';
+        } else {
             this.trackEvent('welcome_banner_shown');
         }
     }
