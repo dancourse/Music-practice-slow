@@ -146,3 +146,8 @@
   from = "/bpm-counter"
   to = "/bpm-counter.html"
   status = 200
+
+[[redirects]]
+  from = "/practice-routines"
+  to = "/practice-routines.html"
+  status = 200
