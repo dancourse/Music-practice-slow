@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PracticeLoop vs Looptube, YoutubeLoop & Other YouTube Loopers - Feature Comparison</title>
+    <meta name="description" content="Compare PracticeLoop with Looptube, YoutubeLoop, and other YouTube looper tools. See which practice tool has progressive speed training, built-in metronome, and practice tracking.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="PracticeLoop vs Looptube & YouTube Loopers - Feature Comparison">
+    <meta property="og:description" content="Compare PracticeLoop with Looptube, YoutubeLoop, and other YouTube looper tools. See which practice tool offers progressive speed training and built-in metronome.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/compare">
+    <meta property="og:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="PracticeLoop vs Looptube & YouTube Loopers">
+    <meta name="twitter:description" content="Feature comparison: Which YouTube practice tool is best for musicians?">
+    <meta name="twitter:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://teal-semifreddo-cad4ad.netlify.app/compare">
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://heapanalytics.com">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ComparisonTable",
+      "name": "YouTube Practice Tool Comparison",
+      "description": "Feature comparison of PracticeLoop, Looptube, YoutubeLoop, and other YouTube looper tools for musicians",
+      "about": {
+        "@type": "SoftwareApplication",
+        "name": "PracticeLoop",
+        "applicationCategory": "MusicApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "GBP"
+        }
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://teal-semifreddo-cad4ad.netlify.app/"
+      }, {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Compare YouTube Loopers",
+        "item": "https://teal-semifreddo-cad4ad.netlify.app/compare"
+      }]
+    }
+    </script>
+
+    <!-- Heap Analytics -->
+    <script type="text/javascript">
+      window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
+      heap.load("1874350472");
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #1a1a2e;
+            --bg-card: #16213e;
+            --text-primary: #ffffff;
+            --text-secondary: #9ca3af;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent-teal: #14b8a6;
+            --accent-purple: #9333ea;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        header {
+            max-width: 1200px;
+            margin: 0 auto 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .intro {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 40px;
+        }
+
+        .intro h2 {
+            color: var(--accent-teal);
+            margin-bottom: 16px;
+            font-size: 1.5rem;
+        }
+
+        .intro p {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+            margin-bottom: 40px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-purple));
+            color: var(--text-primary);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        th:first-child {
+            width: 30%;
+        }
+
+        td {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .feature-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .check {
+            color: var(--success);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .cross {
+            color: var(--warning);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(20, 184, 166, 0.2));
+            font-weight: 500;
+        }
+
+        .verdict {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        .verdict h2 {
+            color: var(--accent-teal);
+            margin-bottom: 16px;
+            font-size: 1.8rem;
+        }
+
+        .verdict-item {
+            margin-bottom: 24px;
+        }
+
+        .verdict-item h3 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .verdict-item p {
+            color: var(--text-secondary);
+        }
+
+        .cta {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-purple));
+            border: none;
+            border-radius: 8px;
+            color: var(--text-primary);
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(79, 70, 229, 0.3);
+        }
+
+        footer {
+            max-width: 1200px;
+            margin: 60px auto 0;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        footer nav {
+            margin-bottom: 24px;
+        }
+
+        footer nav a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 16px;
+            transition: color 0.2s;
+        }
+
+        footer nav a:hover {
+            color: var(--accent-teal);
+        }
+
+        footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 12px 8px;
+            }
+
+            th:first-child {
+                width: 40%;
+            }
+        }
+    </style>
+</head>
+<body role="banner">
+    <header>
+        <h1>PracticeLoop vs Looptube & Other YouTube Loopers</h1>
+        <p class="subtitle">Feature comparison of the best YouTube practice tools for musicians</p>
+    </header>
+
+    <main>
+        <section class="intro">
+            <h2>Choosing the Right YouTube Practice Tool</h2>
+            <p>If you're a musician looking to practice difficult passages, you've probably come across several YouTube looper tools. Looptube, YoutubeLoop, and similar sites let you slow down and loop sections of YouTube videos.</p>
+            <p>But not all loopers are built the same. This page compares the most popular options to help you choose the right tool for your practice routine.</p>
+        </section>
+
+        <section class="comparison-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>PracticeLoop</th>
+                        <th>Looptube</th>
+                        <th>YoutubeLoop</th>
+                        <th>Other Extensions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">Speed Control (0.25x-2x)</td>
+                        <td class="highlight"><span class="check">✓</span> Full range</td>
+                        <td><span class="check">✓</span> Full range</td>
+                        <td><span class="check">✓</span> Full range</td>
+                        <td><span class="check">✓</span> Full range</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">A-B Loop (Section Repeat)</td>
+                        <td class="highlight"><span class="check">✓</span> Unlimited loops</td>
+                        <td><span class="check">✓</span> Basic</td>
+                        <td><span class="check">✓</span> Basic</td>
+                        <td><span class="check">✓</span> Varies</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Progressive Speed Training</td>
+                        <td class="highlight"><span class="check">✓</span> Auto-increment after N reps</td>
+                        <td><span class="cross">✗</span> Manual only</td>
+                        <td><span class="cross">✗</span> Manual only</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Built-in Metronome</td>
+                        <td class="highlight"><span class="check">✓</span> Tap tempo, multiple time signatures</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Practice Session Timer</td>
+                        <td class="highlight"><span class="check">✓</span> Tracks time + daily streak</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Save Multiple Loops per Video</td>
+                        <td class="highlight"><span class="check">✓</span> Name + save unlimited (paid)</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Shareable URLs (Pre-configured Practice Sections)</td>
+                        <td class="highlight"><span class="check">✓</span> Full support</td>
+                        <td><span class="check">✓</span> Basic</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Varies</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Keyboard Shortcuts</td>
+                        <td class="highlight"><span class="check">✓</span> Space, [, ], L, arrows</td>
+                        <td><span class="check">✓</span> Basic</td>
+                        <td><span class="check">✓</span> Basic</td>
+                        <td><span class="check">✓</span> Varies</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Mobile PWA (Add to Home Screen)</td>
+                        <td class="highlight"><span class="check">✓</span> Full PWA support</td>
+                        <td><span class="cross">✗</span> Browser only</td>
+                        <td><span class="cross">✗</span> Browser only</td>
+                        <td><span class="cross">✗</span> Extension only</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Wake Lock (Keep Screen On During Practice)</td>
+                        <td class="highlight"><span class="check">✓</span> Automatic</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                        <td><span class="cross">✗</span> Not available</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Free Tier</td>
+                        <td class="highlight"><span class="check">✓</span> 3 videos</td>
+                        <td><span class="check">✓</span> Unlimited (ad-supported)</td>
+                        <td><span class="check">✓</span> Unlimited</td>
+                        <td><span class="check">✓</span> Varies</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">Pricing</td>
+                        <td class="highlight">£9 one-time</td>
+                        <td>Free (ads) or £4/mo</td>
+                        <td>Free</td>
+                        <td>Free</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="verdict">
+            <h2>The Verdict: Which Tool Is Best?</h2>
+
+            <div class="verdict-item">
+                <h3>🎯 Best for Serious Musicians: PracticeLoop</h3>
+                <p>If you want a tool that mimics how a real music teacher would structure practice, PracticeLoop is the clear winner. The progressive speed training feature automatically increases the tempo after you nail a section, eliminating the manual "bump up 5%" workflow. The built-in metronome and practice timer make it a complete practice companion, not just a looper.</p>
+                <p><strong>Unique features:</strong> Progressive speed training, built-in metronome, practice timer with streak tracking, save multiple named loops per video.</p>
+            </div>
+
+            <div class="verdict-item">
+                <h3>🆓 Best Free Option: YoutubeLoop</h3>
+                <p>If you just need basic speed control and looping with no ads and no paywall, YoutubeLoop is a solid choice. It's simple, clean, and does exactly what it says on the tin. But you'll miss out on advanced features like progressive training and metronome.</p>
+            </div>
+
+            <div class="verdict-item">
+                <h3>📺 Best for Casual Use: Looptube</h3>
+                <p>Looptube has a large user base and a familiar interface. The free tier has ads, and the paid tier is a monthly subscription (£4/mo vs PracticeLoop's £9 one-time). Good for casual users who don't need advanced practice tools.</p>
+            </div>
+
+            <div class="verdict-item">
+                <h3>🔧 Browser Extensions</h3>
+                <p>Chrome extensions like "Video Speed Controller" or "Looper for YouTube" work well if you prefer staying on YouTube's interface. But they lack mobile support, can't be added to your home screen, and don't offer practice-specific features like metronome or session tracking.</p>
+            </div>
+
+            <a href="https://teal-semifreddo-cad4ad.netlify.app/" class="cta">Try PracticeLoop Free</a>
+        </section>
+
+        <section class="intro">
+            <h2>Why Progressive Speed Training Matters</h2>
+            <p>Every music teacher will tell you: start slow, master the passage, then gradually increase the speed. But manually adjusting the tempo after each loop rep is tedious and breaks your flow.</p>
+            <p>PracticeLoop automates this workflow. Set your starting speed (e.g. 0.5x), target speed (1.0x), and how many reps before bumping up (default: 3). Then just practice. The tool automatically increases the speed when you're ready, with visual progress and celebration when you hit your target.</p>
+            <p>No other YouTube looper offers this. It's the difference between a tool built for musicians and a tool built for generic video looping.</p>
+        </section>
+    </main>
+
+    <footer>
+        <nav>
+            <a href="https://teal-semifreddo-cad4ad.netlify.app/">Home</a>
+            <a href="https://teal-semifreddo-cad4ad.netlify.app/guitar">Guitar Practice</a>
+            <a href="https://teal-semifreddo-cad4ad.netlify.app/bass">Bass Practice</a>
+            <a href="https://teal-semifreddo-cad4ad.netlify.app/piano">Piano Practice</a>
+            <a href="https://teal-semifreddo-cad4ad.netlify.app/metronome">Free Metronome</a>
+        </nav>
+        <p>&copy; 2026 PracticeLoop. Built for musicians who practice deliberately.</p>
+    </footer>
+</body>
+</html>
