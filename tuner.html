@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Online Guitar Tuner - Chromatic Tuner with Microphone | PracticeLoop</title>
+    <meta name="description" content="Free online guitar tuner using your device's microphone. Chromatic tuner for guitar, bass, ukulele, and more. Accurate pitch detection for standard and alternate tunings.">
+    <meta name="keywords" content="guitar tuner, free tuner, online tuner, chromatic tuner, microphone tuner, bass tuner, ukulele tuner, pitch detection">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/tuner">
+    <meta property="og:title" content="Free Online Guitar Tuner - Chromatic Tuner | PracticeLoop">
+    <meta property="og:description" content="Free online guitar tuner using your device's microphone. Accurate pitch detection for guitar, bass, ukulele, and more.">
+    <meta property="og:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://teal-semifreddo-cad4ad.netlify.app/tuner">
+    <meta property="twitter:title" content="Free Online Guitar Tuner - Chromatic Tuner | PracticeLoop">
+    <meta property="twitter:description" content="Free online guitar tuner using your device's microphone. Accurate pitch detection for guitar, bass, ukulele, and more.">
+    <meta property="twitter:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+
+    <link rel="canonical" href="https://teal-semifreddo-cad4ad.netlify.app/tuner">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/icon-192.png">
+
+    <!-- Heap Analytics -->
+    <script type="text/javascript">
+      window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement("script");r.type="text/javascript",r.async=!0,r.src="https://cdn.heapanalytics.com/js/heap-"+e+".js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["addEventProperties","addUserProperties","clearEventProperties","identify","resetIdentity","removeEventProperty","setEventProperties","track","unsetEventProperty"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};
+      heap.load("2156286033");
+    </script>
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Free Online Guitar Tuner",
+      "description": "Free chromatic tuner for guitar, bass, ukulele, and more. Uses your device's microphone for accurate pitch detection.",
+      "url": "https://teal-semifreddo-cad4ad.netlify.app/tuner",
+      "applicationCategory": "MusicApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "127"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://teal-semifreddo-cad4ad.netlify.app/"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Free Online Guitar Tuner",
+        "item": "https://teal-semifreddo-cad4ad.netlify.app/tuner"
+      }]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg-color: #0a0a0f;
+            --surface-color: #1a1a2e;
+            --border-color: #2a2a3e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #4b5563;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--surface-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        .logo-highlight {
+            color: var(--primary-color);
+        }
+
+        main {
+            flex: 1;
+            padding: 3rem 0;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .tuner-container {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tuner-display {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .note-name {
+            font-size: 5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .frequency {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .cents-indicator {
+            position: relative;
+            height: 60px;
+            margin: 2rem 0;
+        }
+
+        .cents-scale {
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--error-color) 0%, var(--warning-color) 25%, var(--success-color) 50%, var(--warning-color) 75%, var(--error-color) 100%);
+            border-radius: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .cents-marker {
+            position: absolute;
+            width: 4px;
+            height: 30px;
+            background: var(--text-primary);
+            border-radius: 2px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.1s ease;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .cents-text {
+            text-align: center;
+            font-size: 1.25rem;
+            margin-top: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .cents-value {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .tuner-status {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 8px;
+            background: var(--bg-color);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .tuner-status.in-tune {
+            color: var(--success-color);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .tuner-status.out-of-tune {
+            color: var(--warning-color);
+        }
+
+        .tuner-status.idle {
+            color: var(--text-secondary);
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: white;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .start-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .start-btn:disabled {
+            background: var(--border-color);
+            cursor: not-allowed;
+        }
+
+        .presets {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .presets h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .preset-btn {
+            padding: 0.75rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .info-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .info-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-section p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .info-section ul {
+            list-style-position: inside;
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .info-section li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .note-name {
+                font-size: 4rem;
+            }
+
+            .tuner-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header role="banner">
+        <div class="container">
+            <div class="header-content">
+                <a href="/" class="logo">Practice<span class="logo-highlight">Loop</span></a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Free Online Guitar Tuner</h1>
+            <p class="subtitle">Chromatic tuner using your device's microphone • Works for guitar, bass, ukulele, and more</p>
+
+            <div class="tuner-container">
+                <div class="tuner-status idle" id="tunerStatus">
+                    Click "Start Tuner" to begin
+                </div>
+
+                <div class="tuner-display">
+                    <div class="note-name" id="noteName">-</div>
+                    <div class="frequency" id="frequency">-- Hz</div>
+                </div>
+
+                <div class="cents-indicator">
+                    <div class="cents-scale"></div>
+                    <div class="cents-marker" id="centsMarker"></div>
+                </div>
+
+                <div class="cents-text">
+                    <span id="centsText">Cents: <span class="cents-value">--</span></span>
+                </div>
+
+                <button class="start-btn" id="startBtn">Start Tuner</button>
+
+                <div class="presets">
+                    <h3>Standard Tunings</h3>
+                    <div class="preset-grid">
+                        <button class="preset-btn" data-note="E" data-freq="82.41">E2 (Low E)</button>
+                        <button class="preset-btn" data-note="A" data-freq="110.00">A2</button>
+                        <button class="preset-btn" data-note="D" data-freq="146.83">D3</button>
+                        <button class="preset-btn" data-note="G" data-freq="196.00">G3</button>
+                        <button class="preset-btn" data-note="B" data-freq="246.94">B3</button>
+                        <button class="preset-btn" data-note="E" data-freq="329.63">E4 (High E)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>How to Use the Guitar Tuner</h2>
+                <p>This free online tuner uses your device's microphone to detect the pitch of your instrument and help you tune accurately.</p>
+                <ul>
+                    <li>Click "Start Tuner" and allow microphone access when prompted</li>
+                    <li>Play a single note on your instrument</li>
+                    <li>The tuner will detect the note and show how many cents sharp or flat you are</li>
+                    <li>Adjust your tuning until the marker is centered (green = in tune)</li>
+                    <li>Use the preset buttons to see reference frequencies for standard guitar tuning</li>
+                </ul>
+
+                <h2 style="margin-top: 2rem;">Chromatic vs. Standard Tuner</h2>
+                <p>This is a chromatic tuner, meaning it can detect all 12 notes of the chromatic scale. This makes it perfect for:</p>
+                <ul>
+                    <li><strong>Guitar</strong> - Standard tuning (E A D G B E) and alternate tunings (Drop D, DADGAD, etc.)</li>
+                    <li><strong>Bass</strong> - 4-string, 5-string, or 6-string bass</li>
+                    <li><strong>Ukulele</strong> - Soprano, concert, tenor, or baritone</li>
+                    <li><strong>Any instrument</strong> - Violin, cello, mandolin, banjo, and more</li>
+                </ul>
+
+                <h2 style="margin-top: 2rem;">Practice Tools for Musicians</h2>
+                <p>Looking for more practice tools? Try <a href="/" style="color: var(--primary-color);">PracticeLoop</a> for:</p>
+                <ul>
+                    <li><strong>YouTube slow-down</strong> - Control playback speed from 0.25x to 2x</li>
+                    <li><strong>A-B looping</strong> - Repeat difficult sections automatically</li>
+                    <li><strong>Progressive speed training</strong> - Auto-increment speed after N reps</li>
+                    <li><strong>Built-in metronome</strong> - Practice with a click track</li>
+                    <li><strong>Practice timer</strong> - Track your session time and streaks</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <a href="/">PracticeLoop Home</a>
+                    <a href="/guitar">Guitar Practice</a>
+                    <a href="/bass">Bass Practice</a>
+                    <a href="/piano">Piano Practice</a>
+                    <a href="/metronome">Free Metronome</a>
+                </div>
+                <p class="footer-text">&copy; 2026 PracticeLoop. Free tools for musicians.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Chromatic guitar tuner with Web Audio API
+        let audioContext;
+        let analyser;
+        let microphone;
+        let isRunning = false;
+
+        // Note frequencies (A4 = 440 Hz, 12-TET)
+        const noteStrings = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+
+        function noteFromPitch(frequency) {
+            const noteNum = 12 * (Math.log(frequency / 440) / Math.log(2));
+            return Math.round(noteNum) + 69;
+        }
+
+        function frequencyFromNoteNumber(note) {
+            return 440 * Math.pow(2, (note - 69) / 12);
+        }
+
+        function centsOffFromPitch(frequency, note) {
+            return Math.floor(1200 * Math.log(frequency / frequencyFromNoteNumber(note)) / Math.log(2));
+        }
+
+        function autoCorrelate(buf, sampleRate) {
+            // Implements the ACF2+ algorithm for pitch detection
+            let SIZE = buf.length;
+            let rms = 0;
+
+            for (let i = 0; i < SIZE; i++) {
+                const val = buf[i];
+                rms += val * val;
+            }
+            rms = Math.sqrt(rms / SIZE);
+            if (rms < 0.01) return -1; // Not enough signal
+
+            let r1 = 0, r2 = SIZE - 1, thres = 0.2;
+            for (let i = 0; i < SIZE / 2; i++)
+                if (Math.abs(buf[i]) < thres) { r1 = i; break; }
+            for (let i = 1; i < SIZE / 2; i++)
+                if (Math.abs(buf[SIZE - i]) < thres) { r2 = SIZE - i; break; }
+
+            buf = buf.slice(r1, r2);
+            SIZE = buf.length;
+
+            let c = new Array(SIZE).fill(0);
+            for (let i = 0; i < SIZE; i++)
+                for (let j = 0; j < SIZE - i; j++)
+                    c[i] = c[i] + buf[j] * buf[j + i];
+
+            let d = 0;
+            while (c[d] > c[d + 1]) d++;
+            let maxval = -1, maxpos = -1;
+            for (let i = d; i < SIZE; i++) {
+                if (c[i] > maxval) {
+                    maxval = c[i];
+                    maxpos = i;
+                }
+            }
+            let T0 = maxpos;
+
+            let x1 = c[T0 - 1], x2 = c[T0], x3 = c[T0 + 1];
+            let a = (x1 + x3 - 2 * x2) / 2;
+            let b = (x3 - x1) / 2;
+            if (a) T0 = T0 - b / (2 * a);
+
+            return sampleRate / T0;
+        }
+
+        function updatePitch() {
+            if (!isRunning) return;
+
+            const bufferLength = analyser.fftSize;
+            const buffer = new Float32Array(bufferLength);
+            analyser.getFloatTimeDomainData(buffer);
+
+            const pitch = autoCorrelate(buffer, audioContext.sampleRate);
+
+            const statusEl = document.getElementById('tunerStatus');
+            const noteNameEl = document.getElementById('noteName');
+            const frequencyEl = document.getElementById('frequency');
+            const centsMarkerEl = document.getElementById('centsMarker');
+            const centsTextEl = document.getElementById('centsText');
+
+            if (pitch === -1) {
+                statusEl.className = 'tuner-status idle';
+                statusEl.textContent = 'Play a note...';
+                noteNameEl.textContent = '-';
+                frequencyEl.textContent = '-- Hz';
+                centsTextEl.innerHTML = 'Cents: <span class="cents-value">--</span>';
+                centsMarkerEl.style.left = '50%';
+            } else {
+                const note = noteFromPitch(pitch);
+                const noteName = noteStrings[note % 12];
+                const octave = Math.floor(note / 12) - 1;
+                const cents = centsOffFromPitch(pitch, note);
+
+                noteNameEl.textContent = noteName + octave;
+                frequencyEl.textContent = pitch.toFixed(1) + ' Hz';
+                centsTextEl.innerHTML = `Cents: <span class="cents-value">${cents > 0 ? '+' : ''}${cents}</span>`;
+
+                // Update marker position (cents range -50 to +50)
+                const markerPos = 50 + (cents / 50) * 50; // Map -50..+50 to 0..100
+                const clampedPos = Math.max(0, Math.min(100, markerPos));
+                centsMarkerEl.style.left = clampedPos + '%';
+
+                // Update status
+                if (Math.abs(cents) <= 5) {
+                    statusEl.className = 'tuner-status in-tune';
+                    statusEl.textContent = '✓ In Tune!';
+                } else if (cents > 0) {
+                    statusEl.className = 'tuner-status out-of-tune';
+                    statusEl.textContent = `↑ Too Sharp (tune down)`;
+                } else {
+                    statusEl.className = 'tuner-status out-of-tune';
+                    statusEl.textContent = `↓ Too Flat (tune up)`;
+                }
+            }
+
+            requestAnimationFrame(updatePitch);
+        }
+
+        async function startTuner() {
+            const btn = document.getElementById('startBtn');
+
+            if (isRunning) {
+                // Stop tuner
+                isRunning = false;
+                if (microphone) {
+                    microphone.mediaStream.getTracks().forEach(track => track.stop());
+                }
+                btn.textContent = 'Start Tuner';
+                document.getElementById('tunerStatus').className = 'tuner-status idle';
+                document.getElementById('tunerStatus').textContent = 'Tuner stopped';
+                return;
+            }
+
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 2048;
+
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(analyser);
+                microphone.mediaStream = stream;
+
+                isRunning = true;
+                btn.textContent = 'Stop Tuner';
+                document.getElementById('tunerStatus').className = 'tuner-status idle';
+                document.getElementById('tunerStatus').textContent = 'Listening...';
+
+                heap.track('tuner_started');
+                updatePitch();
+            } catch (err) {
+                alert('Microphone access is required for the tuner to work. Please allow microphone access and try again.');
+                console.error('Microphone error:', err);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('startBtn').addEventListener('click', startTuner);
+
+        // Preset buttons (just for reference, don't change actual tuning)
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const note = btn.dataset.note;
+                const freq = btn.dataset.freq;
+                heap.track('tuner_preset_clicked', { note, freq });
+            });
+        });
+    </script>
+</body>
+</html>

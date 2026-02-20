@@ -98,6 +98,11 @@
   status = 200
 
 [[redirects]]
+  from = "/tuner"
+  to = "/tuner.html"
+  status = 200
+
+[[redirects]]
   from = "/compare"
   to = "/comparison.html"
   status = 200
