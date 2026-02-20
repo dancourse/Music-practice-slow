@@ -141,3 +141,8 @@
   from = "/wipeout-drums"
   to = "/wipeout-drums.html"
   status = 200
+
+[[redirects]]
+  from = "/bpm-counter"
+  to = "/bpm-counter.html"
+  status = 200
