@@ -545,6 +545,49 @@ class MusicPracticeApp {
         }
     }
 
+    shareToTwitter() {
+        const url = this.generateShareUrl();
+        if (!url) {
+            alert('Load a video first to share.');
+            return;
+        }
+
+        const speed = this._speed.toFixed(2);
+        const speedText = speed === '1.00' ? 'normal speed' : `${speed}x speed`;
+        const text = `Practicing this section at ${speedText} 🎸\n\nFree tool to slow down & loop YouTube videos: `;
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+
+        window.open(twitterUrl, '_blank', 'width=550,height=420');
+        this.trackEvent('shared_to_twitter', { videoId: this.currentVideoId, speed: this._speed });
+    }
+
+    shareToReddit() {
+        const url = this.generateShareUrl();
+        if (!url) {
+            alert('Load a video first to share.');
+            return;
+        }
+
+        const title = 'Slow down & loop YouTube videos for practice - PracticeLoop';
+        const redditUrl = `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`;
+
+        window.open(redditUrl, '_blank', 'width=850,height=600');
+        this.trackEvent('shared_to_reddit', { videoId: this.currentVideoId });
+    }
+
+    shareToFacebook() {
+        const url = this.generateShareUrl();
+        if (!url) {
+            alert('Load a video first to share.');
+            return;
+        }
+
+        const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+
+        window.open(fbUrl, '_blank', 'width=550,height=420');
+        this.trackEvent('shared_to_facebook', { videoId: this.currentVideoId });
+    }
+
     updateShareUrl() {
         const display = document.getElementById('shareUrlDisplay');
         if (!display) return;
