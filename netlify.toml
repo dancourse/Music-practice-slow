@@ -93,6 +93,11 @@
   status = 200
 
 [[redirects]]
+  from = "/metronome"
+  to = "/metronome.html"
+  status = 200
+
+[[redirects]]
   from = "/wonderwall-intro"
   to = "/wonderwall-intro.html"
   status = 200

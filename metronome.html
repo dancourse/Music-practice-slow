@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free Online Metronome - Tap Tempo, Multiple Time Signatures | PracticeLoop</title>
+    <meta name="description" content="Free online metronome with tap tempo, multiple time signatures (4/4, 3/4, 6/8), and adjustable BPM (20-300). Perfect for musicians practicing any instrument. No download required.">
+    <meta name="keywords" content="free metronome, online metronome, tap tempo metronome, metronome online, free metronome online, digital metronome, web metronome, 4/4 metronome, 3/4 metronome, music practice metronome">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://teal-semifreddo-cad4ad.netlify.app/metronome">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Free Online Metronome - Tap Tempo & Multiple Time Signatures">
+    <meta property="og:description" content="Precise web-based metronome with tap tempo, adjustable BPM (20-300), and support for 4/4, 3/4, and 6/8 time signatures. Perfect for practice sessions.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/metronome">
+    <meta property="og:site_name" content="PracticeLoop">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Free Online Metronome">
+    <meta name="twitter:description" content="Precise metronome with tap tempo, adjustable BPM, and multiple time signatures. Free, no download required.">
+    <meta name="twitter:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["WebApplication", "MusicRecording"],
+      "name": "Free Online Metronome",
+      "url": "https://teal-semifreddo-cad4ad.netlify.app/metronome",
+      "description": "A free, precise online metronome for musicians. Features tap tempo to match your playing, adjustable BPM from 20 to 300, and support for multiple time signatures including 4/4, 3/4, and 6/8. Built with Web Audio API for accurate timing. Perfect for practice sessions on any instrument.",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web Browser",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "GBP" },
+      "featureList": ["Tap tempo", "BPM range 20-300", "Multiple time signatures (4/4, 3/4, 6/8)", "Adjustable volume", "Visual beat indicator", "No download required"],
+      "author": { "@type": "Organization", "name": "PracticeLoop" }
+    }
+    </script>
+
+    <!-- Breadcrumb Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://teal-semifreddo-cad4ad.netlify.app/"
+      }, {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Free Online Metronome",
+        "item": "https://teal-semifreddo-cad4ad.netlify.app/metronome"
+      }]
+    }
+    </script>
+
+    <!-- Heap Analytics -->
+    <script type="text/javascript">
+      window.heapReadyCb=window.heapReadyCb||[],window.heap=window.heap||[],heap.load=function(e,t){window.heap.envId=e,window.heap.clientConfig=t=t||{},window.heap.clientConfig.shouldFetchServerConfig=!1;var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src="https://cdn.us.heap-api.com/config/"+e+"/heap_config.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(a,r);var n=["init","startTracking","stopTracking","track","resetIdentity","identify","getSessionId","getUserId","getIdentity","addUserProperties","addEventProperties","removeEventProperty","clearEventProperties","addAccountProperties","addAdapter","addTransformer","addTransformerFn","onReady","addPageviewProperties","removePageviewProperty","clearPageviewProperties","trackPageview"],i=function(e){return function(){var t=Array.prototype.slice.call(arguments,0);window.heapReadyCb.push({name:e,fn:function(){heap[e]&&heap[e].apply(heap,t)}})}};for(var p=0;p<n.length;p++)heap[n[p]]=i(n[p])};
+      heap.load("3079155083");
+    </script>
+
+    <style>
+        :root {
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --text-primary: #e0e0e0;
+            --text-secondary: #4b5563;
+            --border-color: #2d2d44;
+            --success-green: #10b981;
+            --purple-accent: #a78bfa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a1a2e 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--purple-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .metronome-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .metronome-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 1;
+            height: 40px;
+        }
+
+        select option {
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-tap {
+            background: linear-gradient(135deg, var(--purple-accent), var(--primary-color));
+        }
+
+        .btn-tap:hover {
+            background: linear-gradient(135deg, #9371eb, var(--primary-hover));
+        }
+
+        .btn-start {
+            width: 100%;
+            font-size: 1.25rem;
+            padding: 1.25rem;
+        }
+
+        .btn-start.running {
+            background: var(--success-green);
+        }
+
+        .btn-start.running:hover {
+            background: #059669;
+        }
+
+        .beat-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .beat-dot {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 4px solid var(--border-color);
+            transition: all 0.05s ease-out;
+        }
+
+        .beat-dot.flash {
+            background: var(--purple-accent);
+            border-color: var(--purple-accent);
+            box-shadow: 0 0 30px rgba(167, 139, 250, 0.6);
+        }
+
+        .beat-dot.flash-downbeat {
+            background: var(--success-green);
+            border-color: var(--success-green);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+        }
+
+        .volume-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .volume-group label {
+            margin: 0;
+            min-width: 60px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-track {
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--primary-hover);
+            transform: scale(1.1);
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 8px;
+            background: var(--bg-dark);
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .feature-list {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .feature-list h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-list ul {
+            list-style: none;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .feature-list li {
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-green);
+            font-weight: bold;
+        }
+
+        .cta-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(167, 139, 250, 0.1));
+            border-radius: 12px;
+            border: 1px solid var(--primary-color);
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .cta-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding: 2rem 1rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .metronome-card {
+                padding: 1.5rem;
+            }
+
+            .control-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .control-group {
+                width: 100%;
+            }
+
+            .beat-dot {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Free Online Metronome</h1>
+            <p class="subtitle">Precise timing for musicians • Tap tempo • Multiple time signatures</p>
+        </header>
+
+        <main>
+            <div class="metronome-card">
+                <div class="metronome-controls">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label for="bpmInput">BPM</label>
+                            <input type="number" id="bpmInput" min="20" max="300" value="120">
+                        </div>
+                        <div class="control-group">
+                            <label for="timeSigSelect">Time Signature</label>
+                            <select id="timeSigSelect">
+                                <option value="4/4">4/4</option>
+                                <option value="3/4">3/4</option>
+                                <option value="6/8">6/8</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="tapBtn" class="btn btn-tap">Tap Tempo</button>
+                        </div>
+                    </div>
+
+                    <div class="beat-indicator">
+                        <div class="beat-dot" id="beatDot"></div>
+                    </div>
+
+                    <button id="startStopBtn" class="btn btn-start">Start</button>
+
+                    <div class="volume-group">
+                        <label for="volumeSlider">Volume</label>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="50">
+                    </div>
+                </div>
+
+                <div class="feature-list">
+                    <h2>Features</h2>
+                    <ul>
+                        <li>Precise Web Audio API timing (sub-millisecond accuracy)</li>
+                        <li>Tap tempo - tap at your playing speed to set BPM</li>
+                        <li>BPM range: 20-300 (covers all musical tempos)</li>
+                        <li>Multiple time signatures: 4/4, 3/4, 6/8</li>
+                        <li>Visual beat indicator with downbeat emphasis</li>
+                        <li>Adjustable volume control</li>
+                        <li>No download, registration, or ads</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <h2>Need to slow down YouTube videos for practice?</h2>
+                <p>PracticeLoop lets you slow down, loop, and practice any YouTube video with built-in metronome and progressive speed training.</p>
+                <a href="/" class="cta-btn">Try PracticeLoop Free →</a>
+            </div>
+        </main>
+
+        <footer>
+            <p>
+                Part of <a href="/">PracticeLoop</a> - Your complete music practice toolkit
+                <br>
+                <a href="/guitar">Guitar</a> • <a href="/bass">Bass</a> • <a href="/piano">Piano</a> • <a href="/drums">Drums</a> • <a href="/violin">Violin</a>
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        class Metronome {
+            constructor() {
+                this.audioCtx = null;
+                this.running = false;
+                this.bpm = 120;
+                this.timeSig = [4, 4];
+                this.volume = 0.5;
+                this.beatCount = 0;
+                this.nextNoteTime = 0;
+                this.schedulerTimer = null;
+                this.lookahead = 25.0; // ms
+                this.scheduleAheadTime = 0.1; // seconds
+                this.tapTimes = [];
+
+                this.initElements();
+                this.initEventListeners();
+
+                // Track page view
+                if (window.heap) heap.track('metronome_page_view');
+            }
+
+            initElements() {
+                this.bpmInput = document.getElementById('bpmInput');
+                this.timeSigSelect = document.getElementById('timeSigSelect');
+                this.tapBtn = document.getElementById('tapBtn');
+                this.startStopBtn = document.getElementById('startStopBtn');
+                this.beatDot = document.getElementById('beatDot');
+                this.volumeSlider = document.getElementById('volumeSlider');
+            }
+
+            initEventListeners() {
+                this.bpmInput.addEventListener('change', () => {
+                    let val = parseInt(this.bpmInput.value, 10);
+                    if (val < 20) val = 20;
+                    if (val > 300) val = 300;
+                    this.bpmInput.value = val;
+                    this.bpm = val;
+                    if (window.heap) heap.track('metronome_bpm_changed', { bpm: val });
+                });
+
+                this.timeSigSelect.addEventListener('change', () => {
+                    const val = this.timeSigSelect.value;
+                    const parts = val.split('/');
+                    this.timeSig = [parseInt(parts[0], 10), parseInt(parts[1], 10)];
+                    this.beatCount = 0;
+                    if (window.heap) heap.track('metronome_time_sig_changed', { timeSig: val });
+                });
+
+                this.volumeSlider.addEventListener('input', () => {
+                    this.volume = parseInt(this.volumeSlider.value, 10) / 100;
+                });
+
+                this.startStopBtn.addEventListener('click', () => {
+                    if (this.running) {
+                        this.stop();
+                    } else {
+                        this.start();
+                    }
+                });
+
+                this.tapBtn.addEventListener('click', () => {
+                    this.tap();
+                });
+            }
+
+            ensureAudioContext() {
+                if (!this.audioCtx) {
+                    this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (this.audioCtx.state === 'suspended') {
+                    this.audioCtx.resume();
+                }
+                return this.audioCtx;
+            }
+
+            start() {
+                const ctx = this.ensureAudioContext();
+                this.running = true;
+                this.beatCount = 0;
+                this.nextNoteTime = ctx.currentTime;
+
+                this.scheduler();
+
+                this.startStopBtn.textContent = 'Stop';
+                this.startStopBtn.classList.add('running');
+
+                if (window.heap) heap.track('metronome_started', { bpm: this.bpm, timeSig: this.timeSig.join('/') });
+            }
+
+            stop() {
+                this.running = false;
+
+                if (this.schedulerTimer) {
+                    clearTimeout(this.schedulerTimer);
+                    this.schedulerTimer = null;
+                }
+
+                this.beatDot.classList.remove('flash', 'flash-downbeat');
+
+                this.startStopBtn.textContent = 'Start';
+                this.startStopBtn.classList.remove('running');
+
+                if (window.heap) heap.track('metronome_stopped');
+            }
+
+            scheduler() {
+                if (!this.running) return;
+
+                const ctx = this.audioCtx;
+
+                while (this.nextNoteTime < ctx.currentTime + this.scheduleAheadTime) {
+                    this.scheduleNote(this.nextNoteTime, this.beatCount);
+                    this.advanceBeat();
+                }
+
+                this.schedulerTimer = setTimeout(() => this.scheduler(), this.lookahead);
+            }
+
+            scheduleNote(time, beatNumber) {
+                const ctx = this.audioCtx;
+                const beatsPerMeasure = this.timeSig[0];
+                const isDownbeat = (beatNumber % beatsPerMeasure === 0);
+
+                // Create oscillator for click sound
+                const osc = ctx.createOscillator();
+                const gainNode = ctx.createGain();
+
+                osc.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                // Downbeat: higher pitch; Normal beat: lower pitch
+                osc.frequency.value = isDownbeat ? 1000 : 800;
+                osc.type = 'sine';
+
+                const volume = this.volume;
+                gainNode.gain.value = volume * 0.3;
+
+                osc.start(time);
+                osc.stop(time + 0.05);
+
+                // Visual feedback (schedule via setTimeout to match audio time)
+                const delay = (time - ctx.currentTime) * 1000;
+                setTimeout(() => {
+                    this.flashBeat(isDownbeat);
+                }, delay);
+            }
+
+            advanceBeat() {
+                const secondsPerBeat = 60.0 / this.bpm;
+                this.nextNoteTime += secondsPerBeat;
+                this.beatCount++;
+            }
+
+            flashBeat(isDownbeat) {
+                if (!this.beatDot) return;
+
+                // Remove existing classes
+                this.beatDot.classList.remove('flash', 'flash-downbeat');
+
+                // Force reflow
+                void this.beatDot.offsetWidth;
+
+                // Add appropriate class
+                if (isDownbeat) {
+                    this.beatDot.classList.add('flash-downbeat');
+                } else {
+                    this.beatDot.classList.add('flash');
+                }
+
+                // Remove class after animation
+                setTimeout(() => {
+                    if (this.beatDot) {
+                        this.beatDot.classList.remove('flash', 'flash-downbeat');
+                    }
+                }, 100);
+            }
+
+            tap() {
+                const now = Date.now();
+
+                // Reset if gap > 2s
+                if (this.tapTimes.length > 0) {
+                    const lastTap = this.tapTimes[this.tapTimes.length - 1];
+                    if (now - lastTap > 2000) {
+                        this.tapTimes = [];
+                    }
+                }
+
+                this.tapTimes.push(now);
+
+                // Keep last 8 taps
+                if (this.tapTimes.length > 8) {
+                    this.tapTimes.shift();
+                }
+
+                // Calculate BPM from intervals
+                if (this.tapTimes.length >= 2) {
+                    const intervals = [];
+                    for (let i = 1; i < this.tapTimes.length; i++) {
+                        intervals.push(this.tapTimes[i] - this.tapTimes[i - 1]);
+                    }
+                    const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+                    const bpm = Math.round(60000 / avgInterval);
+
+                    if (bpm >= 20 && bpm <= 300) {
+                        this.bpm = bpm;
+                        this.bpmInput.value = bpm;
+                        if (window.heap) heap.track('metronome_tap_tempo', { bpm });
+                    }
+                }
+            }
+        }
+
+        // Initialize metronome on page load
+        const metronome = new Metronome();
+    </script>
+</body>
+</html>
