@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Scales Reference - Interactive Fretboard Charts & Audio</title>
+    <meta name="description" content="Free interactive guitar scales reference with visual fretboard charts, audio playback, and practice patterns. Learn major, minor, pentatonic, blues scales and modes.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Guitar Scales Reference - Interactive Fretboard Charts">
+    <meta property="og:description" content="Free interactive guitar scales tool with visual fretboard diagrams and audio playback. Major, minor, pentatonic, blues, and all 7 modes.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/scales.html">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Guitar Scales Reference - Interactive Fretboard Charts">
+    <meta name="twitter:description" content="Free interactive guitar scales tool with visual fretboard diagrams and audio playback.">
+    
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Guitar Scales Reference",
+      "description": "Interactive guitar scales reference with visual fretboard charts, audio playback, and practice patterns.",
+      "url": "https://teal-semifreddo-cad4ad.netlify.app/scales.html",
+      "applicationCategory": "MusicApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        
+        .cta-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .cta-banner a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+        
+        .cta-banner a:hover {
+            text-decoration: underline;
+        }
+        
+        .controls {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .control-group {
+            margin-bottom: 20px;
+        }
+        
+        .control-group:last-child {
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            cursor: pointer;
+        }
+        
+        select option {
+            background: #1a1a2e;
+            color: white;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .scale-display {
+            background: rgba(255,255,255,0.05);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .scale-title {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #667eea;
+            text-align: center;
+        }
+        
+        .fretboard {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+        
+        .fretboard svg {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .scale-info {
+            background: rgba(255,255,255,0.03);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .scale-info h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .scale-info p {
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .notes-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .note-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .practice-patterns {
+            margin-top: 20px;
+        }
+        
+        .practice-patterns ol {
+            padding-left: 25px;
+            line-height: 1.8;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .subtitle {
+                font-size: 1em;
+            }
+            
+            .scale-title {
+                font-size: 1.5em;
+            }
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding: 30px;
+            color: #888;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎸 Guitar Scales Reference</h1>
+            <p class="subtitle">Interactive fretboard charts, audio playback, and practice patterns</p>
+        </header>
+        
+        <div class="cta-banner">
+            <a href="/" target="_blank">Want to practice these scales? Use PracticeLoop to slow down YouTube videos →</a>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="root-note">Root Note:</label>
+                <select id="root-note">
+                    <option value="C">C</option>
+                    <option value="C#">C# / Db</option>
+                    <option value="D">D</option>
+                    <option value="D#">D# / Eb</option>
+                    <option value="E">E</option>
+                    <option value="F">F</option>
+                    <option value="F#">F# / Gb</option>
+                    <option value="G">G</option>
+                    <option value="G#">G# / Ab</option>
+                    <option value="A">A</option>
+                    <option value="A#">A# / Bb</option>
+                    <option value="B">B</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label for="scale-type">Scale Type:</label>
+                <select id="scale-type">
+                    <optgroup label="Common Scales">
+                        <option value="major">Major (Ionian)</option>
+                        <option value="minor">Natural Minor (Aeolian)</option>
+                        <option value="harmonic-minor">Harmonic Minor</option>
+                        <option value="melodic-minor">Melodic Minor</option>
+                        <option value="pentatonic-major">Major Pentatonic</option>
+                        <option value="pentatonic-minor">Minor Pentatonic</option>
+                        <option value="blues">Blues Scale</option>
+                    </optgroup>
+                    <optgroup label="Modes">
+                        <option value="dorian">Dorian</option>
+                        <option value="phrygian">Phrygian</option>
+                        <option value="lydian">Lydian</option>
+                        <option value="mixolydian">Mixolydian</option>
+                        <option value="locrian">Locrian</option>
+                    </optgroup>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <button id="play-scale">▶ Play Scale</button>
+            </div>
+        </div>
+        
+        <div class="scale-display">
+            <h2 class="scale-title" id="scale-name">C Major Scale</h2>
+            
+            <div class="fretboard" id="fretboard-container">
+                <!-- SVG fretboard will be generated here -->
+            </div>
+            
+            <div class="scale-info">
+                <h3>Notes in this scale:</h3>
+                <div class="notes-list" id="notes-list">
+                    <!-- Note badges will be generated here -->
+                </div>
+                
+                <h3 style="margin-top: 25px;">Formula:</h3>
+                <p id="scale-formula">W-W-H-W-W-W-H (Whole-Whole-Half-Whole-Whole-Whole-Half)</p>
+                
+                <h3 style="margin-top: 25px;">Practice Patterns:</h3>
+                <div class="practice-patterns" id="practice-patterns">
+                    <!-- Practice patterns will be generated here -->
+                </div>
+                
+                <h3 style="margin-top: 25px;">Common Uses:</h3>
+                <p id="scale-uses">The major scale is the foundation of Western music. Use it over major chords and in major keys.</p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Free guitar scales reference tool by <a href="/">PracticeLoop</a></p>
+            <p style="margin-top: 10px;">Practice these scales with our <a href="/">YouTube slow-down and loop tool</a></p>
+        </footer>
+    </div>
+    
+    <script>
+        // Scale definitions (intervals in semitones from root)
+        const scaleIntervals = {
+            'major': [0, 2, 4, 5, 7, 9, 11],
+            'minor': [0, 2, 3, 5, 7, 8, 10],
+            'harmonic-minor': [0, 2, 3, 5, 7, 8, 11],
+            'melodic-minor': [0, 2, 3, 5, 7, 9, 11],
+            'pentatonic-major': [0, 2, 4, 7, 9],
+            'pentatonic-minor': [0, 3, 5, 7, 10],
+            'blues': [0, 3, 5, 6, 7, 10],
+            'dorian': [0, 2, 3, 5, 7, 9, 10],
+            'phrygian': [0, 1, 3, 5, 7, 8, 10],
+            'lydian': [0, 2, 4, 6, 7, 9, 11],
+            'mixolydian': [0, 2, 4, 5, 7, 9, 10],
+            'locrian': [0, 1, 3, 5, 6, 8, 10]
+        };
+        
+        const scaleFormulas = {
+            'major': 'W-W-H-W-W-W-H',
+            'minor': 'W-H-W-W-H-W-W',
+            'harmonic-minor': 'W-H-W-W-H-W½-H',
+            'melodic-minor': 'W-H-W-W-W-W-H',
+            'pentatonic-major': 'W-W-W½-W-W½',
+            'pentatonic-minor': 'W½-W-W-W½-W',
+            'blues': 'W½-W-H-H-W½-W',
+            'dorian': 'W-H-W-W-W-H-W',
+            'phrygian': 'H-W-W-W-H-W-W',
+            'lydian': 'W-W-W-H-W-W-H',
+            'mixolydian': 'W-W-H-W-W-H-W',
+            'locrian': 'H-W-W-H-W-W-W'
+        };
+        
+        const scaleUses = {
+            'major': 'The major scale is the foundation of Western music. Use it over major chords and in major keys. Bright and happy sound.',
+            'minor': 'The natural minor scale creates a darker, more melancholic sound. Use it over minor chords and in minor keys.',
+            'harmonic-minor': 'Features a raised 7th degree, creating an exotic, classical sound. Common in classical and metal music.',
+            'melodic-minor': 'Combines minor and major characteristics. Ascending version often used in jazz and classical music.',
+            'pentatonic-major': 'A 5-note scale that sounds great over major chords. Very common in rock, country, and blues solos.',
+            'pentatonic-minor': 'The most popular rock and blues scale. Works over minor and dominant chords. Easy to improvise with.',
+            'blues': 'Adds a "blue note" to the minor pentatonic. Essential for blues, rock, and jazz. Creates that signature "bluesy" sound.',
+            'dorian': 'A minor scale with a raised 6th. Jazzy and sophisticated sound. Common in jazz, rock, and funk.',
+            'phrygian': 'Features a flat 2nd, creating a Spanish/flamenco flavor. Used in metal and world music.',
+            'lydian': 'A major scale with a raised 4th. Dreamy, ethereal sound. Popular in film scores and progressive rock.',
+            'mixolydian': 'A major scale with a flat 7th. Bluesy, rock-oriented sound. Very common in rock and blues.',
+            'locrian': 'The darkest mode with a diminished 5th. Rarely used melodically, but interesting for experimental music.'
+        };
+        
+        const practicePatterns = {
+            'major': [
+                'Play ascending and descending slowly',
+                'Practice in thirds (1-3, 2-4, 3-5, etc.)',
+                'Play ascending in groups of four notes',
+                'Practice with a metronome, gradually increasing speed',
+                'Improvise melodies using only scale notes'
+            ],
+            'minor': [
+                'Play ascending and descending slowly',
+                'Practice in thirds (1-3, 2-4, 3-5, etc.)',
+                'Compare with major scale (same root) to hear the difference',
+                'Practice with backing track in the same key',
+                'Create minor chord progressions using scale notes'
+            ],
+            'harmonic-minor': [
+                'Emphasize the raised 7th in your practice',
+                'Play ascending and descending, feeling the W½ interval',
+                'Practice over minor chord progressions',
+                'Use to create exotic-sounding melodies',
+                'Compare with natural minor scale'
+            ],
+            'melodic-minor': [
+                'Practice ascending (raised 6th and 7th) and descending (natural minor)',
+                'Use over minor II-V-I progressions',
+                'Improvise jazz melodies',
+                'Practice all positions on the neck',
+                'Combine with natural and harmonic minor'
+            ],
+            'pentatonic-major': [
+                'Learn all 5 positions/boxes across the fretboard',
+                'Practice connecting positions',
+                'Bend into scale notes (especially from the 3rd to the 4th)',
+                'Improvise over major and dominant 7th chords',
+                'Combine with full major scale'
+            ],
+            'pentatonic-minor': [
+                'Master all 5 box positions',
+                'Practice sliding between positions',
+                'Add vibrato on key notes (root, 5th, minor 3rd)',
+                'Improvise over 12-bar blues progressions',
+                'Combine with blues scale (add flat 5)'
+            ],
+            'blues': [
+                'Emphasize the "blue note" (flat 5) with bends',
+                'Practice over blues backing tracks',
+                'Combine with minor pentatonic',
+                'Use bends, slides, and vibrato',
+                'Learn classic blues licks using this scale'
+            ],
+            'dorian': [
+                'Compare with natural minor - feel the raised 6th',
+                'Practice over minor 7th chords',
+                'Use in jazz and funk contexts',
+                'Improvise over II chords in major keys',
+                'Practice all positions'
+            ],
+            'phrygian': [
+                'Emphasize the flat 2nd for Spanish flavor',
+                'Practice over minor chords',
+                'Use in metal and flamenco styles',
+                'Create dark, exotic melodies',
+                'Compare with natural minor'
+            ],
+            'lydian': [
+                'Emphasize the raised 4th',
+                'Practice over major 7th chords',
+                'Use for dreamy, floating sounds',
+                'Improvise over IV chords in major keys',
+                'Create film score-style melodies'
+            ],
+            'mixolydian': [
+                'Feel the flat 7th (vs major scale)',
+                'Practice over dominant 7th chords',
+                'Use for rock and blues',
+                'Improvise over V chords',
+                'Compare with major scale'
+            ],
+            'locrian': [
+                'Emphasize the diminished 5th',
+                'Practice over half-diminished chords',
+                'Use for dark, unstable sounds',
+                'Experiment with avant-garde melodies',
+                'Compare with natural minor'
+            ]
+        };
+        
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        // Standard tuning (low to high)
+        const standardTuning = ['E', 'A', 'D', 'G', 'B', 'E'];
+        
+        // Audio context for playback
+        let audioContext;
+        let isPlaying = false;
+        
+        function initAudio() {
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function getNoteFrequency(noteName, octave = 4) {
+            const A4 = 440;
+            const noteIndex = noteNames.indexOf(noteName);
+            const A4Index = noteNames.indexOf('A');
+            const semitonesFromA4 = (octave - 4) * 12 + (noteIndex - A4Index);
+            return A4 * Math.pow(2, semitonesFromA4 / 12);
+        }
+        
+        function playNote(frequency, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = frequency;
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+        
+        function getScaleNotes(root, scaleType) {
+            const rootIndex = noteNames.indexOf(root);
+            const intervals = scaleIntervals[scaleType];
+            return intervals.map(interval => noteNames[(rootIndex + interval) % 12]);
+        }
+        
+        function generateFretboard(root, scaleType) {
+            const notes = getScaleNotes(root, scaleType);
+            const frets = 15;
+            const stringSpacing = 40;
+            const fretSpacing = 60;
+            const width = fretSpacing * frets + 100;
+            const height = stringSpacing * 6 + 60;
+            
+            let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
+            
+            // Draw frets
+            for (let i = 0; i <= frets; i++) {
+                const x = 50 + i * fretSpacing;
+                const strokeWidth = i === 0 ? 4 : 1;
+                svg += `<line x1="${x}" y1="30" x2="${x}" y2="${height - 30}" stroke="#666" stroke-width="${strokeWidth}"/>`;
+            }
+            
+            // Draw strings
+            for (let i = 0; i < 6; i++) {
+                const y = 30 + i * stringSpacing;
+                svg += `<line x1="50" y1="${y}" x2="${width - 50}" y2="${y}" stroke="#888" stroke-width="2"/>`;
+            }
+            
+            // Fret markers
+            const markers = [3, 5, 7, 9, 12, 15];
+            markers.forEach(fret => {
+                const x = 50 + (fret - 0.5) * fretSpacing;
+                if (fret === 12) {
+                    svg += `<circle cx="${x}" cy="${30 + stringSpacing * 1.5}" r="5" fill="#444"/>`;
+                    svg += `<circle cx="${x}" cy="${30 + stringSpacing * 4.5}" r="5" fill="#444"/>`;
+                } else {
+                    svg += `<circle cx="${x}" cy="${30 + stringSpacing * 3}" r="5" fill="#444"/>`;
+                }
+            });
+            
+            // Draw scale notes
+            for (let stringIdx = 0; stringIdx < 6; stringIdx++) {
+                const openNote = standardTuning[stringIdx];
+                const openNoteIndex = noteNames.indexOf(openNote);
+                
+                for (let fret = 0; fret <= frets; fret++) {
+                    const noteIndex = (openNoteIndex + fret) % 12;
+                    const note = noteNames[noteIndex];
+                    
+                    if (notes.includes(note)) {
+                        const x = fret === 0 ? 25 : 50 + (fret - 0.5) * fretSpacing;
+                        const y = 30 + stringIdx * stringSpacing;
+                        const isRoot = note === root;
+                        
+                        svg += `<circle cx="${x}" cy="${y}" r="12" fill="${isRoot ? '#667eea' : '#764ba2'}" stroke="#fff" stroke-width="2"/>`;
+                        svg += `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="12" font-weight="bold">${note}</text>`;
+                    }
+                }
+            }
+            
+            svg += '</svg>';
+            return svg;
+        }
+        
+        function updateDisplay() {
+            const root = document.getElementById('root-note').value;
+            const scaleType = document.getElementById('scale-type').value;
+            const scaleTypeName = document.getElementById('scale-type').selectedOptions[0].text;
+            
+            // Update scale name
+            document.getElementById('scale-name').textContent = `${root} ${scaleTypeName}`;
+            
+            // Update fretboard
+            document.getElementById('fretboard-container').innerHTML = generateFretboard(root, scaleType);
+            
+            // Update notes list
+            const notes = getScaleNotes(root, scaleType);
+            const notesList = document.getElementById('notes-list');
+            notesList.innerHTML = notes.map(note => 
+                `<span class="note-badge">${note}</span>`
+            ).join('');
+            
+            // Update formula
+            document.getElementById('scale-formula').textContent = scaleFormulas[scaleType];
+            
+            // Update uses
+            document.getElementById('scale-uses').textContent = scaleUses[scaleType];
+            
+            // Update practice patterns
+            const patterns = practicePatterns[scaleType];
+            document.getElementById('practice-patterns').innerHTML = 
+                '<ol>' + patterns.map(p => `<li>${p}</li>`).join('') + '</ol>';
+        }
+        
+        async function playScale() {
+            if (isPlaying) return;
+            
+            initAudio();
+            isPlaying = true;
+            
+            const button = document.getElementById('play-scale');
+            button.disabled = true;
+            button.textContent = '▶ Playing...';
+            
+            const root = document.getElementById('root-note').value;
+            const scaleType = document.getElementById('scale-type').value;
+            const notes = getScaleNotes(root, scaleType);
+            
+            const noteDuration = 0.5;
+            
+            for (let i = 0; i < notes.length; i++) {
+                const frequency = getNoteFrequency(notes[i], 4);
+                playNote(frequency, noteDuration);
+                await new Promise(resolve => setTimeout(resolve, noteDuration * 1000));
+            }
+            
+            // Play root note an octave higher to complete the scale
+            const rootFrequency = getNoteFrequency(root, 5);
+            playNote(rootFrequency, noteDuration);
+            await new Promise(resolve => setTimeout(resolve, noteDuration * 1000));
+            
+            button.disabled = false;
+            button.textContent = '▶ Play Scale';
+            isPlaying = false;
+        }
+        
+        // Event listeners
+        document.getElementById('root-note').addEventListener('change', updateDisplay);
+        document.getElementById('scale-type').addEventListener('change', updateDisplay);
+        document.getElementById('play-scale').addEventListener('click', playScale);
+        
+        // Initial display
+        updateDisplay();
+    </script>
+</body>
+</html>
