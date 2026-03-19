@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practice Streak Tracker - Track Your Daily Music Practice | PracticeLoop</title>
+    <meta name="description" content="Track your daily music practice streak and share your progress. Free practice habit tracker for musicians. Log sessions, build consistency, and share your achievements.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Practice Streak Tracker - Track Your Daily Music Practice">
+    <meta property="og:description" content="Track your daily practice streak and share your progress. Free tool for musicians to build consistent practice habits.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/practice-streak">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Practice Streak Tracker - Track Your Daily Music Practice">
+    <meta name="twitter:description" content="Track your daily practice streak and share your progress. Free tool for musicians.">
+
+    <!-- Schema.org -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Practice Streak Tracker",
+      "description": "Track your daily music practice streak and share your progress. Free practice habit tracker for musicians.",
+      "url": "https://teal-semifreddo-cad4ad.netlify.app/practice-streak",
+      "applicationCategory": "MusicApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .streak-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .streak-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .streak-number {
+            font-size: 72px;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .streak-label {
+            font-size: 24px;
+            opacity: 0.9;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin: 20px 0;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .calendar-day:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .calendar-day.practiced {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+            font-weight: bold;
+        }
+
+        .calendar-day.today {
+            border-color: #fff;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 10px 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .motivation {
+            text-align: center;
+            font-size: 18px;
+            font-style: italic;
+            opacity: 0.9;
+            margin: 20px 0;
+        }
+
+        #shareCanvas {
+            display: none;
+        }
+
+        .share-preview {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .share-preview img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .cta-box {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-box h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .cta-box p {
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .cta-box a {
+            color: #ffd89b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 30px;
+            opacity: 0.8;
+        }
+
+        .footer-links a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 15px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            .streak-number {
+                font-size: 56px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔥 Practice Streak Tracker</h1>
+            <p class="subtitle">Build consistency, share your progress</p>
+        </header>
+
+        <div class="streak-card">
+            <div class="streak-display">
+                <div class="streak-label">Current Streak</div>
+                <div class="streak-number" id="streakNumber">0</div>
+                <div class="streak-label">days</div>
+            </div>
+
+            <div class="motivation" id="motivationText">Start your practice journey today! 🎵</div>
+
+            <button class="btn btn-primary" id="logPracticeBtn">✓ Log Today's Practice</button>
+
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number" id="totalDays">0</div>
+                    <div class="stat-label">Total Days</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="longestStreak">0</div>
+                    <div class="stat-label">Longest Streak</div>
+                </div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+
+            <button class="btn btn-secondary" id="shareBtn">📸 Share My Progress</button>
+            <button class="btn btn-secondary" id="resetBtn">🔄 Reset Streak</button>
+
+            <div class="share-preview" id="sharePreview"></div>
+        </div>
+
+        <div class="cta-box">
+            <h3>Ready to practice smarter?</h3>
+            <p>Use <a href="/">PracticeLoop</a> to slow down and loop any YouTube video</p>
+            <a href="/" class="btn btn-primary">Try PracticeLoop Free →</a>
+        </div>
+
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/blog">Blog</a>
+            <a href="/guitar">Guitar</a>
+            <a href="/piano">Piano</a>
+        </div>
+    </div>
+
+    <canvas id="shareCanvas" width="1200" height="630"></canvas>
+
+    <script>
+        // Data structure
+        let streakData = {
+            practiceDays: [], // Array of date strings in YYYY-MM-DD format
+            currentStreak: 0,
+            longestStreak: 0,
+            totalDays: 0
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('practiceStreak');
+            if (saved) {
+                streakData = JSON.parse(saved);
+            }
+            updateUI();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('practiceStreak', JSON.stringify(streakData));
+        }
+
+        // Get today's date in YYYY-MM-DD format
+        function getTodayString() {
+            const today = new Date();
+            return today.toISOString().split('T')[0];
+        }
+
+        // Get date string for a specific day offset
+        function getDateString(daysAgo) {
+            const date = new Date();
+            date.setDate(date.getDate() - daysAgo);
+            return date.toISOString().split('T')[0];
+        }
+
+        // Calculate current streak
+        function calculateStreak() {
+            if (streakData.practiceDays.length === 0) return 0;
+
+            let streak = 0;
+            let checkDate = new Date();
+
+            // Start from today or yesterday (allow logging past days)
+            for (let i = 0; i < 365; i++) {
+                const dateStr = getDateString(i);
+                if (streakData.practiceDays.includes(dateStr)) {
+                    streak++;
+                } else if (i > 0) {
+                    // Break streak if we miss a day (but allow today to not be logged yet)
+                    break;
+                }
+            }
+
+            return streak;
+        }
+
+        // Log today's practice
+        function logPractice() {
+            const today = getTodayString();
+
+            if (streakData.practiceDays.includes(today)) {
+                alert('Already logged for today! Come back tomorrow 🎵');
+                return;
+            }
+
+            streakData.practiceDays.push(today);
+            streakData.totalDays = streakData.practiceDays.length;
+            streakData.currentStreak = calculateStreak();
+            streakData.longestStreak = Math.max(streakData.longestStreak, streakData.currentStreak);
+
+            saveData();
+            updateUI();
+
+            // Celebrate milestones
+            if (streakData.currentStreak === 1) {
+                showConfetti();
+            } else if (streakData.currentStreak % 7 === 0) {
+                showConfetti();
+                alert(`🎉 ${streakData.currentStreak} day streak! Amazing! 🎉`);
+            }
+        }
+
+        // Simple confetti effect
+        function showConfetti() {
+            const colors = ['#ffd89b', '#19547b', '#667eea', '#764ba2'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.top = '-10px';
+                confetti.style.opacity = '1';
+                confetti.style.transition = 'all 2s ease-out';
+                confetti.style.zIndex = '9999';
+                confetti.style.borderRadius = '50%';
+                document.body.appendChild(confetti);
+
+                setTimeout(() => {
+                    confetti.style.top = window.innerHeight + 'px';
+                    confetti.style.opacity = '0';
+                }, 10);
+
+                setTimeout(() => confetti.remove(), 2100);
+            }
+        }
+
+        // Get motivation message
+        function getMotivationMessage(streak) {
+            if (streak === 0) return "Start your practice journey today! 🎵";
+            if (streak === 1) return "Great start! Keep it going tomorrow! 🔥";
+            if (streak < 7) return `${streak} days in a row! You're building a habit! 💪`;
+            if (streak === 7) return "One week streak! You're unstoppable! 🌟";
+            if (streak < 30) return `${streak} days! You're a practice warrior! ⚔️`;
+            if (streak === 30) return "30 DAYS! You're a practice champion! 🏆";
+            return `${streak} days! Legendary dedication! 👑`;
+        }
+
+        // Render calendar
+        function renderCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            grid.innerHTML = '';
+
+            const today = getTodayString();
+
+            // Show last 28 days (4 weeks)
+            for (let i = 27; i >= 0; i--) {
+                const dateStr = getDateString(i);
+                const day = document.createElement('div');
+                day.className = 'calendar-day';
+
+                if (streakData.practiceDays.includes(dateStr)) {
+                    day.classList.add('practiced');
+                    day.textContent = '✓';
+                }
+
+                if (dateStr === today) {
+                    day.classList.add('today');
+                }
+
+                grid.appendChild(day);
+            }
+        }
+
+        // Update UI
+        function updateUI() {
+            streakData.currentStreak = calculateStreak();
+
+            document.getElementById('streakNumber').textContent = streakData.currentStreak;
+            document.getElementById('totalDays').textContent = streakData.totalDays;
+            document.getElementById('longestStreak').textContent = streakData.longestStreak;
+            document.getElementById('motivationText').textContent = getMotivationMessage(streakData.currentStreak);
+
+            renderCalendar();
+
+            // Update button text if already logged today
+            const today = getTodayString();
+            const btn = document.getElementById('logPracticeBtn');
+            if (streakData.practiceDays.includes(today)) {
+                btn.textContent = '✓ Practice Logged for Today!';
+                btn.style.opacity = '0.7';
+            } else {
+                btn.textContent = '✓ Log Today\'s Practice';
+                btn.style.opacity = '1';
+            }
+        }
+
+        // Generate shareable image
+        function generateShareImage() {
+            const canvas = document.getElementById('shareCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, 1200, 630);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1200, 630);
+
+            // Title
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('🔥 Practice Streak', 600, 100);
+
+            // Streak number
+            ctx.font = 'bold 180px Arial';
+            ctx.fillStyle = '#ffd89b';
+            ctx.fillText(streakData.currentStreak, 600, 300);
+
+            // Days label
+            ctx.font = 'bold 60px Arial';
+            ctx.fillStyle = '#fff';
+            ctx.fillText('days in a row', 600, 380);
+
+            // Stats
+            ctx.font = '36px Arial';
+            ctx.fillText(`Total: ${streakData.totalDays} days  |  Longest: ${streakData.longestStreak} days`, 600, 460);
+
+            // Motivation
+            ctx.font = 'italic 32px Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.fillText(getMotivationMessage(streakData.currentStreak), 600, 530);
+
+            // Footer
+            ctx.font = 'bold 28px Arial';
+            ctx.fillStyle = '#ffd89b';
+            ctx.fillText('PracticeLoop.app - Track your practice journey', 600, 590);
+
+            return canvas.toDataURL('image/png');
+        }
+
+        // Share progress
+        function shareProgress() {
+            const imageUrl = generateShareImage();
+
+            // Show preview
+            const preview = document.getElementById('sharePreview');
+            preview.innerHTML = `
+                <img src="${imageUrl}" alt="Practice Streak">
+                <p style="margin-top: 15px; opacity: 0.9;">Right-click to save or share on social media!</p>
+            `;
+
+            // Try to use Web Share API if available
+            if (navigator.share && navigator.canShare) {
+                fetch(imageUrl)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const file = new File([blob], 'practice-streak.png', { type: 'image/png' });
+                        if (navigator.canShare({ files: [file] })) {
+                            navigator.share({
+                                title: `${streakData.currentStreak} Day Practice Streak!`,
+                                text: `I've practiced ${streakData.currentStreak} days in a row! 🔥 Track your practice streak at PracticeLoop.app`,
+                                files: [file]
+                            });
+                        }
+                    });
+            }
+        }
+
+        // Reset streak (with confirmation)
+        function resetStreak() {
+            if (confirm('Are you sure you want to reset your streak? This cannot be undone.')) {
+                streakData = {
+                    practiceDays: [],
+                    currentStreak: 0,
+                    longestStreak: 0,
+                    totalDays: 0
+                };
+                saveData();
+                updateUI();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('logPracticeBtn').addEventListener('click', logPractice);
+        document.getElementById('shareBtn').addEventListener('click', shareProgress);
+        document.getElementById('resetBtn').addEventListener('click', resetStreak);
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>
