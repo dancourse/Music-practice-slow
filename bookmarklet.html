@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PracticeLoop Bookmarklet - Instant YouTube Practice Tool</title>
+    <meta name="description" content="Drag this bookmarklet to your bookmarks bar for instant one-click access to PracticeLoop on any YouTube video. No installation needed.">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="PracticeLoop Bookmarklet - Instant YouTube Practice Tool">
+    <meta property="og:description" content="One-click bookmarklet to practice any YouTube video with speed control and looping. Works on all browsers.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://teal-semifreddo-cad4ad.netlify.app/bookmarklet">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="PracticeLoop Bookmarklet">
+    <meta name="twitter:description" content="One-click YouTube practice tool. Drag to your bookmarks bar.">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎵%3C/text%3E%3C/svg%3E">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 40px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .bookmarklet-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+        }
+
+        .bookmarklet-box h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .bookmarklet-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px 40px;
+            font-size: 1.3em;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            cursor: move;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 3px dashed rgba(255, 255, 255, 0.5);
+        }
+
+        .bookmarklet-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .drag-instruction {
+            margin-top: 20px;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .drag-instruction strong {
+            color: #f093fb;
+        }
+
+        .how-to {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .how-to h2 {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+        }
+
+        .steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .steps li {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 60px;
+            position: relative;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .features h2 {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+        }
+
+        .features ul {
+            list-style: none;
+        }
+
+        .features li {
+            padding-left: 30px;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .features li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+            font-weight: 700;
+            font-size: 1.3em;
+        }
+
+        .cta-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-box h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+        }
+
+        .cta-box p {
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .primary-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+            color: white;
+            padding: 18px 45px;
+            font-size: 1.2em;
+            font-weight: 700;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .primary-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .subtitle {
+                font-size: 1em;
+            }
+
+            .bookmarklet-box,
+            .how-to,
+            .features,
+            .cta-box {
+                padding: 25px;
+            }
+
+            .bookmarklet-button {
+                padding: 15px 30px;
+                font-size: 1.1em;
+            }
+
+            .steps li,
+            .features li {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 PracticeLoop Bookmarklet</h1>
+            <p class="subtitle">One-click YouTube practice tool for your browser</p>
+        </header>
+
+        <div class="bookmarklet-box">
+            <h2>👇 Drag this button to your bookmarks bar:</h2>
+            <a href="javascript:(function(){var u=window.location.href;if(u.includes('youtube.com/watch')){var v=new URLSearchParams(window.location.search).get('v');if(v){window.open('https://teal-semifreddo-cad4ad.netlify.app/?v='+v,'_blank');}}else{alert('Please use this bookmarklet on a YouTube video page');}})();" class="bookmarklet-button">
+                🎵 Practice in PracticeLoop
+            </a>
+            <p class="drag-instruction">
+                <strong>Drag the button above</strong> to your browser's bookmarks bar.<br>
+                Then click it while watching any YouTube video!
+            </p>
+        </div>
+
+        <div class="how-to">
+            <h2>How to Use</h2>
+            <ol class="steps">
+                <li>
+                    <strong>Drag the bookmarklet</strong> above to your bookmarks bar (the toolbar at the top of your browser)
+                </li>
+                <li>
+                    <strong>Go to any YouTube video</strong> you want to practice
+                </li>
+                <li>
+                    <strong>Click the bookmarklet</strong> in your bookmarks bar
+                </li>
+                <li>
+                    <strong>Start practicing!</strong> PracticeLoop opens with your video ready to slow down and loop
+                </li>
+            </ol>
+        </div>
+
+        <div class="features">
+            <h2>What You Get</h2>
+            <ul>
+                <li><strong>Speed Control:</strong> Slow down YouTube videos from 0.25x to 2x speed</li>
+                <li><strong>A-B Looping:</strong> Set loop markers to repeat difficult sections</li>
+                <li><strong>Save Loops:</strong> Name and save practice loops for each video</li>
+                <li><strong>Keyboard Shortcuts:</strong> Space to play/pause, [ and ] for loop markers</li>
+                <li><strong>Works on All Browsers:</strong> Chrome, Firefox, Safari, Edge - no installation needed</li>
+                <li><strong>100% Free:</strong> Practice 3 videos with unlimited loops (upgrade for more)</li>
+            </ul>
+        </div>
+
+        <div class="cta-box">
+            <h2>Try PracticeLoop Now</h2>
+            <p>
+                No bookmarklet needed - start practicing immediately in your browser
+            </p>
+            <a href="/" class="primary-button">Open PracticeLoop →</a>
+        </div>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "PracticeLoop Bookmarklet",
+        "applicationCategory": "MusicApplication",
+        "description": "One-click bookmarklet to practice any YouTube video with speed control and looping. Works on all browsers.",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "GBP"
+        },
+        "featureList": [
+            "Speed control (0.25x-2x)",
+            "A-B loop markers",
+            "Save named loops",
+            "Keyboard shortcuts",
+            "Cross-browser support"
+        ]
+    }
+    </script>
+</body>
+</html>
