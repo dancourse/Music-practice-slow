@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Legendary Guitarist Are You? | Free Quiz</title>
+    <meta name="description" content="Discover which legendary guitarist matches your playing style! Take this fun personality quiz and find out if you're more Hendrix, Clapton, or Van Halen.">
+    <meta property="og:title" content="Which Legendary Guitarist Are You? | Free Quiz">
+    <meta property="og:description" content="I just discovered which legendary guitarist I am! Take the quiz and share your result.">
+    <meta property="og:type" content="website">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #14b8a6 0%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .quiz-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.4s ease;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #14b8a6 0%, #f97316 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .question-number {
+            color: #14b8a6;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.3em;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 18px 20px;
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: rgba(20, 184, 166, 0.15);
+            border-color: #14b8a6;
+            transform: translateX(5px);
+        }
+
+        .option-btn:active {
+            transform: scale(0.98);
+        }
+
+        .result-card {
+            text-align: center;
+        }
+
+        .guitarist-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounceIn 0.6s ease;
+        }
+
+        .result-title {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #14b8a6;
+        }
+
+        .result-description {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #cbd5e1;
+        }
+
+        .practice-philosophy {
+            background: rgba(20, 184, 166, 0.1);
+            border-left: 4px solid #14b8a6;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+            border-radius: 8px;
+        }
+
+        .practice-philosophy h3 {
+            color: #14b8a6;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .practice-philosophy p {
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+
+        .cta-section {
+            margin: 30px 0;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.15) 0%, rgba(249, 115, 22, 0.15) 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(20, 184, 166, 0.3);
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+            color: #fff;
+            padding: 16px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(20, 184, 166, 0.3);
+        }
+
+        .share-btn {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+        }
+
+        .share-btn:hover {
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.3);
+        }
+
+        .restart-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 12px 24px;
+            margin-top: 15px;
+        }
+
+        .restart-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #64748b;
+        }
+
+        footer a {
+            color: #14b8a6;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .question-text {
+                font-size: 1.1em;
+            }
+
+            .quiz-card {
+                padding: 20px;
+            }
+
+            .cta-btn {
+                display: block;
+                margin: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎸 Which Legendary Guitarist Are You?</h1>
+            <p class="subtitle">Discover your guitar personality in 8 questions</p>
+        </header>
+
+        <div id="quiz-container"></div>
+
+        <footer>
+            <p>Powered by <a href="https://teal-semifreddo-cad4ad.netlify.app/" target="_blank">PracticeLoop</a> - Free tool for practicing with YouTube videos</p>
+        </footer>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "How do you approach learning a new song?",
+                options: [
+                    { text: "Experiment and add my own flair from the start", traits: { hendrix: 3, clapton: 1 } },
+                    { text: "Focus on getting the feel and emotion right", traits: { clapton: 3, knopfler: 2 } },
+                    { text: "Break it down technically, master each section", traits: { petrucci: 3, vanhalen: 1 } },
+                    { text: "Learn the main groove and improvise the rest", traits: { slash: 3, hendrix: 1 } }
+                ]
+            },
+            {
+                question: "What's your practice routine like?",
+                options: [
+                    { text: "Structured drills, scales, and exercises daily", traits: { petrucci: 3, vanhalen: 2 } },
+                    { text: "Jam and explore - let creativity guide me", traits: { hendrix: 3, slash: 1 } },
+                    { text: "Work on tone and dynamics more than speed", traits: { knopfler: 3, clapton: 2 } },
+                    { text: "Mix it up - some structure, lots of experimentation", traits: { vanhalen: 3, hendrix: 1 } }
+                ]
+            },
+            {
+                question: "Which guitar sound speaks to you most?",
+                options: [
+                    { text: "Psychedelic, experimental, pushing boundaries", traits: { hendrix: 3 } },
+                    { text: "Warm, bluesy, expressive bends", traits: { clapton: 3, knopfler: 1 } },
+                    { text: "High-energy, tapping, technical wizardry", traits: { vanhalen: 3, petrucci: 1 } },
+                    { text: "Raw rock tone with attitude", traits: { slash: 3 } }
+                ]
+            },
+            {
+                question: "How do you handle a difficult passage?",
+                options: [
+                    { text: "Slow it way down and build up methodically", traits: { petrucci: 3, knopfler: 2 } },
+                    { text: "Find my own way to play it that feels natural", traits: { hendrix: 2, clapton: 2 } },
+                    { text: "Work on the feel until it grooves perfectly", traits: { slash: 3, clapton: 1 } },
+                    { text: "Try different techniques until I nail it", traits: { vanhalen: 3 } }
+                ]
+            },
+            {
+                question: "What motivates your playing the most?",
+                options: [
+                    { text: "Expressing deep emotions and stories", traits: { clapton: 3, knopfler: 2 } },
+                    { text: "Technical mastery and precision", traits: { petrucci: 3, vanhalen: 1 } },
+                    { text: "Creating new sounds nobody's heard before", traits: { hendrix: 3, vanhalen: 1 } },
+                    { text: "The raw energy and connection with audience", traits: { slash: 3, hendrix: 1 } }
+                ]
+            },
+            {
+                question: "Your ideal practice session includes:",
+                options: [
+                    { text: "Metronome work, building speed gradually", traits: { petrucci: 3 } },
+                    { text: "Playing along to tracks, finding the pocket", traits: { slash: 2, clapton: 2 } },
+                    { text: "Experimenting with effects and tones", traits: { hendrix: 3, vanhalen: 1 } },
+                    { text: "Working on subtle dynamics and touch", traits: { knopfler: 3, clapton: 1 } }
+                ]
+            },
+            {
+                question: "When you make a mistake on stage, you:",
+                options: [
+                    { text: "Turn it into something creative on the spot", traits: { hendrix: 3, slash: 1 } },
+                    { text: "Keep the groove going, it's about the feel", traits: { slash: 2, clapton: 2 } },
+                    { text: "Rarely make mistakes - practice prevents them", traits: { petrucci: 3 } },
+                    { text: "Make it musical - it's all about phrasing", traits: { knopfler: 3, clapton: 1 } }
+                ]
+            },
+            {
+                question: "What's your philosophy on guitar technique?",
+                options: [
+                    { text: "Technique serves emotion - feel comes first", traits: { clapton: 3, knopfler: 2 } },
+                    { text: "Master everything - technique is freedom", traits: { petrucci: 3, vanhalen: 1 } },
+                    { text: "Break the rules - create your own technique", traits: { hendrix: 3 } },
+                    { text: "Whatever sounds good and rocks hard", traits: { slash: 3, vanhalen: 1 } }
+                ]
+            }
+        ];
+
+        const results = {
+            hendrix: {
+                name: "Jimi Hendrix",
+                icon: "🔥",
+                description: "You're an experimental creative who isn't afraid to break the rules! Like Hendrix, you push boundaries and create new sounds. Your playing is about expression, innovation, and turning the guitar into an extension of your imagination.",
+                philosophy: "Hendrix believed in experimentation over perfection. He practiced by exploring - trying new sounds, effects, and techniques that nobody had heard before. He'd spend hours jamming and discovering, rather than drilling scales.",
+                practiceAdvice: "Let creativity guide your practice. Experiment with effects, try playing songs 'wrong,' and embrace happy accidents."
+            },
+            clapton: {
+                name: "Eric Clapton",
+                icon: "🎵",
+                description: "You're all about feel, emotion, and the blues! Like Slowhand himself, you believe every note should mean something. Your playing speaks from the heart, with expressive bends and phrasing that tells a story.",
+                philosophy: "Clapton focused on touch and tone over speed. He practiced slowly, making sure every bend sang perfectly. For him, guitar was a voice - every note had to communicate emotion.",
+                practiceAdvice: "Practice isn't about how fast you play, but how deeply you feel each note. Work on dynamics, vibrato, and making your guitar sing."
+            },
+            vanhalen: {
+                name: "Eddie Van Halen",
+                icon: "⚡",
+                description: "You're a technical innovator who loves to wow people! Like Eddie, you combine showmanship with serious chops. You're always looking for new techniques and ways to push what's possible on the guitar.",
+                philosophy: "Eddie practiced with intensity and innovation. He'd isolate techniques (like tapping) and drill them until perfect, then find musical ways to use them. He believed in hard work plus creativity.",
+                practiceAdvice: "Mix structured practice with experimentation. Master the fundamentals, then use them to create something nobody's heard before."
+            },
+            slash: {
+                name: "Slash",
+                icon: "🎩",
+                description: "You're a rock and roll soul with groove in your bones! Like Slash, you believe great guitar is about the vibe and the riff. You know how to lock into a pocket and deliver memorable, head-nodding guitar work.",
+                philosophy: "Slash practiced by jamming constantly. He focused on creating riffs that felt good and stuck in your head. For him, the groove and attitude mattered more than technical perfection.",
+                practiceAdvice: "Groove is king. Practice playing in time, locking with the rhythm, and creating riffs that make people move."
+            },
+            petrucci: {
+                name: "John Petrucci",
+                icon: "🎯",
+                description: "You're a methodical master who believes in discipline and precision! Like Petrucci, you approach guitar with a structured practice routine. You set goals, track progress, and build your skills systematically.",
+                philosophy: "Petrucci is famous for his disciplined practice routine. He uses a metronome religiously, practices scales in all positions, and builds speed gradually. Every practice session has a plan and purpose.",
+                practiceAdvice: "Structure your practice time. Use slow practice to build muscle memory, gradually increase tempo, and track your progress with measurable goals."
+            },
+            knopfler: {
+                name: "Mark Knopfler",
+                icon: "🎼",
+                description: "You're a nuanced player who values subtlety and musicality! Like Knopfler, you focus on dynamics, tone, and the spaces between notes. Your fingerstyle approach and attention to detail create something truly unique.",
+                philosophy: "Knopfler practiced for tone and touch. His fingerstyle technique required precise control and dynamics. He believed in playing musically rather than technically - every note should serve the song.",
+                practiceAdvice: "Focus on control and dynamics. Practice without a pick, work on your touch, and make every note intentional and musical."
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = {
+            hendrix: 0,
+            clapton: 0,
+            vanhalen: 0,
+            slash: 0,
+            petrucci: 0,
+            knopfler: 0
+        };
+
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const progress = ((currentQuestion) / questions.length) * 100;
+
+            const html = `
+                <div class="quiz-card">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
+                    <div class="question-text">${q.question}</div>
+                    <div class="options">
+                        ${q.options.map((opt, index) => `
+                            <button class="option-btn" onclick="selectAnswer(${index})">${opt.text}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('quiz-container').innerHTML = html;
+        }
+
+        function selectAnswer(optionIndex) {
+            const traits = questions[currentQuestion].options[optionIndex].traits;
+
+            for (let trait in traits) {
+                scores[trait] += traits[trait];
+            }
+
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                setTimeout(renderQuestion, 200);
+            } else {
+                setTimeout(showResults, 200);
+            }
+        }
+
+        function showResults() {
+            let maxScore = 0;
+            let resultType = 'hendrix';
+
+            for (let type in scores) {
+                if (scores[type] > maxScore) {
+                    maxScore = scores[type];
+                    resultType = type;
+                }
+            }
+
+            const result = results[resultType];
+            const shareText = `I got ${result.name}! ${result.icon} Which legendary guitarist are you?`;
+            const shareUrl = encodeURIComponent(window.location.href);
+            const encodedText = encodeURIComponent(shareText);
+
+            const html = `
+                <div class="quiz-card result-card">
+                    <div class="guitarist-icon">${result.icon}</div>
+                    <h2 class="result-title">You are ${result.name}!</h2>
+                    <p class="result-description">${result.description}</p>
+
+                    <div class="practice-philosophy">
+                        <h3>Practice Philosophy</h3>
+                        <p>${result.philosophy}</p>
+                    </div>
+
+                    <div class="practice-philosophy" style="border-left-color: #f97316; background: rgba(249, 115, 22, 0.1);">
+                        <h3>Practice Like ${result.name.split(' ')[0]}</h3>
+                        <p>${result.practiceAdvice}</p>
+                    </div>
+
+                    <div class="cta-section">
+                        <h3 style="margin-bottom: 15px;">Ready to Practice Like a Legend?</h3>
+                        <p style="color: #cbd5e1; margin-bottom: 20px;">
+                            PracticeLoop helps you slow down and loop YouTube videos - perfect for mastering ${result.name}'s techniques at your own pace.
+                        </p>
+                        <a href="https://teal-semifreddo-cad4ad.netlify.app/" class="cta-btn" target="_blank">
+                            Try PracticeLoop Free →
+                        </a>
+                        <button class="cta-btn share-btn" onclick="share('${resultType}')">
+                            Share Your Result 🔗
+                        </button>
+                    </div>
+
+                    <button class="cta-btn restart-btn" onclick="restart()">Take Quiz Again</button>
+                </div>
+            `;
+
+            document.getElementById('quiz-container').innerHTML = html;
+        }
+
+        function share(resultType) {
+            const result = results[resultType];
+            const shareText = `I got ${result.name}! ${result.icon} Which legendary guitarist are you? Take the quiz:`;
+            const shareUrl = window.location.href;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Which Legendary Guitarist Are You?',
+                    text: shareText,
+                    url: shareUrl
+                }).catch(() => {
+                    copyToClipboard(shareText + ' ' + shareUrl);
+                });
+            } else {
+                copyToClipboard(shareText + ' ' + shareUrl);
+            }
+        }
+
+        function copyToClipboard(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Share text copied to clipboard! Paste it on social media.');
+        }
+
+        function restart() {
+            currentQuestion = 0;
+            scores = {
+                hendrix: 0,
+                clapton: 0,
+                vanhalen: 0,
+                slash: 0,
+                petrucci: 0,
+                knopfler: 0
+            };
+            renderQuestion();
+        }
+
+        // Start the quiz
+        renderQuestion();
+    </script>
+</body>
+</html>

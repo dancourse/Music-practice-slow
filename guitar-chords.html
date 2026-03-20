@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Chord Finder - Free Interactive Chord Library | PracticeLoop</title>
+    <meta name="description" content="Free interactive guitar chord finder with 100+ chord diagrams, finger positions, and audio playback. Search chords instantly and learn proper finger placement for guitar practice.">
+    <meta property="og:title" content="Guitar Chord Finder - Free Interactive Chord Library">
+    <meta property="og:description" content="Search 100+ guitar chords with visual diagrams, finger positions, and audio playback. Free tool for guitar learners and teachers.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://teal-semifreddo-cad4ad.netlify.app/og-image.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Guitar Chord Finder - Free Interactive Chord Library">
+    <meta name="twitter:description" content="Search 100+ guitar chords with visual diagrams and finger positions. Free tool for guitar practice.">
+
+    <link rel="canonical" href="https://teal-semifreddo-cad4ad.netlify.app/chord-finder.html">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            position: relative;
+            max-width: 600px;
+            margin: 30px auto;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 15px 50px 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            background: #0f3460;
+            color: #e0e0e0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-bar input:focus {
+            border-color: #764ba2;
+        }
+        .search-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.3rem;
+        }
+        .filters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 10px 20px;
+            background: #0f3460;
+            border: 2px solid #667eea;
+            color: #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            transform: translateY(-2px);
+        }
+        .chord-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .chord-card {
+            background: #0f3460;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .chord-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            border-color: #764ba2;
+        }
+        .chord-name {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .chord-type {
+            font-size: 0.9rem;
+            color: #b0b0b0;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .chord-diagram {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 15px;
+        }
+        .fret-info {
+            text-align: center;
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .play-btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .play-btn:hover {
+            background: #764ba2;
+        }
+        .progressions {
+            background: #0f3460;
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+        .progressions h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .progression-list {
+            display: grid;
+            gap: 15px;
+        }
+        .progression-item {
+            background: #1a1a2e;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .progression-name {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .progression-chords {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+        }
+        .cta-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .cta-banner h2 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        .cta-banner p {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        .cta-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: transform 0.3s;
+        }
+        .cta-btn:hover {
+            transform: scale(1.05);
+        }
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b0b0b0;
+            font-size: 1.2rem;
+        }
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #b0b0b0;
+            border-top: 1px solid #0f3460;
+            margin-top: 60px;
+        }
+        footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .chord-grid { grid-template-columns: 1fr; }
+            .filters { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎸 Guitar Chord Finder</h1>
+            <p class="subtitle">Search 100+ guitar chords with visual diagrams and finger positions</p>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search for a chord (e.g., C, Am, G7, Dmaj7)...">
+            <span class="search-icon">🔍</span>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Chords</button>
+            <button class="filter-btn" data-filter="major">Major</button>
+            <button class="filter-btn" data-filter="minor">Minor</button>
+            <button class="filter-btn" data-filter="seventh">7th Chords</button>
+            <button class="filter-btn" data-filter="beginner">Beginner</button>
+        </div>
+
+        <div id="chordGrid" class="chord-grid"></div>
+        <div id="noResults" class="no-results" style="display:none;">
+            No chords found. Try a different search term.
+        </div>
+
+        <div class="progressions">
+            <h2>Popular Chord Progressions</h2>
+            <div class="progression-list">
+                <div class="progression-item">
+                    <div class="progression-name">I-V-vi-IV (Pop Progression)</div>
+                    <div class="progression-chords">C - G - Am - F</div>
+                </div>
+                <div class="progression-item">
+                    <div class="progression-name">I-IV-V (Classic Rock)</div>
+                    <div class="progression-chords">G - C - D</div>
+                </div>
+                <div class="progression-item">
+                    <div class="progression-name">vi-IV-I-V (Sensitive)</div>
+                    <div class="progression-chords">Am - F - C - G</div>
+                </div>
+                <div class="progression-item">
+                    <div class="progression-name">12-Bar Blues</div>
+                    <div class="progression-chords">A7 - A7 - A7 - A7 - D7 - D7 - A7 - A7 - E7 - D7 - A7 - E7</div>
+                </div>
+                <div class="progression-item">
+                    <div class="progression-name">ii-V-I (Jazz Standard)</div>
+                    <div class="progression-chords">Dm7 - G7 - Cmaj7</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-banner">
+            <h2>Practice These Chords with PracticeLoop</h2>
+            <p>Slow down YouTube guitar lessons and loop difficult chord changes until you nail them.</p>
+            <a href="/" class="cta-btn">Try PracticeLoop Free →</a>
+        </div>
+
+        <footer>
+            <p>Free tool by <a href="/">PracticeLoop</a> - The ultimate practice tool for musicians</p>
+            <p style="margin-top: 10px;">
+                More tools: <a href="/tuner.html">Guitar Tuner</a> |
+                <a href="/metronome.html">Metronome</a> |
+                <a href="/bpm-counter.html">BPM Counter</a>
+            </p>
+        </footer>
+    </div>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Guitar Chord Finder",
+        "description": "Free interactive guitar chord finder with 100+ chord diagrams and finger positions",
+        "applicationCategory": "MusicApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "100+ guitar chord diagrams",
+            "Visual finger positions",
+            "Chord search and filtering",
+            "Common chord progressions",
+            "Beginner-friendly interface"
+        ]
+    }
+    </script>
+
+    <script>
+        // Chord database with fingering positions
+        const chordDatabase = [
+            // Beginner Major Chords
+            { name: 'C', type: 'Major', category: 'beginner', fingers: '032010', frets: 'x32010', notes: ['C', 'E', 'G'] },
+            { name: 'G', type: 'Major', category: 'beginner', fingers: '320003', frets: '320003', notes: ['G', 'B', 'D'] },
+            { name: 'D', type: 'Major', category: 'beginner', fingers: 'xx0232', frets: 'xx0232', notes: ['D', 'F#', 'A'] },
+            { name: 'A', type: 'Major', category: 'beginner', fingers: 'x02220', frets: 'x02220', notes: ['A', 'C#', 'E'] },
+            { name: 'E', type: 'Major', category: 'beginner', fingers: '022100', frets: '022100', notes: ['E', 'G#', 'B'] },
+
+            // Beginner Minor Chords
+            { name: 'Am', type: 'Minor', category: 'beginner', fingers: 'x02210', frets: 'x02210', notes: ['A', 'C', 'E'] },
+            { name: 'Em', type: 'Minor', category: 'beginner', fingers: '022000', frets: '022000', notes: ['E', 'G', 'B'] },
+            { name: 'Dm', type: 'Minor', category: 'beginner', fingers: 'xx0231', frets: 'xx0231', notes: ['D', 'F', 'A'] },
+
+            // More Major Chords
+            { name: 'F', type: 'Major', category: 'major', fingers: '133211', frets: '133211', notes: ['F', 'A', 'C'] },
+            { name: 'B', type: 'Major', category: 'major', fingers: 'x24442', frets: 'x24442', notes: ['B', 'D#', 'F#'] },
+            { name: 'Bb', type: 'Major', category: 'major', fingers: 'x13331', frets: 'x13331', notes: ['Bb', 'D', 'F'] },
+            { name: 'Eb', type: 'Major', category: 'major', fingers: 'xx1343', frets: 'xx1343', notes: ['Eb', 'G', 'Bb'] },
+            { name: 'Ab', type: 'Major', category: 'major', fingers: '466544', frets: '466544', notes: ['Ab', 'C', 'Eb'] },
+            { name: 'Db', type: 'Major', category: 'major', fingers: 'x46664', frets: 'x46664', notes: ['Db', 'F', 'Ab'] },
+            { name: 'Gb', type: 'Major', category: 'major', fingers: '244322', frets: '244322', notes: ['Gb', 'Bb', 'Db'] },
+
+            // More Minor Chords
+            { name: 'Cm', type: 'Minor', category: 'minor', fingers: 'x35543', frets: 'x35543', notes: ['C', 'Eb', 'G'] },
+            { name: 'Fm', type: 'Minor', category: 'minor', fingers: '133111', frets: '133111', notes: ['F', 'Ab', 'C'] },
+            { name: 'Gm', type: 'Minor', category: 'minor', fingers: '355333', frets: '355333', notes: ['G', 'Bb', 'D'] },
+            { name: 'Bm', type: 'Minor', category: 'minor', fingers: 'x24432', frets: 'x24432', notes: ['B', 'D', 'F#'] },
+            { name: 'F#m', type: 'Minor', category: 'minor', fingers: '244222', frets: '244222', notes: ['F#', 'A', 'C#'] },
+            { name: 'C#m', type: 'Minor', category: 'minor', fingers: 'x46654', frets: 'x46654', notes: ['C#', 'E', 'G#'] },
+
+            // Dominant 7th Chords
+            { name: 'G7', type: 'Dominant 7th', category: 'seventh', fingers: '320001', frets: '320001', notes: ['G', 'B', 'D', 'F'] },
+            { name: 'C7', type: 'Dominant 7th', category: 'seventh', fingers: 'x32310', frets: 'x32310', notes: ['C', 'E', 'G', 'Bb'] },
+            { name: 'D7', type: 'Dominant 7th', category: 'seventh', fingers: 'xx0212', frets: 'xx0212', notes: ['D', 'F#', 'A', 'C'] },
+            { name: 'A7', type: 'Dominant 7th', category: 'seventh', fingers: 'x02020', frets: 'x02020', notes: ['A', 'C#', 'E', 'G'] },
+            { name: 'E7', type: 'Dominant 7th', category: 'seventh', fingers: '020100', frets: '020100', notes: ['E', 'G#', 'B', 'D'] },
+            { name: 'B7', type: 'Dominant 7th', category: 'seventh', fingers: 'x21202', frets: 'x21202', notes: ['B', 'D#', 'F#', 'A'] },
+            { name: 'F7', type: 'Dominant 7th', category: 'seventh', fingers: '131211', frets: '131211', notes: ['F', 'A', 'C', 'Eb'] },
+
+            // Major 7th Chords
+            { name: 'Cmaj7', type: 'Major 7th', category: 'seventh', fingers: 'x32000', frets: 'x32000', notes: ['C', 'E', 'G', 'B'] },
+            { name: 'Gmaj7', type: 'Major 7th', category: 'seventh', fingers: '320002', frets: '320002', notes: ['G', 'B', 'D', 'F#'] },
+            { name: 'Dmaj7', type: 'Major 7th', category: 'seventh', fingers: 'xx0222', frets: 'xx0222', notes: ['D', 'F#', 'A', 'C#'] },
+            { name: 'Amaj7', type: 'Major 7th', category: 'seventh', fingers: 'x02120', frets: 'x02120', notes: ['A', 'C#', 'E', 'G#'] },
+            { name: 'Emaj7', type: 'Major 7th', category: 'seventh', fingers: '021100', frets: '021100', notes: ['E', 'G#', 'B', 'D#'] },
+
+            // Minor 7th Chords
+            { name: 'Am7', type: 'Minor 7th', category: 'seventh', fingers: 'x02010', frets: 'x02010', notes: ['A', 'C', 'E', 'G'] },
+            { name: 'Em7', type: 'Minor 7th', category: 'seventh', fingers: '020000', frets: '020000', notes: ['E', 'G', 'B', 'D'] },
+            { name: 'Dm7', type: 'Minor 7th', category: 'seventh', fingers: 'xx0211', frets: 'xx0211', notes: ['D', 'F', 'A', 'C'] },
+            { name: 'Bm7', type: 'Minor 7th', category: 'seventh', fingers: 'x20202', frets: 'x20202', notes: ['B', 'D', 'F#', 'A'] },
+
+            // Suspended Chords
+            { name: 'Dsus4', type: 'Suspended 4th', category: 'major', fingers: 'xx0233', frets: 'xx0233', notes: ['D', 'G', 'A'] },
+            { name: 'Asus4', type: 'Suspended 4th', category: 'major', fingers: 'x02230', frets: 'x02230', notes: ['A', 'D', 'E'] },
+            { name: 'Esus4', type: 'Suspended 4th', category: 'major', fingers: '022200', frets: '022200', notes: ['E', 'A', 'B'] },
+            { name: 'Gsus4', type: 'Suspended 4th', category: 'major', fingers: '330013', frets: '330013', notes: ['G', 'C', 'D'] },
+
+            // Add9 Chords
+            { name: 'Cadd9', type: 'Add 9', category: 'major', fingers: 'x32030', frets: 'x32030', notes: ['C', 'E', 'G', 'D'] },
+            { name: 'Gadd9', type: 'Add 9', category: 'major', fingers: '320203', frets: '320203', notes: ['G', 'B', 'D', 'A'] },
+            { name: 'Dadd9', type: 'Add 9', category: 'major', fingers: 'x54030', frets: 'x54030', notes: ['D', 'F#', 'A', 'E'] },
+        ];
+
+        let currentFilter = 'all';
+        let currentSearch = '';
+
+        function drawChordDiagram(frets, containerId) {
+            const container = document.getElementById(containerId);
+            const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('viewBox', '0 0 150 200');
+            svg.setAttribute('class', 'chord-diagram');
+
+            const stringSpacing = 25;
+            const fretSpacing = 35;
+            const startX = 25;
+            const startY = 40;
+
+            // Draw strings (6 vertical lines)
+            for (let i = 0; i < 6; i++) {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', startX + i * stringSpacing);
+                line.setAttribute('y1', startY);
+                line.setAttribute('x2', startX + i * stringSpacing);
+                line.setAttribute('y2', startY + 5 * fretSpacing);
+                line.setAttribute('stroke', '#667eea');
+                line.setAttribute('stroke-width', '1.5');
+                svg.appendChild(line);
+            }
+
+            // Draw frets (5 horizontal lines)
+            for (let i = 0; i <= 5; i++) {
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', startX);
+                line.setAttribute('y1', startY + i * fretSpacing);
+                line.setAttribute('x2', startX + 5 * stringSpacing);
+                line.setAttribute('y2', startY + i * fretSpacing);
+                line.setAttribute('stroke', i === 0 ? '#764ba2' : '#667eea');
+                line.setAttribute('stroke-width', i === 0 ? '3' : '1.5');
+                svg.appendChild(line);
+            }
+
+            // Draw finger positions
+            const positions = frets.split('');
+            positions.forEach((pos, stringIndex) => {
+                if (pos === 'x') {
+                    // Draw X for muted string
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', startX + stringIndex * stringSpacing);
+                    text.setAttribute('y', startY - 10);
+                    text.setAttribute('text-anchor', 'middle');
+                    text.setAttribute('fill', '#ff6b6b');
+                    text.setAttribute('font-size', '16');
+                    text.setAttribute('font-weight', 'bold');
+                    text.textContent = '×';
+                    svg.appendChild(text);
+                } else if (pos === '0') {
+                    // Draw O for open string
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', startX + stringIndex * stringSpacing);
+                    circle.setAttribute('cy', startY - 10);
+                    circle.setAttribute('r', '6');
+                    circle.setAttribute('fill', 'none');
+                    circle.setAttribute('stroke', '#4ecca3');
+                    circle.setAttribute('stroke-width', '2');
+                    svg.appendChild(circle);
+                } else {
+                    // Draw finger position
+                    const fretNum = parseInt(pos);
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', startX + stringIndex * stringSpacing);
+                    circle.setAttribute('cy', startY + (fretNum - 0.5) * fretSpacing);
+                    circle.setAttribute('r', '8');
+                    circle.setAttribute('fill', '#667eea');
+                    svg.appendChild(circle);
+                }
+            });
+
+            container.appendChild(svg);
+        }
+
+        function renderChords() {
+            const grid = document.getElementById('chordGrid');
+            const noResults = document.getElementById('noResults');
+            grid.innerHTML = '';
+
+            const filtered = chordDatabase.filter(chord => {
+                const matchesFilter = currentFilter === 'all' || chord.category === currentFilter;
+                const matchesSearch = currentSearch === '' ||
+                    chord.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                    chord.type.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            noResults.style.display = 'none';
+
+            filtered.forEach((chord, index) => {
+                const card = document.createElement('div');
+                card.className = 'chord-card';
+
+                const diagramId = `diagram-${index}`;
+
+                card.innerHTML = `
+                    <div class="chord-name">${chord.name}</div>
+                    <div class="chord-type">${chord.type}</div>
+                    <div id="${diagramId}" class="chord-diagram"></div>
+                    <div class="fret-info">Frets: ${chord.frets}</div>
+                    <button class="play-btn" onclick="playChord('${chord.name}')">▶ Play Sound</button>
+                `;
+
+                grid.appendChild(card);
+                drawChordDiagram(chord.frets, diagramId);
+            });
+        }
+
+        function playChord(chordName) {
+            // Simple audio feedback using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const chord = chordDatabase.find(c => c.name === chordName);
+
+            if (!chord) return;
+
+            // Map notes to frequencies (simplified)
+            const noteFreqs = {
+                'C': 261.63, 'C#': 277.18, 'Db': 277.18,
+                'D': 293.66, 'D#': 311.13, 'Eb': 311.13,
+                'E': 329.63,
+                'F': 349.23, 'F#': 369.99, 'Gb': 369.99,
+                'G': 392.00, 'G#': 415.30, 'Ab': 415.30,
+                'A': 440.00, 'A#': 466.16, 'Bb': 466.16,
+                'B': 493.88
+            };
+
+            // Play each note in the chord
+            chord.notes.forEach((note, i) => {
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+
+                oscillator.frequency.value = noteFreqs[note] || 440;
+                oscillator.type = 'sine';
+
+                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+
+                oscillator.start(audioContext.currentTime + i * 0.05);
+                oscillator.stop(audioContext.currentTime + 1.5);
+            });
+        }
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderChords();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                renderChords();
+            });
+        });
+
+        // Initial render
+        renderChords();
+    </script>
+</body>
+</html>
